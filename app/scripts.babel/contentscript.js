@@ -1,3 +1,5 @@
+'use strict';
+
 function init() {
   var container = document.querySelector('.chess-board-container');
   if (container) {
