@@ -22,8 +22,7 @@
   "content_scripts": [
     {
       "matches": [
-        "http://*/*",
-        "https://*/*"
+        "https://chess.com/live*"
       ],
       "js": [
         "scripts/contentscript.js"
