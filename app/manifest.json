@@ -9,20 +9,20 @@
   },
   "default_locale": "en",
   "permissions": [
-    "tabs",
-    "http://*/*",
-    "https://*/*"
+    "https://www.chess.com/"
   ],
   "content_scripts": [
     {
       "matches": [
-        "https://chess.com/live*"
+        "https://www.chess.com/*"
       ],
       "js": [
         "scripts/contentscript.js"
       ],
       "run_at": "document_end",
-      "all_frames": false
+      "css": [
+        "styles/main.css"
+      ]
     }
   ]
 }
