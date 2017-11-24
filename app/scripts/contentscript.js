@@ -1,9 +1,9 @@
 'use strict';
 
 function init() {
-  var container = document.querySelector('.chess-board-container');
+  const container = document.querySelector('.chess-board-container');
   if (container) {
-    var input = document.createElement('input');
+    const input = document.createElement('input');
     input.addEventListener('keydown', (e) => {
       if (e.keyCode === 13) {
         go(input.value);
@@ -18,7 +18,7 @@ function init() {
 function go(input) {
   try {
     makeMove(myEvent.capturingBoard, input.slice(0, 2), input.slice(2, 4));
-  } catch(e) {
+  } catch (e) {
     alert('Move is illegal');
   }
 }
