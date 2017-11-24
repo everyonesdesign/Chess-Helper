@@ -2,9 +2,10 @@
  * Prepare the extension code and run
  */
 function init() {
-  const boardContainer = document.querySelector('#main-board');
-  if (boardContainer) {
-    boardContainer.appendChild(createInput());
+  const selector = '.main-board .board, #chessboard';
+  const boardElement = document.querySelector(selector);
+  if (boardElement) {
+    boardElement.appendChild(createInput());
   }
 }
 
