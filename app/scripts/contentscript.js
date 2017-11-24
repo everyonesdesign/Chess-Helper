@@ -56,4 +56,4 @@ function makeMove(board, fromField, toField) {
   }
 }
 
-init();
+window.addEventListener('load', init);
