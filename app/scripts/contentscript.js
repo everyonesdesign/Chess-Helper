@@ -31,10 +31,13 @@ function createInput() {
  * @param  {String} input - input, in format 'e2e4'
  */
 function go(input) {
-  try {
-    makeMove(myEvent.capturingBoard, input.slice(0, 2), input.slice(2, 4));
-  } catch (e) {
-    alert('Move is illegal');
+  const board = window.myEvent.capturingBoard;
+  if (board) {
+    try {
+      makeMove(board, input.slice(0, 2), input.slice(2, 4));
+    } catch (e) {
+      alert('Move is illegal');
+    }
   }
 }
 
