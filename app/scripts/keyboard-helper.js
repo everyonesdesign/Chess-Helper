@@ -1,5 +1,3 @@
-let highlightedMove = [];
-
 /**
  * Prepare the extension code and run
  */
@@ -14,6 +12,10 @@ function init() {
     input.addEventListener('keydown', (e) => {
       if (e.keyCode === 13) {
         go(input.value);
+
+        const board = getBoard();
+        board && board.clearMarkedArrows();
+
         input.value = '';
         input.focus();
       }
@@ -21,15 +23,10 @@ function init() {
     input.addEventListener('input', () => {
       const board = getBoard();
       const move = parseMoveText(input.value);
-      if (board && move) {
-        highlightedMove.forEach((sq) => board.unmarkArea(sq));
-        highlightedMove = move;
 
-        board.markArea(move[0], '#99ee99');
-        board.markArea(move[1], '#9999ee');
-      } else {
-        highlightedMove.forEach((sq) => board.unmarkArea(sq));
-        highlightedMove = [];
+      if (board) {
+        board.clearMarkedArrows();
+        move && board.markArrow(...move);
       }
     });
     boardElement.appendChild(input);
