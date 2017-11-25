@@ -89,7 +89,20 @@ function parseMoveText(input) {
  * @return {ChessBoard?}
  */
 function getBoard() {
-  return window.myEvent.capturingBoard;
+  const computerBoard = window.myEvent.capturingBoard;
+  if (computerBoard) {
+    return computerBoard;
+  }
+
+  if (window.boardsService && window.boardsService.getSelectedBoard) {
+    const activeBoard = window.boardsService.getSelectedBoard();
+
+    if (activeBoard) {
+      return activeBoard.chessboard;
+    }
+  }
+
+  return null;
 }
 
 /**
