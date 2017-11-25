@@ -19,7 +19,6 @@ function init() {
       }
     });
     input.addEventListener('input', () => {
-      debugger;
       const board = getBoard();
       const move = parseMoveText(input.value);
       if (board && move) {
@@ -113,7 +112,6 @@ function getBoard() {
 function go(input) {
   const board = getBoard();
   if (board) {
-    debugger;
     const move = parseMoveText(input);
     if (move) {
       makeMove(board, ...move);
