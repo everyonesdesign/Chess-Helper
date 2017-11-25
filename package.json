@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "node ./build.js",
-    "watch": "watchy -w app/script -- npm run build"
+    "watch": "watchy -w app/scripts -- npm run build"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.2",
