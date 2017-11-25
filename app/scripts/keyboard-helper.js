@@ -1,3 +1,5 @@
+let highlightedMove = [];
+
 /**
  * Prepare the extension code and run
  */
@@ -14,6 +16,21 @@ function init() {
         go(input.value);
         input.value = '';
         input.focus();
+      }
+    });
+    input.addEventListener('input', () => {
+      debugger;
+      const board = getBoard();
+      const move = parseMoveText(input.value);
+      if (board && move) {
+        highlightedMove.forEach((sq) => board.unmarkArea(sq));
+        highlightedMove = move;
+
+        board.markArea(move[0], '#99ee99');
+        board.markArea(move[1], '#9999ee');
+      } else {
+        highlightedMove.forEach((sq) => board.unmarkArea(sq));
+        highlightedMove = [];
       }
     });
     boardElement.appendChild(input);
@@ -42,18 +59,29 @@ function postMessage(text) {
 }
 
 /**
+ * Check if input is valid square name
+ * @param  {String} input
+ * @return {Boolean}
+ */
+function validateSquareName(input) {
+  return /^\\w\\d$/.test(input);
+}
+
+/**
  * Parse message input by user
  * @param  {String} input - input, in format 'e2e4'
  * @return {Array?} - array of two elemens: from and to; or null if there's no move
  */
 function parseMoveText(input) {
-  try {
-    const filteredSymbols = input.replace(/( |-)+/g, '');
-    const move = [filteredSymbols.slice(0, 2), filteredSymbols.slice(2, 4)];
-    return move;
-  } catch (e) {
-    return null;
+  const filteredSymbols = input.replace(/( |-)+/g, '');
+  const fromSquare = filteredSymbols.slice(0, 2);
+  const toSquare = filteredSymbols.slice(2, 4);
+
+  if (validateSquareName(fromSquare) && validateSquareName(toSquare)) {
+    return [fromSquare, toSquare];
   }
+
+  return null;
 }
 
 /**
@@ -72,6 +100,7 @@ function getBoard() {
 function go(input) {
   const board = getBoard();
   if (board) {
+    debugger;
     const move = parseMoveText(input);
     if (move) {
       makeMove(board, ...move);
