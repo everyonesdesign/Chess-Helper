@@ -17,7 +17,7 @@
         "https://www.chess.com/*"
       ],
       "js": [
-        "scripts/contentscript.js"
+        "build.js"
       ],
       "run_at": "document_end",
       "css": [

@@ -3,3 +3,4 @@ temp
 .tmp
 dist
 package
+app/build.js
