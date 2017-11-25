@@ -36,7 +36,7 @@ function go(input) {
   const board = window.myEvent.capturingBoard;
   if (board) {
     try {
-      makeMove(board, input.slice(0, 2), input.slice(2, 4));
+      makeMove(board, input.replace(/\s+/g, '').slice(0, 2), input.slice(2, 4));
     } catch (e) {
       alert('Move is illegal');
     }
