@@ -57,12 +57,20 @@ function parseMoveText(input) {
 }
 
 /**
+ * Get active board instance
+ * @return {ChessBoard?}
+ */
+function getBoard() {
+  return window.myEvent.capturingBoard;
+}
+
+/**
  * Handle user input and act in appropriate way
  * The function uses active board on the screen if there's any
  * @param  {String} input - input, in format 'e2e4'
  */
 function go(input) {
-  const board = window.myEvent.capturingBoard;
+  const board = getBoard();
   if (board) {
     const move = parseMoveText(input);
     if (move) {
