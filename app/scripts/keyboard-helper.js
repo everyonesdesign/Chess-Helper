@@ -15,6 +15,8 @@ function init() {
  */
 function createInput() {
   const input = document.createElement('input');
+  input.setAttribute('id', 'ccHelper-input');
+  input.setAttribute('placeholder', 'Enter move here...');
   input.addEventListener('keydown', (e) => {
     if (e.keyCode === 13) {
       go(input.value);

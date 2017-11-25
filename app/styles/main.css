@@ -1,0 +1,13 @@
+#ccHelper-input {
+    margin-top: 10px;
+    display: block;
+    width: 100%;
+    padding: 0 12px;
+    background: #eaeaea;
+    box-shadow: inset 0px 1px 0px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    border: none;
+    line-height: 34px;
+    outline: none;
+    box-sizing: border-box;
+}
