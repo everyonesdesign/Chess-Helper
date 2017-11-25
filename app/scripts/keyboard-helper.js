@@ -5,26 +5,55 @@ function init() {
   const selector = '.main-board .board, #chessboard';
   const boardElement = document.querySelector(selector);
   if (boardElement) {
-    boardElement.appendChild(createInput());
+    const input = document.createElement('input');
+    input.setAttribute('id', 'ccHelper-input');
+    input.className = 'ccHelper-input';
+    input.setAttribute('placeholder', 'Enter move here...');
+    input.addEventListener('keydown', (e) => {
+      if (e.keyCode === 13) {
+        go(input.value);
+        input.value = '';
+        input.focus();
+      }
+    });
+    boardElement.appendChild(input);
+
+    const messages = document.createElement('div');
+    messages.setAttribute('id', 'ccHelper-messages');
+    messages.className = 'ccHelper-messages';
+    document.body.appendChild(messages);
   }
 }
 
 /**
- * Create the field to handle the moves input
- * @return {HTMLInputElement} - input handling the user input
+ * Write some message to the user
+ * @param {String} text - text of the message
  */
-function createInput() {
-  const input = document.createElement('input');
-  input.setAttribute('id', 'ccHelper-input');
-  input.setAttribute('placeholder', 'Enter move here...');
-  input.addEventListener('keydown', (e) => {
-    if (e.keyCode === 13) {
-      go(input.value);
-      input.value = '';
-      input.focus();
-    }
-  });
-  return input;
+function postMessage(text) {
+  const messagesContainer = document.getElementById('ccHelper-messages');
+  const message = document.createElement('div');
+  message.className = 'ccHelper-messagesItem';
+  message.textContent = text;
+  messagesContainer.appendChild(message);
+
+  setTimeout(() => {
+    messagesContainer.removeChild(message);
+  }, 3000);
+}
+
+/**
+ * Parse message input by user
+ * @param  {String} input - input, in format 'e2e4'
+ * @return {Array?} - array of two elemens: from and to; or null if there's no move
+ */
+function parseMoveText(input) {
+  try {
+    const filteredSymbols = input.replace(/( |-)+/g, '');
+    const move = [filteredSymbols.slice(0, 2), filteredSymbols.slice(2, 4)];
+    return move;
+  } catch (e) {
+    return null;
+  }
 }
 
 /**
@@ -35,10 +64,11 @@ function createInput() {
 function go(input) {
   const board = window.myEvent.capturingBoard;
   if (board) {
-    try {
-      makeMove(board, input.replace(/\s+/g, '').slice(0, 2), input.slice(2, 4));
-    } catch (e) {
-      alert('Move is illegal');
+    const move = parseMoveText(input);
+    if (move) {
+      makeMove(board, ...move);
+    } else {
+      postMessage('Incorrect move: ' + input);
     }
   }
 }
@@ -57,7 +87,7 @@ function makeMove(board, fromField, toField) {
           targetAreaId: toField,
       });
   } else {
-    throw new Error('Move is illegal');
+    postMessage('Move "' + fromField + '-' + toField + '" is illegal');
   }
 }
 
