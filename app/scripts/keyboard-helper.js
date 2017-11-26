@@ -68,7 +68,7 @@ function postMessage(text) {
  * @return {Boolean}
  */
 function validateSquareName(input) {
-  return /^\\w\\d$/.test(input);
+  return /^[a-h][1-8]$/.test(input);
 }
 
 /**
