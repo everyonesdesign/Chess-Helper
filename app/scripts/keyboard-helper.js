@@ -5,6 +5,8 @@ function init() {
   const selector = '.main-board .board, #chessboard';
   const boardElement = document.querySelector(selector);
   if (boardElement) {
+    initAnalytics();
+
     const input = document.createElement('input');
     input.setAttribute('id', 'ccHelper-input');
     input.className = 'ccHelper-input';
@@ -15,6 +17,12 @@ function init() {
 
         const board = getBoard();
         board && board.clearMarkedArrows();
+
+        sendDataToAnalytics({
+          category: 'enter',
+          action: 'press',
+          label: input.value,
+        });
 
         input.value = '';
         input.focus();
@@ -113,6 +121,12 @@ function go(input) {
     if (move) {
       makeMove(board, ...move);
     } else {
+      sendDataToAnalytics({
+        category: 'incorrect',
+        action: 'input',
+        label: input,
+      });
+
       postMessage('Incorrect move: ' + input);
     }
   }
@@ -132,8 +146,50 @@ function makeMove(board, fromField, toField) {
           targetAreaId: toField,
       });
   } else {
-    postMessage('Move "' + fromField + '-' + toField + '" is illegal');
+    const move = fromField + '-' + toField;
+
+    sendDataToAnalytics({
+      category: 'illegal',
+      action: 'input',
+      label: move,
+    });
+
+    postMessage('Move "' + move + '" is illegal');
   }
+}
+
+/**
+ * Init google analytics for the app
+ */
+function initAnalytics() {
+  /* eslint-disable */
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','cchGa');
+  /* eslint-enable */
+
+  window.cchGa('create', 'UA-110216390-1', 'auto', 'chessHelper');
+  sendDataToAnalytics({
+    category: 'init',
+    action: 'init',
+  });
+}
+
+/**
+ * Send data to google analytics to make the extension better
+ * @param  {String} category
+ * @param  {String} action
+ */
+function sendDataToAnalytics({category, action, label}) {
+  try {
+    window.cchGa('chessHelper.send', {
+      hitType: 'event',
+      eventCategory: category,
+      eventAction: action,
+      eventLabel: label,
+    });
+  } catch (e) {}
 }
 
 init();
