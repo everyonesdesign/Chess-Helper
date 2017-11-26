@@ -141,6 +141,7 @@ function go(input) {
 function makeMove(fromField, toField) {
   const board = getBoard();
   if (board.gameRules.isLegalMove(board.gameSetup, fromField, toField)) {
+      board._clickedPieceElement = fromField;
       board.fireEvent('onDropPiece', {
           fromAreaId: fromField,
           targetAreaId: toField,
