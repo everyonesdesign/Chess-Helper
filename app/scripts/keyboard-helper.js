@@ -119,7 +119,7 @@ function go(input) {
   if (board) {
     const move = parseMoveText(input);
     if (move) {
-      makeMove(board, ...move);
+      makeMove(move[0], move[1]);
     } else {
       sendDataToAnalytics({
         category: 'incorrect',
@@ -135,11 +135,11 @@ function go(input) {
 /**
  * Check move and make it if it's legal
  * This function relies on chess.com chessboard interface
- * @param  {ChessBoard} board - chessboard instance
  * @param  {String} fromField - starting field, e.g. 'e2'
  * @param  {String} toField   - ending field, e.g. 'e4'
  */
-function makeMove(board, fromField, toField) {
+function makeMove(fromField, toField) {
+  const board = getBoard();
   if (board.gameRules.isLegalMove(board.gameSetup, fromField, toField)) {
       board.fireEvent('onDropPiece', {
           fromAreaId: fromField,
