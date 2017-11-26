@@ -4,7 +4,7 @@
 |
 [Chrome Web Store](https://chrome.google.com/webstore/detail/bghaancnengidpcefpkbbppinjmfnlhh/publish-accepted?hl=en-US)
 
-A small Google Chrome extension adding keyboard navigation to chess.com website.
+A small Google Chrome extension adding keyboard navigation to [chess.com](https://www.chess.com/) website.
 
 It supports moves input in format 'e2e4' ('e2 e4' and 'e2-e4' can be also used). Other move formats may be implemented in future.
 
