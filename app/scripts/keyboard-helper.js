@@ -4,6 +4,7 @@ const KEY_CODES = {
   topArrow: 38,
   rightArrow: 39,
   bottomArrow: 40,
+  escape: 27,
 };
 
 /**
@@ -60,6 +61,11 @@ function handleKeyDown(e) {
 
     input.value = '';
     input.focus();
+  } else if (e.keyCode === KEY_CODES.escape) {
+    input.value = '';
+
+    const board = getBoard();
+    board && board.clearMarkedArrows();
   } else if (holdingCtrlOrCmd(e)) {
     if (e.keyCode === KEY_CODES.leftArrow) {
       const selector = '.move-list-buttons .icon-chevron-left, .control-group .icon-chevron-left';
