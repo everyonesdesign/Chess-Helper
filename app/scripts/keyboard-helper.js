@@ -11,10 +11,11 @@ const KEY_CODES = {
  * Prepare the extension code and run
  */
 function init() {
-  const selector = '.main-board .board, #chessboard';
+  const selector = '.main-board .board, #chessboard, #live-app [class*=board-layout-vertical-component_]';
   const boardElement = document.querySelector(selector);
   if (boardElement) {
     initAnalytics();
+    initBoardTracking();
 
     const input = document.createElement('input');
     input.setAttribute('id', 'ccHelper-input');
@@ -132,16 +133,37 @@ function parseMoveText(input) {
   return null;
 }
 
+
+/**
+ * It seems that chess.com encapsulated ChessBoard instances in code
+ * Because of that we try to listen to ChessBoard events and use the last tracked board
+ * @type {[type]}
+ */
+let lastTrackedBoard = null;
+function initBoardTracking() {
+  var fireEvent = window.ChessBoard.prototype.fireEvent;
+  window.ChessBoard.prototype.fireEvent = function(...args) {
+    // check if the board is visible
+    if (this.rootElement && this.rootElement.clientWidth) {
+      lastTrackedBoard = this;
+    }
+
+    fireEvent.apply(this, args);
+  };
+}
+
 /**
  * Get active board instance
  * @return {ChessBoard?}
  */
 function getBoard() {
+  // board for training with computer
   const computerBoard = window.myEvent.capturingBoard;
   if (computerBoard) {
     return computerBoard;
   }
 
+  // old live mode: probably not working anywhere now
   if (window.boardsService && window.boardsService.getSelectedBoard) {
     const activeBoard = window.boardsService.getSelectedBoard();
 
@@ -150,7 +172,8 @@ function getBoard() {
     }
   }
 
-  return null;
+  // return last tracked board instance
+  return lastTrackedBoard;
 }
 
 /**
