@@ -15,7 +15,6 @@ function init() {
   const boardElement = document.querySelector(selector);
   if (boardElement) {
     initAnalytics();
-    initBoardTracking();
 
     const input = document.createElement('input');
     input.setAttribute('id', 'ccHelper-input');
@@ -133,25 +132,6 @@ function parseMoveText(input) {
   return null;
 }
 
-
-/**
- * It seems that chess.com encapsulated ChessBoard instances in code
- * Because of that we try to listen to ChessBoard events and use the last tracked board
- * @type {[type]}
- */
-let lastTrackedBoard = null;
-function initBoardTracking() {
-  var fireEvent = window.ChessBoard.prototype.fireEvent;
-  window.ChessBoard.prototype.fireEvent = function(...args) {
-    // check if the board is visible
-    if (this.rootElement && this.rootElement.clientWidth) {
-      lastTrackedBoard = this;
-    }
-
-    fireEvent.apply(this, args);
-  };
-}
-
 /**
  * Get active board instance
  * @return {ChessBoard?}
@@ -172,8 +152,14 @@ function getBoard() {
     }
   }
 
-  // return last tracked board instance
-  return lastTrackedBoard;
+  // new live mode
+  var lc = window.liveClient;
+  if (lc && lc.controller && lc.controller.activeBoard && lc.controller.activeBoard.chessboard) {
+    return lc.controller.activeBoard.chessboard;
+  }
+
+
+  return null;
 }
 
 /**
