@@ -32,6 +32,9 @@ function init() {
     });
     boardElement.appendChild(input);
 
+    // see https://trello.com/c/aT95jsv5
+    sendLayoutOverlappingStatus();
+
     const messages = document.createElement('div');
     messages.setAttribute('id', 'ccHelper-messages');
     messages.className = 'ccHelper-messages';
@@ -227,6 +230,31 @@ function initAnalytics() {
   sendDataToAnalytics({
     category: 'init',
     action: 'init',
+  });
+}
+
+/**
+ * There is a tricky layout bug: https://trello.com/c/aT95jsv5
+ * Fixing it may require applying changes to the layout of the app
+ * It's better to avoid this changes
+ *
+ * This function allows to register amount of such bug events
+ * and will help us decide whether we need to fix that
+ */
+function sendLayoutOverlappingStatus() {
+  const input = document.getElementById('ccHelper-input');
+  const board = document.querySelector('.chessboard');
+  const inputRect = input.getBoundingClientRect();
+  const boardRect = board.getBoundingClientRect();
+
+  const isOverlapping = (boardRect.top + boardRect.height + 40) > inputRect.top;
+
+  console.log('isOverlapping: ', isOverlapping);
+
+  sendDataToAnalytics({
+    category: 'layout-bug-aT95jsv5',
+    action: 'view',
+    label: String(isOverlapping),
   });
 }
 
