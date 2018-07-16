@@ -11,6 +11,9 @@
   "permissions": [
     "https://www.chess.com/"
   ],
+  "browser_action": {
+    "default_icon": "images/icon-128.png"
+  },
   "content_scripts": [
     {
       "matches": [

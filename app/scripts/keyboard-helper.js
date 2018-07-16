@@ -4,13 +4,14 @@ const KEY_CODES = {
   topArrow: 38,
   rightArrow: 39,
   bottomArrow: 40,
+  escape: 27,
 };
 
 /**
  * Prepare the extension code and run
  */
 function init() {
-  const selector = '.main-board .board, #chessboard';
+  const selector = '.main-board .board, #chessboard, #live-app [class*=board-layout-vertical-component_]';
   const boardElement = document.querySelector(selector);
   if (boardElement) {
     initAnalytics();
@@ -30,6 +31,9 @@ function init() {
       }
     });
     boardElement.appendChild(input);
+
+    // see https://trello.com/c/aT95jsv5
+    sendLayoutOverlappingStatus();
 
     const messages = document.createElement('div');
     messages.setAttribute('id', 'ccHelper-messages');
@@ -60,6 +64,11 @@ function handleKeyDown(e) {
 
     input.value = '';
     input.focus();
+  } else if (e.keyCode === KEY_CODES.escape) {
+    input.value = '';
+
+    const board = getBoard();
+    board && board.clearMarkedArrows();
   } else if (holdingCtrlOrCmd(e)) {
     if (e.keyCode === KEY_CODES.leftArrow) {
       const selector = '.move-list-buttons .icon-chevron-left, .control-group .icon-chevron-left';
@@ -131,11 +140,13 @@ function parseMoveText(input) {
  * @return {ChessBoard?}
  */
 function getBoard() {
+  // board for training with computer
   const computerBoard = window.myEvent.capturingBoard;
   if (computerBoard) {
     return computerBoard;
   }
 
+  // old live mode: probably not working anywhere now
   if (window.boardsService && window.boardsService.getSelectedBoard) {
     const activeBoard = window.boardsService.getSelectedBoard();
 
@@ -143,6 +154,13 @@ function getBoard() {
       return activeBoard.chessboard;
     }
   }
+
+  // new live mode
+  var lc = window.liveClient;
+  if (lc && lc.controller && lc.controller.activeBoard && lc.controller.activeBoard.chessboard) {
+    return lc.controller.activeBoard.chessboard;
+  }
+
 
   return null;
 }
@@ -212,6 +230,31 @@ function initAnalytics() {
   sendDataToAnalytics({
     category: 'init',
     action: 'init',
+  });
+}
+
+/**
+ * There is a tricky layout bug: https://trello.com/c/aT95jsv5
+ * Fixing it may require applying changes to the layout of the app
+ * It's better to avoid this changes
+ *
+ * This function allows to register amount of such bug events
+ * and will help us decide whether we need to fix that
+ */
+function sendLayoutOverlappingStatus() {
+  const input = document.getElementById('ccHelper-input');
+  const board = document.querySelector('.chessboard');
+  const inputRect = input.getBoundingClientRect();
+  const boardRect = board.getBoundingClientRect();
+
+  const isOverlapping = (boardRect.top + boardRect.height + 40) > inputRect.top;
+
+  console.log('isOverlapping: ', isOverlapping);
+
+  sendDataToAnalytics({
+    category: 'layout-bug-aT95jsv5',
+    action: 'view',
+    label: String(isOverlapping),
   });
 }
 
