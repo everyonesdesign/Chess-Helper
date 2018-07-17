@@ -242,14 +242,15 @@ function initAnalytics() {
  * and will help us decide whether we need to fix that
  */
 function sendLayoutOverlappingStatus() {
+  const isLive = !!document.getElementById('live-app');
+  if (!isLive) return;
+
   const input = document.getElementById('ccHelper-input');
   const board = document.querySelector('.chessboard');
   const inputRect = input.getBoundingClientRect();
   const boardRect = board.getBoundingClientRect();
 
   const isOverlapping = (boardRect.top + boardRect.height + 40) > inputRect.top;
-
-  console.log('isOverlapping: ', isOverlapping);
 
   sendDataToAnalytics({
     category: 'layout-bug-aT95jsv5',
