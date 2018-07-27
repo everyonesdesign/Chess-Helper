@@ -1,3 +1,4 @@
+const get = require('lodash/get');
 const {
   sendDataToAnalytics,
 } = require('./analytics');
@@ -36,34 +37,27 @@ function parseMoveText(input) {
  * @return {ChessBoard?}
  */
 function getBoard() {
-  // board for training with computer
-  const computerBoard = window.myEvent.capturingBoard;
-  if (computerBoard) {
-    return computerBoard;
-  }
+  let cb = (
+    // board for training with computer
+    get(window, 'myEvent.capturingBoard') ||
+  // new live mode
+    get(window, 'liveClient.controller.activeBoard.chessboard')
+  );
 
-  // old live mode: probably not working anywhere now
-  if (window.boardsService && window.boardsService.getSelectedBoard) {
-    const activeBoard = window.boardsService.getSelectedBoard();
 
-    if (activeBoard) {
-      return activeBoard.chessboard;
+  if (!cb) {
+    // legacy old chessboard
+    // probably should be removed
+    if (window.boardsService && window.boardsService.getSelectedBoard) {
+      const activeBoard = window.boardsService.getSelectedBoard();
+
+      if (activeBoard) {
+        return activeBoard.chessboard;
+      }
     }
   }
 
-  // new live mode
-  const lc = window.liveClient;
-  if (
-    lc &&
-    lc.controller &&
-    lc.controller.activeBoard &&
-    lc.controller.activeBoard.chessboard
-  ) {
-    return lc.controller.activeBoard.chessboard;
-  }
-
-
-  return null;
+  return cb || null;
 }
 
 /**
