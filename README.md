@@ -6,7 +6,12 @@
 
 A small Google Chrome extension adding keyboard navigation to [chess.com](https://www.chess.com/) website.
 
-It supports moves input in format 'e2e4' ('e2 e4' and 'e2-e4' can be also used). Other move formats may be implemented in future.
+It supports moves input in:
+
+- algebraic notation: 'Nf3', '0-0';
+- coorinates notation: 'e2e4' ('e2 e4' and 'e2-e4' can be also used).
+
+Other move formats may be implemented in future.
 
 <img src="https://i.imgur.com/ehN2pfT.png" alt="Chess Helper Extension" width=428 height=474>
 
