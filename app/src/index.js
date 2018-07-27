@@ -4,7 +4,8 @@ const {
   sendDataToAnalytics,
 } = require('./analytics');
 const {
-  parseMoveText,
+  getMoveCoords,
+  parseMove,
   getBoard,
   go,
 } = require('./chess');
@@ -41,11 +42,12 @@ function init() {
     input.addEventListener('keydown', handleKeyDown);
     input.addEventListener('input', () => {
       const board = getBoard();
-      const move = parseMoveText(input.value);
+      const move = parseMove(input.value);
+      const coords = getMoveCoords(board, move);
 
       if (board) {
         board.clearMarkedArrows();
-        move && board.markArrow(...move);
+        coords && board.markArrow(...coords);
       }
     });
     boardElement.appendChild(input);
