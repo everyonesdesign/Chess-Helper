@@ -2,11 +2,12 @@
   "name": "chess-com-helper",
   "private": true,
   "scripts": {
-    "build": "node ./build.js",
-    "watch": "watchy -w app/scripts -- npm run build"
+    "make": "node ./make.js",
+    "watch": "watchy -w app/scripts -- npm run make"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.2",
+    "browserify": "^16.2.2",
     "eslint": "^4.11.0",
     "eslint-config-google": "^0.9.1",
     "watchy": "^0.7.0"
