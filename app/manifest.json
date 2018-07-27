@@ -1,8 +1,8 @@
 {
-  "name": "__MSG_appName__",
+  "name": "Chess Helper",
   "version": "1.0.0",
   "manifest_version": 2,
-  "description": "__MSG_appDescription__",
+  "description": "Little tool, helping to use chess.com website",
   "icons": {
     "16": "images/icon-16.png",
     "128": "images/icon-128.png"
