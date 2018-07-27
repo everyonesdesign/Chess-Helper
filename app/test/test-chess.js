@@ -213,6 +213,9 @@ describe('getMoveCoords', function() {
 
     return {
       gameSetup: {pieces},
+      gameRules: {
+        isLegalMove: () => true,
+      },
     };
   };
 
@@ -292,5 +295,43 @@ describe('getMoveCoords', function() {
     ]);
     const fn = () => getMoveCoords(board, null);
     assert.doesNotThrow(fn);
+  });
+
+  it('returns correct move for short castling', function() {
+    const board = getChessBoardWithPieces([
+      {color: 2, type: 'k', area: 'e1'},
+      {color: 2, type: 'r', area: 'h1'},
+    ]);
+    board.gameRules = {
+      isLegalMove: (_1, fromSq, toSq) => {
+        return fromSq === 'e1' && toSq === 'g1';
+      },
+    };
+    const result = getMoveCoords(board, {
+      piece: 'k',
+      from: 'e2',
+      to: 'g1',
+      moveType: 'short-castling',
+    });
+    assert.deepEqual(result, ['e1', 'g1']);
+  });
+
+  it('returns correct move for long castling', function() {
+    const board = getChessBoardWithPieces([
+      {color: 2, type: 'k', area: 'e1'},
+      {color: 2, type: 'r', area: 'a1'},
+    ]);
+    board.gameRules = {
+      isLegalMove: (_1, fromSq, toSq) => {
+        return fromSq === 'e1' && toSq === 'c1';
+      },
+    };
+    const result = getMoveCoords(board, {
+      piece: 'k',
+      from: 'e2',
+      to: 'g1',
+      moveType: 'long-castling',
+    });
+    assert.deepEqual(result, ['e1', 'c1']);
   });
 });

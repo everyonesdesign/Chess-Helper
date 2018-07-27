@@ -1,5 +1,6 @@
 const get = require('lodash/get');
 const filter = require('lodash/filter');
+const find = require('lodash/find');
 const {
   sendDataToAnalytics,
 } = require('./analytics');
@@ -102,25 +103,56 @@ function makeMove(fromField, toField) {
  * @return {Array?}           - array [from, to]
  */
 function getMoveCoords(board, move) {
-  // @TODO: castling
-
   if (!board || !move) {
     return;
   }
 
-  const pieces = get(board, 'gameSetup.pieces', []);
+  if (['short-castling', 'long-castling'].includes(move.moveType)) {
+    return getCastlingCoords(board, move);
+  } else if (['move', 'capture'].includes(move.moveType)) {
+    const pieces = get(board, 'gameSetup.pieces', []);
 
-  const matchingPieces = filter(pieces, (p) => {
+    const matchingPieces = filter(pieces, (p) => {
+      return (
+        new RegExp(`^${move.piece}$`).test(p.type) &&
+        new RegExp(`^${move.from}$`).test(p.area) &&
+        board.gameRules.isLegalMove(board.gameSetup, p.area, move.to)
+      );
+    });
+
+    if (matchingPieces.length === 1) {
+      const piece = matchingPieces[0];
+      return [piece.area, move.to];
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Get coordinates for castling moves (0-0 and 0-0-0)
+ * @param  {ChessBoard} board
+ * @param  {Object} move
+ * @return {Array?} - in the same format as getMoveCoords
+ */
+function getCastlingCoords(board, move) {
+  let moves;
+  if (move.moveType === 'short-castling') {
+    moves = [['e1', 'g1'], ['e8', 'g8']];
+  } else if (move.moveType === 'long-castling') {
+    moves = [['e1', 'c1'], ['e8', 'c8']];
+  }
+
+  const pieces = get(board, 'gameSetup.pieces', []);
+  const legalMoves = moves.filter(([fromSq, toSq]) => {
     return (
-      new RegExp(`^${move.piece}$`).test(p.type) &&
-      new RegExp(`^${move.from}$`).test(p.area) &&
-      board.gameRules.isLegalMove(board.gameSetup, p.area, move.to)
+      find(pieces, {type: 'k', area: fromSq}) &&
+      board.gameRules.isLegalMove(board.gameSetup, fromSq, toSq)
     );
   });
 
-  if (matchingPieces.length === 1) {
-    const piece = matchingPieces[0];
-    return [piece.area, move.to];
+  if (legalMoves.length === 1) {
+    return legalMoves[0];
   }
 
   return null;
