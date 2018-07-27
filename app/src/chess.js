@@ -110,10 +110,61 @@ function makeMove(fromField, toField) {
   }
 }
 
+/**
+ * Extract all possible information from algebraic notation
+ * @param  {String} move
+ * @return {Boolean}
+ */
+function parseAlgebraic(move) {
+  // ignore from-to notation
+  if (/[a-h][1-8][a-h][1-8]/.test(move)) {
+    return;
+  }
+
+  const trimmedMove = move.replace(/( |-)+/g, '');
+
+  if (/[o0][o0][o0]/i.test(trimmedMove)) {
+    return {
+      piece: 'k',
+      moveType: 'long-castling',
+    };
+  } else if (/[o0][o0]/i.test(trimmedMove)) {
+    return {
+      piece: 'k',
+      moveType: 'short-castling',
+    };
+  }
+
+  const regex = /^([RQKNB])?([a-h])?([1-8])?(x)?([a-h])([1-8])(e\.?p\.?)?[+#]?$/;
+  const result = trimmedMove.match(regex);
+
+  if (!result) {
+    return null;
+  }
+
+  const [
+    _, // eslint-disable-line no-unused-vars
+    piece,
+    fromHor,
+    fromVer,
+    isCapture,
+    toHor,
+    toVer,
+  ] = result;
+
+  return {
+    piece: (piece || 'p').toLowerCase(),
+    moveType: isCapture ? 'capture' : 'move',
+    from: `${fromHor || '.'}${fromVer || '.'}`,
+    to: `${toHor || '.'}${toVer || '.'}`,
+  };
+}
+
 module.exports = {
   validateSquareName,
   parseMoveText,
   getBoard,
   go,
   makeMove,
+  parseAlgebraic,
 };
