@@ -4,6 +4,8 @@ const assert = require('assert');
 const {
   getBoard,
   parseAlgebraic,
+  parseFromTo,
+  getMoveCoords,
 } = require('../src/chess');
 
 describe('getBoard', function() {
@@ -179,5 +181,116 @@ describe('parseAlgebraic', function() {
 
   it('ignores not-existing pieces and squares', function() {
     assert.strictEqual(parseAlgebraic('Xd2'), null);
+  });
+});
+
+describe('parseFromTo', function() {
+  it('parses short algebraic moves', function() {
+    assert.deepEqual(parseFromTo('e2e4'), {
+      piece: '.',
+      from: 'e2',
+      to: 'e4',
+      moveType: 'move',
+    });
+  });
+
+  it('ignores non-existing squares', function() {
+    assert.strictEqual(parseFromTo('x2e4'), null);
+  });
+
+  it('ignores other formats', function() {
+    assert.strictEqual(parseFromTo('♞f3'), null);
+  });
+});
+
+describe('getMoveCoords', function() {
+  const getChessBoardWithPieces = (input) => {
+    const pieces = {};
+
+    input.forEach((p, i) => {
+      pieces[i] = p;
+    });
+
+    return {
+      gameSetup: {pieces},
+    };
+  };
+
+  it('returns from and to if these are explicitly specified', function() {
+    const board = getChessBoardWithPieces([
+      {color: 2, type: 'p', area: 'e2'},
+    ]);
+    const result = getMoveCoords(board, {
+      piece: '.',
+      from: 'e2',
+      to: 'e4',
+      moveType: 'move',
+    });
+
+    assert.deepEqual(result, ['e2', 'e4']);
+  });
+
+  it('handles partial matches', function() {
+    const board = getChessBoardWithPieces([
+      {color: 2, type: 'p', area: 'e2'},
+    ]);
+    const result = getMoveCoords(board, {
+      piece: '.',
+      from: '.2',
+      to: 'e4',
+      moveType: 'move',
+    });
+
+    assert.deepEqual(result, ['e2', 'e4']);
+  });
+
+  it('ignores ambiguous results', function() {
+    const board = getChessBoardWithPieces([
+      {color: 2, type: 'p', area: 'e2'},
+      {color: 2, type: 'p', area: 'c2'},
+    ]);
+
+    const result = getMoveCoords(board, {
+      piece: '.',
+      from: '.2',
+      to: 'e4',
+      moveType: 'move',
+    });
+
+    assert.strictEqual(result, null);
+  });
+
+  it('returns empty if there are no matching pieces', function() {
+    const board1 = getChessBoardWithPieces([
+      // no pieces on 'from' spot
+      {color: 2, type: 'p', area: 'c2'},
+    ]);
+    const result1 = getMoveCoords(board1, {
+      piece: '.',
+      from: 'e2',
+      to: 'e4',
+      moveType: 'move',
+    });
+    assert.strictEqual(result1, null);
+
+    const board2 = getChessBoardWithPieces([
+      // piece of a different type
+      {color: 2, type: 'p', area: 'e2'},
+    ]);
+    const result2 = getMoveCoords(board2, {
+      piece: 'r',
+      from: 'e2',
+      to: 'e4',
+      moveType: 'move',
+    });
+    assert.strictEqual(result2, null);
+  });
+
+  it('doesnt fail if input is falsy', function() {
+    const board = getChessBoardWithPieces([
+      {color: 2, type: 'p', area: 'c2'},
+    ]);
+    const fn = () => getMoveCoords(board, null);
+    assert.doesNotThrow(fn);
   });
 });

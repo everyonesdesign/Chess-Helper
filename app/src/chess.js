@@ -1,4 +1,5 @@
 const get = require('lodash/get');
+const filter = require('lodash/filter');
 const {
   sendDataToAnalytics,
 } = require('./analytics');
@@ -13,23 +14,6 @@ const {
  */
 function validateSquareName(input) {
   return /^[a-h][1-8]$/.test(input);
-}
-
-/**
- * Parse message input by user
- * @param  {String} input - input, in format 'e2e4'
- * @return {Array?} - array of two elemens: from and to; or null if there's no move
- */
-function parseMoveText(input) {
-  const filteredSymbols = input.replace(/( |-)+/g, '');
-  const fromSquare = filteredSymbols.slice(0, 2);
-  const toSquare = filteredSymbols.slice(2, 4);
-
-  if (validateSquareName(fromSquare) && validateSquareName(toSquare)) {
-    return [fromSquare, toSquare];
-  }
-
-  return null;
 }
 
 /**
@@ -68,9 +52,10 @@ function getBoard() {
 function go(input) {
   const board = getBoard();
   if (board) {
-    const move = parseMoveText(input);
-    if (move) {
-      makeMove(move[0], move[1]);
+    const move = parseMove(input);
+    const coords = getMoveCoords(board, move);
+    if (coords) {
+      makeMove(...coords);
     } else {
       sendDataToAnalytics({
         category: 'incorrect',
@@ -111,14 +96,76 @@ function makeMove(fromField, toField) {
 }
 
 /**
+ * Get exact from and to coords from move data
+ * @param  {ChessBoard} board - ChessBoard instance
+ * @param  {Object} move      - object, returned by `parseMove` method
+ * @return {Array?}           - array [from, to]
+ */
+function getMoveCoords(board, move) {
+  // @TODO: castling
+
+  if (!board || !move) {
+    return;
+  }
+
+  const pieces = get(board, 'gameSetup.pieces', []);
+
+  const matchingPieces = filter(pieces, (p) => {
+    return (
+      new RegExp(`^${move.piece}$`).test(p.type) &&
+      new RegExp(`^${move.from}$`).test(p.area) &&
+      board.gameRules.isLegalMove(board.gameSetup, p.area, move.to)
+    );
+  });
+
+  if (matchingPieces.length === 1) {
+    const piece = matchingPieces[0];
+    return [piece.area, move.to];
+  }
+
+  return null;
+}
+
+/**
+ * Parse message input by user
+ * @param  {String} input
+ * @return {Object?} - move data
+ */
+function parseMove(input) {
+  return parseAlgebraic(input) || parseFromTo(input);
+}
+
+/**
+ * Parse simplest move format: 'e2e4'
+ * @param  {String} input
+ * @return {Object?}
+ */
+function parseFromTo(input) {
+  const filteredSymbols = input.replace(/( |-)+/g, '');
+  const fromSquare = filteredSymbols.slice(0, 2);
+  const toSquare = filteredSymbols.slice(2, 4);
+
+  if (validateSquareName(fromSquare) && validateSquareName(toSquare)) {
+    return {
+      piece: '.',
+      from: 'e2',
+      to: 'e4',
+      moveType: 'move',
+    };
+  }
+
+  return null;
+}
+
+/**
  * Extract all possible information from algebraic notation
  * @param  {String} move
- * @return {Boolean}
+ * @return {Object?}
  */
 function parseAlgebraic(move) {
   // ignore from-to notation
-  if (/[a-h][1-8][a-h][1-8]/.test(move)) {
-    return;
+  if (/^\s*[a-h][1-8][a-h][1-8]\s*$/.test(move)) {
+    return null;
   }
 
   const trimmedMove = move.replace(/( |-)+/g, '');
@@ -162,9 +209,11 @@ function parseAlgebraic(move) {
 
 module.exports = {
   validateSquareName,
-  parseMoveText,
+  parseMove,
   getBoard,
   go,
   makeMove,
   parseAlgebraic,
+  parseFromTo,
+  getMoveCoords,
 };

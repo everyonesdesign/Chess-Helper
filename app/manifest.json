@@ -20,12 +20,15 @@
         "https://www.chess.com/*"
       ],
       "js": [
-        "build.js"
+        "inject.js"
       ],
       "run_at": "document_end",
       "css": [
         "styles/main.css"
       ]
     }
+  ],
+  "web_accessible_resources": [
+    "build.js"
   ]
 }
