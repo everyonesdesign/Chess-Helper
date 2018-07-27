@@ -11,7 +11,11 @@ const KEY_CODES = {
  * Prepare the extension code and run
  */
 function init() {
-  const selector = '.main-board .board, #chessboard, #live-app [class*=board-layout-vertical-component_]';
+  const selector = `
+    .main-board .board,
+    #chessboard,
+    #live-app [class*=board-layout-vertical-component_]
+  `;
   const boardElement = document.querySelector(selector);
   if (boardElement) {
     initAnalytics();
@@ -156,8 +160,13 @@ function getBoard() {
   }
 
   // new live mode
-  var lc = window.liveClient;
-  if (lc && lc.controller && lc.controller.activeBoard && lc.controller.activeBoard.chessboard) {
+  const lc = window.liveClient;
+  if (
+    lc &&
+    lc.controller &&
+    lc.controller.activeBoard &&
+    lc.controller.activeBoard.chessboard
+  ) {
     return lc.controller.activeBoard.chessboard;
   }
 
