@@ -33,11 +33,12 @@ function getBoard() {
   if (!cb) {
     // legacy old chessboard
     // probably should be removed
-    if (window.boardsService && window.boardsService.getSelectedBoard) {
-      const activeBoard = window.boardsService.getSelectedBoard();
+    const getSelectedBoard = get(window, 'boardsService.getSelectedBoard');
+    if (getSelectedBoard) {
+      const activeBoard = getSelectedBoard();
 
       if (activeBoard) {
-        return activeBoard.chessboard;
+        cb = activeBoard.chessboard;
       }
     }
   }
