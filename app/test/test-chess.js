@@ -9,6 +9,18 @@ const {
 } = require('../src/chess');
 
 describe('getBoard', function() {
+  it('should return board based on prop of dom element', function() {
+    const cbElement = document.createElement('div');
+    cbElement.className = 'chessboard';
+    cbElement.chessBoard = 'chessboard!';
+    document.body.appendChild(cbElement);
+
+    const board = getBoard();
+    assert.equal(board, 'chessboard!');
+
+    cbElement.parentNode.removeChild(cbElement);
+  });
+
   it('should return board for computer chess', function() {
     window.myEvent = {
       capturingBoard: 'chessboard!',

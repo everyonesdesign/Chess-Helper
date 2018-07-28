@@ -22,12 +22,20 @@ function validateSquareName(input) {
  * @return {ChessBoard?}
  */
 function getBoard() {
-  let cb = (
-    // board for training with computer
-    get(window, 'myEvent.capturingBoard') ||
-  // new live mode
-    get(window, 'liveClient.controller.activeBoard.chessboard')
-  );
+  let cb;
+
+  try {
+    cb = document.querySelector('.chessboard').chessBoard;
+  } catch (e) {}
+
+  if (!cb) {
+    cb = (
+      // board for training with computer
+      get(window, 'myEvent.capturingBoard') ||
+    // new live mode
+      get(window, 'liveClient.controller.activeBoard.chessboard')
+    );
+  }
 
 
   if (!cb) {
