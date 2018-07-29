@@ -9,7 +9,7 @@ A small Google Chrome extension adding keyboard navigation to [chess.com](https:
 It supports moves input in:
 
 - algebraic notation: 'Nf3', '0-0';
-- coorinates notation: 'e2e4' ('e2 e4' and 'e2-e4' can be also used).
+- coordinates notation: 'e2e4' ('e2 e4' and 'e2-e4' can be also used).
 
 Other move formats may be implemented in future.
 
