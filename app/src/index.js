@@ -1,26 +1,19 @@
 const {
   initAnalytics,
   sendLayoutOverlappingStatus,
-  sendDataToAnalytics,
 } = require('./analytics');
 const {
   getMoveCoords,
   parseMove,
   getBoard,
-  go,
 } = require('./chess');
 const {
-  holdingCtrlOrCmd,
+  bindInputKeyDown,
+  bindInputFocus,
+} = require('./keyboard');
+const {
+  isEditable,
 } = require('./utils');
-
-const KEY_CODES = {
-  enter: 13,
-  leftArrow: 37,
-  topArrow: 38,
-  rightArrow: 39,
-  bottomArrow: 40,
-  escape: 27,
-};
 
 /**
  * Prepare the extension code and run
@@ -39,8 +32,7 @@ function init() {
     const input = document.createElement('input');
     input.setAttribute('id', 'ccHelper-input');
     input.className = 'ccHelper-input';
-    input.setAttribute('placeholder', 'Enter move here...');
-    input.addEventListener('keydown', handleKeyDown);
+    bindInputKeyDown(input);
     input.addEventListener('input', () => {
       const board = getBoard();
       const move = parseMove(input.value);
@@ -52,6 +44,10 @@ function init() {
       }
     });
     boardElement.appendChild(input);
+
+    bindPlaceholderUpdates(input);
+    bindInputFocus(input);
+
     input.focus();
 
     // see https://trello.com/c/aT95jsv5
@@ -65,41 +61,28 @@ function init() {
 }
 
 /**
- * Handle keyDown event on the input
- * Responsible for submitting move, backward/forward moves, etc.
- * @param  {Event} e
+ * Handle focusin/focusout events on page
+ * to show relevant placeholder in the input
+ * @param  {Element} input
  */
-function handleKeyDown(e) {
-  const input = e.target;
-
-  if (e.keyCode === KEY_CODES.enter) {
-    go(input.value);
-
-    const board = getBoard();
-    board && board.clearMarkedArrows();
-
-    sendDataToAnalytics({
-      category: 'enter',
-      action: 'press',
-      label: input.value,
-    });
-
-    input.value = '';
-    input.focus();
-  } else if (e.keyCode === KEY_CODES.escape) {
-    input.value = '';
-
-    const board = getBoard();
-    board && board.clearMarkedArrows();
-  } else if (holdingCtrlOrCmd(e)) {
-    if (e.keyCode === KEY_CODES.leftArrow) {
-      const selector = '.move-list-buttons .icon-chevron-left, .control-group .icon-chevron-left';
-      document.querySelector(selector).parentNode.click();
-    } else if (e.keyCode === KEY_CODES.rightArrow) {
-      const selector = '.move-list-buttons .icon-chevron-right, .control-group .icon-chevron-right';
-      document.querySelector(selector).parentNode.click();
+function bindPlaceholderUpdates(input) {
+  /**
+   * Show relevant placeholder
+   * based on document.activeElement
+   */
+  function fn() {
+    const active = document.activeElement;
+    if (active === input) {
+      input.placeholder = 'Enter your move...';
+    } else if (isEditable(active)) {
+      input.placeholder = 'Press Esc + C to focus move field...';
+    } else {
+      input.placeholder = 'Press C to focus move field...';
     }
   }
+
+  document.addEventListener('focusin', fn);
+  document.addEventListener('focusout', fn);
 }
 
 init();

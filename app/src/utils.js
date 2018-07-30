@@ -27,7 +27,17 @@ function postMessage(text) {
   }, 3000);
 }
 
+/**
+ * Text if passed element can take some text input
+ * @param  {Element}  element
+ * @return {Boolean}
+ */
+function isEditable(element) {
+  return element.matches('input, textarea, [contenteditable]');
+}
+
 module.exports = {
   holdingCtrlOrCmd,
   postMessage,
+  isEditable,
 };
