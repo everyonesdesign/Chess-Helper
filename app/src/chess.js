@@ -180,8 +180,8 @@ function parseFromTo(input) {
   if (validateSquareName(fromSquare) && validateSquareName(toSquare)) {
     return {
       piece: '.',
-      from: 'e2',
-      to: 'e4',
+      from: fromSquare,
+      to: toSquare,
       moveType: 'move',
     };
   }
