@@ -5,7 +5,8 @@
     "build": "browserify app/src/index.js -o app/build.js",
     "watch": "watchify app/src/index.js -o app/build.js",
     "test": "mocha app/test",
-    "test-watch": "npm t -- -w"
+    "test-watch": "npm t -- -w",
+    "lint": "eslint app/src"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.2",
