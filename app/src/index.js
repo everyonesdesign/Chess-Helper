@@ -45,10 +45,13 @@ function init() {
     });
     boardElement.appendChild(input);
 
-    bindPlaceholderUpdates(input);
     bindInputFocus(input);
 
-    input.focus();
+    updatePlaceholder(input);
+    setImmediate(() => input.focus());
+
+    document.addEventListener('focusin', () => updatePlaceholder(input));
+    document.addEventListener('focusout', () => updatePlaceholder(input));
 
     // see https://trello.com/c/aT95jsv5
     sendLayoutOverlappingStatus();
@@ -65,24 +68,15 @@ function init() {
  * to show relevant placeholder in the input
  * @param  {Element} input
  */
-function bindPlaceholderUpdates(input) {
-  /**
-   * Show relevant placeholder
-   * based on document.activeElement
-   */
-  function fn() {
-    const active = document.activeElement;
-    if (active === input) {
-      input.placeholder = 'Enter your move...';
-    } else if (isEditable(active)) {
-      input.placeholder = 'Press Esc + C to focus move field...';
-    } else {
-      input.placeholder = 'Press C to focus move field...';
-    }
+function updatePlaceholder(input) {
+  const active = document.activeElement;
+  if (active === input) {
+    input.placeholder = 'Enter your move...';
+  } else if (isEditable(active)) {
+    input.placeholder = 'Press Esc + C to focus move field...';
+  } else {
+    input.placeholder = 'Press C to focus move field...';
   }
-
-  document.addEventListener('focusin', fn);
-  document.addEventListener('focusout', fn);
 }
 
 init();
