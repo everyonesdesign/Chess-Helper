@@ -52,6 +52,7 @@ function init() {
       }
     });
     boardElement.appendChild(input);
+    input.focus();
 
     // see https://trello.com/c/aT95jsv5
     sendLayoutOverlappingStatus();
