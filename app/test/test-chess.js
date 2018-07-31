@@ -5,7 +5,7 @@ const {
   getBoard,
   parseAlgebraic,
   parseFromTo,
-  getMoveCoords,
+  getLegalMoves,
 } = require('../src/chess');
 
 describe('getBoard', function() {
@@ -215,7 +215,7 @@ describe('parseFromTo', function() {
   });
 });
 
-describe('getMoveCoords', function() {
+describe('getLegalMoves', function() {
   const getChessBoardWithPieces = (input) => {
     const pieces = {};
 
@@ -235,28 +235,28 @@ describe('getMoveCoords', function() {
     const board = getChessBoardWithPieces([
       {color: 2, type: 'p', area: 'e2'},
     ]);
-    const result = getMoveCoords(board, {
+    const result = getLegalMoves(board, {
       piece: '.',
       from: 'e2',
       to: 'e4',
       moveType: 'move',
     });
 
-    assert.deepEqual(result, ['e2', 'e4']);
+    assert.deepEqual(result, [['e2', 'e4']]);
   });
 
   it('handles partial matches', function() {
     const board = getChessBoardWithPieces([
       {color: 2, type: 'p', area: 'e2'},
     ]);
-    const result = getMoveCoords(board, {
+    const result = getLegalMoves(board, {
       piece: '.',
       from: '.2',
       to: 'e4',
       moveType: 'move',
     });
 
-    assert.deepEqual(result, ['e2', 'e4']);
+    assert.deepEqual(result, [['e2', 'e4']]);
   });
 
   it('ignores ambiguous results', function() {
@@ -265,14 +265,14 @@ describe('getMoveCoords', function() {
       {color: 2, type: 'p', area: 'c2'},
     ]);
 
-    const result = getMoveCoords(board, {
+    const result = getLegalMoves(board, {
       piece: '.',
       from: '.2',
       to: 'e4',
       moveType: 'move',
     });
 
-    assert.strictEqual(result, null);
+    assert.deepEqual(result, [['e2', 'e4'], ['c2', 'e4']]);
   });
 
   it('returns empty if there are no matching pieces', function() {
@@ -280,33 +280,32 @@ describe('getMoveCoords', function() {
       // no pieces on 'from' spot
       {color: 2, type: 'p', area: 'c2'},
     ]);
-    const result1 = getMoveCoords(board1, {
+    const result1 = getLegalMoves(board1, {
       piece: '.',
       from: 'e2',
       to: 'e4',
       moveType: 'move',
     });
-    assert.strictEqual(result1, null);
+    assert.deepEqual(result1, []);
 
     const board2 = getChessBoardWithPieces([
       // piece of a different type
       {color: 2, type: 'p', area: 'e2'},
     ]);
-    const result2 = getMoveCoords(board2, {
+    const result2 = getLegalMoves(board2, {
       piece: 'r',
       from: 'e2',
       to: 'e4',
       moveType: 'move',
     });
-    assert.strictEqual(result2, null);
+    assert.deepEqual(result2, []);
   });
 
   it('doesnt fail if input is falsy', function() {
     const board = getChessBoardWithPieces([
       {color: 2, type: 'p', area: 'c2'},
     ]);
-    const fn = () => getMoveCoords(board, null);
-    assert.doesNotThrow(fn);
+    assert.doesNotThrow(() => getLegalMoves(board, null));
   });
 
   it('returns correct move for short castling', function() {
@@ -319,13 +318,13 @@ describe('getMoveCoords', function() {
         return fromSq === 'e1' && toSq === 'g1';
       },
     };
-    const result = getMoveCoords(board, {
+    const result = getLegalMoves(board, {
       piece: 'k',
       from: 'e2',
       to: 'g1',
       moveType: 'short-castling',
     });
-    assert.deepEqual(result, ['e1', 'g1']);
+    assert.deepEqual(result, [['e1', 'g1']]);
   });
 
   it('returns correct move for long castling', function() {
@@ -338,12 +337,12 @@ describe('getMoveCoords', function() {
         return fromSq === 'e1' && toSq === 'c1';
       },
     };
-    const result = getMoveCoords(board, {
+    const result = getLegalMoves(board, {
       piece: 'k',
       from: 'e2',
       to: 'g1',
       moveType: 'long-castling',
     });
-    assert.deepEqual(result, ['e1', 'c1']);
+    assert.deepEqual(result, [['e1', 'c1']]);
   });
 });

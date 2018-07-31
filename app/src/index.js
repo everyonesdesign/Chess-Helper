@@ -3,8 +3,8 @@ const {
   sendLayoutOverlappingStatus,
 } = require('./analytics');
 const {
-  getMoveCoords,
-  parseMove,
+  getLegalMoves,
+  parseMoveInput,
   getBoard,
 } = require('./chess');
 const {
@@ -35,12 +35,12 @@ function init() {
     bindInputKeyDown(input);
     input.addEventListener('input', () => {
       const board = getBoard();
-      const move = parseMove(input.value);
-      const coords = getMoveCoords(board, move);
+      const parseResults = parseMoveInput(input.value);
+      const moves = getLegalMoves(board, parseResults);
 
       if (board) {
         board.clearMarkedArrows();
-        coords && board.markArrow(...coords);
+        moves.forEach((m) => board.markArrow(...m));
       }
     });
     boardElement.appendChild(input);
