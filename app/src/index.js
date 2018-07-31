@@ -13,7 +13,11 @@ const {
 } = require('./keyboard');
 const {
   isEditable,
+  RED_SQUARE_COLOR,
 } = require('./utils');
+
+
+const markedAreas = [];
 
 /**
  * Prepare the extension code and run
@@ -40,7 +44,18 @@ function init() {
 
       if (board) {
         board.clearMarkedArrows();
-        moves.forEach((m) => board.markArrow(...m));
+        while (markedAreas.length) {
+          const area = markedAreas.pop();
+          board.unmarkArea(area);
+        }
+        if (moves.length === 1) {
+          board.markArrow(...moves[0]);
+        } else if (moves.length > 1) {
+          moves.forEach((m) => {
+            markedAreas.push(m[0]);
+            board.markArea(m[0], RED_SQUARE_COLOR);
+          });
+        }
       }
     });
     boardElement.appendChild(input);
