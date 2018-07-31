@@ -3,8 +3,8 @@ const {
   sendLayoutOverlappingStatus,
 } = require('./analytics');
 const {
-  getMoveCoords,
-  parseMove,
+  getLegalMoves,
+  parseMoveInput,
   getBoard,
 } = require('./chess');
 const {
@@ -13,7 +13,11 @@ const {
 } = require('./keyboard');
 const {
   isEditable,
+  RED_SQUARE_COLOR,
 } = require('./utils');
+
+
+const markedAreas = [];
 
 /**
  * Prepare the extension code and run
@@ -35,12 +39,23 @@ function init() {
     bindInputKeyDown(input);
     input.addEventListener('input', () => {
       const board = getBoard();
-      const move = parseMove(input.value);
-      const coords = getMoveCoords(board, move);
+      const parseResults = parseMoveInput(input.value);
+      const moves = getLegalMoves(board, parseResults);
 
       if (board) {
         board.clearMarkedArrows();
-        coords && board.markArrow(...coords);
+        while (markedAreas.length) {
+          const area = markedAreas.pop();
+          board.unmarkArea(area);
+        }
+        if (moves.length === 1) {
+          board.markArrow(...moves[0]);
+        } else if (moves.length > 1) {
+          moves.forEach((m) => {
+            markedAreas.push(m[0]);
+            board.markArea(m[0], RED_SQUARE_COLOR);
+          });
+        }
       }
     });
     boardElement.appendChild(input);

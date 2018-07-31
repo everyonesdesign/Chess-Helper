@@ -62,10 +62,18 @@ function getBoard() {
 function go(input) {
   const board = getBoard();
   if (board) {
-    const move = parseMove(input);
-    const coords = getMoveCoords(board, move);
-    if (coords) {
-      makeMove(...coords);
+    const parseResult = parseMoveInput(input);
+    const moves = getLegalMoves(board, parseResult);
+    if (moves.length === 1) {
+      makeMove(...moves[0]);
+    } else if (moves.length > 1) {
+      sendDataToAnalytics({
+        category: 'ambiguous',
+        action: 'input',
+        label: input,
+      });
+
+      postMessage('Ambiguous move: ' + input);
     } else {
       sendDataToAnalytics({
         category: 'incorrect',
@@ -108,16 +116,16 @@ function makeMove(fromField, toField) {
 /**
  * Get exact from and to coords from move data
  * @param  {ChessBoard} board - ChessBoard instance
- * @param  {Object} move      - object, returned by `parseMove` method
- * @return {Array?}           - array [from, to]
+ * @param  {Object} move      - object, returned by `parseMoveInput` method
+ * @return {Array}            - array [[from, to]?]
  */
-function getMoveCoords(board, move) {
+function getLegalMoves(board, move) {
   if (!board || !move) {
-    return;
+    return [];
   }
 
   if (['short-castling', 'long-castling'].includes(move.moveType)) {
-    return getCastlingCoords(board, move);
+    return getLegalCastlingMoves(board, move);
   } else if (['move', 'capture'].includes(move.moveType)) {
     const pieces = get(board, 'gameSetup.pieces', []);
 
@@ -129,22 +137,19 @@ function getMoveCoords(board, move) {
       );
     });
 
-    if (matchingPieces.length === 1) {
-      const piece = matchingPieces[0];
-      return [piece.area, move.to];
-    }
+    return matchingPieces.map((piece) => [piece.area, move.to]);
   }
 
-  return null;
+  return [];
 }
 
 /**
  * Get coordinates for castling moves (0-0 and 0-0-0)
  * @param  {ChessBoard} board
  * @param  {Object} move
- * @return {Array?} - in the same format as getMoveCoords
+ * @return {Array} array [[from, to]?]
  */
-function getCastlingCoords(board, move) {
+function getLegalCastlingMoves(board, move) {
   let moves;
   if (move.moveType === 'short-castling') {
     moves = [['e1', 'g1'], ['e8', 'g8']];
@@ -161,10 +166,10 @@ function getCastlingCoords(board, move) {
   });
 
   if (legalMoves.length === 1) {
-    return legalMoves[0];
+    return [legalMoves[0]];
   }
 
-  return null;
+  return [];
 }
 
 /**
@@ -172,7 +177,7 @@ function getCastlingCoords(board, move) {
  * @param  {String} input
  * @return {Object?} - move data
  */
-function parseMove(input) {
+function parseMoveInput(input) {
   return parseAlgebraic(input) || parseFromTo(input);
 }
 
@@ -250,11 +255,11 @@ function parseAlgebraic(move) {
 
 module.exports = {
   validateSquareName,
-  parseMove,
+  parseMoveInput,
   getBoard,
   go,
   makeMove,
   parseAlgebraic,
   parseFromTo,
-  getMoveCoords,
+  getLegalMoves,
 };

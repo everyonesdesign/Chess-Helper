@@ -1,3 +1,6 @@
+// value is stored inside of chessboard.rightClickMarkColors
+const RED_SQUARE_COLOR = '#f42a32';
+
 /**
  * Is user holding Ctrl (on PC) or Cmd (on Mac)
  * @param {Event} e
@@ -40,4 +43,5 @@ module.exports = {
   holdingCtrlOrCmd,
   postMessage,
   isEditable,
+  RED_SQUARE_COLOR,
 };
