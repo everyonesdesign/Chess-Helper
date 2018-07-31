@@ -1,6 +1,6 @@
 {
   "name": "Chess Helper",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "manifest_version": 2,
   "description": "Little tool, helping to use chess.com website",
   "icons": {
