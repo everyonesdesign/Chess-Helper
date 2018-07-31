@@ -10,6 +10,7 @@ function initAnalytics() {
   /* eslint-enable */
 
   window.cchGa('create', 'UA-110216390-1', 'auto', 'chessHelper');
+  window.cchGa('chessHelper.set', 'dimension1', window.chessHelper__environment.version);
   sendDataToAnalytics({
     category: 'init',
     action: 'init',
