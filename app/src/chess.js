@@ -66,6 +66,14 @@ function go(input) {
     const moves = getLegalMoves(board, parseResult);
     if (moves.length === 1) {
       makeMove(...moves[0]);
+    } else if (moves.length > 1) {
+      sendDataToAnalytics({
+        category: 'ambiguous',
+        action: 'input',
+        label: input,
+      });
+
+      postMessage('Ambiguous move: ' + input);
     } else {
       sendDataToAnalytics({
         category: 'incorrect',
