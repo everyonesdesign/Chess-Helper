@@ -53,7 +53,10 @@ function init() {
         } else if (moves.length > 1) {
           moves.forEach((m) => {
             markedAreas.push(m[0]);
-            board.markArea(m[0], RED_SQUARE_COLOR);
+
+            // second parameter is called 'rightClicked'
+            // it cleans the areas on moves made with mouse
+            board.markArea(m[0], RED_SQUARE_COLOR, true);
           });
         }
       }
