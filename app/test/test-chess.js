@@ -2,11 +2,51 @@ require('jsdom-global')();
 const assert = require('assert');
 
 const {
+  go,
   getBoard,
   parseAlgebraic,
   parseFromTo,
   getLegalMoves,
 } = require('../src/chess');
+
+describe('go', function() {
+  const initChessBoard = (isLegal) => {
+    const pieces = {
+      1: {color: 2, type: 'p', area: 'e2'},
+    };
+
+    window.myEvent = {
+      capturingBoard: {
+        gameSetup: {pieces},
+        gameRules: {
+          isLegalMove: () => isLegal,
+        },
+        fireEvent: () => {},
+      },
+    };
+  };
+
+  beforeEach(function() {
+    this.msg = document.createElement('div');
+    this.msg.id = 'ccHelper-messages';
+    document.body.appendChild(this.msg);
+  });
+
+  afterEach(function() {
+    delete window.myEvent;
+    this.msg.parentNode.removeChild(this.msg);
+  });
+
+  it('returns true on valid move', function() {
+    initChessBoard(true);
+    assert.deepEqual(go('e2e4'), true);
+  });
+
+  it('returns false on invalid move', function() {
+    initChessBoard(false);
+    assert.deepEqual(go('e2e4'), false);
+  });
+});
 
 describe('getBoard', function() {
   it('should return board based on prop of dom element', function() {

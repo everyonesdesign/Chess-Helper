@@ -55,7 +55,7 @@ function bindInputFocus(input) {
 function bindInputKeyDown(input) {
   input.addEventListener('keydown', (e) => {
     if (e.keyCode === KEY_CODES.enter) {
-      go(input.value);
+      const successfulMove = go(input.value);
 
       const board = getBoard();
       board && board.clearMarkedArrows();
@@ -66,7 +66,10 @@ function bindInputKeyDown(input) {
         label: input.value,
       });
 
-      input.value = '';
+      if (successfulMove) {
+        input.value = '';
+      }
+
       input.focus();
     } else if (e.keyCode === KEY_CODES.escape) {
       input.value = '';

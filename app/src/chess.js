@@ -58,6 +58,7 @@ function getBoard() {
  * Handle user input and act in appropriate way
  * The function uses active board on the screen if there's any
  * @param  {String} input - input, in format 'e2e4'
+ * @return {Boolean} if the move was successfully consumed
  */
 function go(input) {
   const board = getBoard();
@@ -66,6 +67,7 @@ function go(input) {
     const moves = getLegalMoves(board, parseResult);
     if (moves.length === 1) {
       makeMove(...moves[0]);
+      return true;
     } else if (moves.length > 1) {
       sendDataToAnalytics({
         category: 'ambiguous',
@@ -84,6 +86,8 @@ function go(input) {
       postMessage('Incorrect move: ' + input);
     }
   }
+
+  return false;
 }
 
 /**
