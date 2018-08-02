@@ -18,6 +18,7 @@ input.ccHelper-input:focus {
 
 .ccHelper-messages {
     position: fixed;
+    z-index: 99;
     width: 200px;
     top: 20px;
     right: 20px;
