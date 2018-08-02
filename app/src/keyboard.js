@@ -55,6 +55,10 @@ function bindInputFocus(input) {
 function bindInputKeyDown(input) {
   input.addEventListener('keydown', (e) => {
     if (e.keyCode === KEY_CODES.enter) {
+      if (!input.value) {
+        return;
+      }
+
       const successfulMove = go(input.value);
 
       const board = getBoard();
