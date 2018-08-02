@@ -10,6 +10,7 @@ input.ccHelper-input {
     font-size: 16px;
     border: 3px solid transparent;
     box-sizing: border-box;
+    background: white;
 }
 
 input.ccHelper-input:focus {
@@ -19,14 +20,17 @@ input.ccHelper-input:focus {
 .ccHelper-messages {
     position: fixed;
     z-index: 99;
-    width: 200px;
+    width: 300px;
     top: 20px;
     right: 20px;
 }
 
 .ccHelper-messagesItem {
     margin-bottom: 10px;
-    padding: 10px;
-    background: #eee;
-    border-radius: 4px;
+    padding: 12px;
+    background: white;
+    border-radius: 3px;
+    border: 3px solid #ddd;
+    font-size: 15px;
+    overflow: hidden;
 }
