@@ -3,9 +3,8 @@ const {
   sendLayoutOverlappingStatus,
 } = require('./analytics');
 const {
-  getLegalMoves,
-  parseMoveInput,
   getBoard,
+  drawMovesOnBoard,
 } = require('./chess');
 const {
   bindInputKeyDown,
@@ -13,11 +12,9 @@ const {
 } = require('./keyboard');
 const {
   isEditable,
-  RED_SQUARE_COLOR,
+  buildMessagesMarkup,
 } = require('./utils');
 
-
-const markedAreas = [];
 
 /**
  * Prepare the extension code and run
@@ -37,47 +34,31 @@ function init() {
     input.setAttribute('id', 'ccHelper-input');
     input.className = 'ccHelper-input';
     bindInputKeyDown(input);
-    input.addEventListener('input', () => {
-      const board = getBoard();
-      const parseResults = parseMoveInput(input.value);
-      const moves = getLegalMoves(board, parseResults);
-
-      if (board) {
-        board.clearMarkedArrows();
-        while (markedAreas.length) {
-          const area = markedAreas.pop();
-          board.unmarkArea(area);
-        }
-        if (moves.length === 1) {
-          board.markArrow(...moves[0]);
-        } else if (moves.length > 1) {
-          moves.forEach((m) => {
-            markedAreas.push(m[0]);
-
-            // second parameter is called 'rightClicked'
-            // it cleans the areas on moves made with mouse
-            board.markArea(m[0], RED_SQUARE_COLOR, true);
-          });
-        }
-      }
-    });
-    boardElement.appendChild(input);
-
     bindInputFocus(input);
-
-    updatePlaceholder(input);
+    boardElement.appendChild(input);
     setImmediate(() => input.focus());
 
+    let redrawInterval = null;
+    input.addEventListener('input', () => {
+      try {
+        clearInterval(redrawInterval);
+        const board = getBoard();
+        const draw = () => drawMovesOnBoard(board, input);
+        draw();
+        setInterval(draw, 500);
+      } catch (e) {
+        console.error(e);
+      }
+    });
+
+    updatePlaceholder(input);
     document.addEventListener('focusin', () => updatePlaceholder(input));
     document.addEventListener('focusout', () => updatePlaceholder(input));
 
     // see https://trello.com/c/aT95jsv5
     sendLayoutOverlappingStatus();
 
-    const messages = document.createElement('div');
-    messages.setAttribute('id', 'ccHelper-messages');
-    messages.className = 'ccHelper-messages';
-    document.body.appendChild(messages);
+    buildMessagesMarkup();
   }
 }
 

@@ -6,6 +6,7 @@ const {
 } = require('./analytics');
 const {
   postMessage,
+  RED_SQUARE_COLOR,
 } = require('./utils');
 
 /**
@@ -15,6 +16,30 @@ const {
  */
 function validateSquareName(input) {
   return /^[a-h][1-8]$/.test(input);
+}
+
+/**
+ * Draw all needed arrows and marks on the board
+ * @param {ChessBoard} board
+ * @param {Element} input
+ */
+function drawMovesOnBoard(board, input) {
+  const parseResults = parseMoveInput(input.value);
+  const moves = getLegalMoves(board, parseResults);
+
+  if (board) {
+    board.clearMarkedArrows();
+    if (moves.length === 1) {
+      board.markArrow(...moves[0]);
+    } else if (moves.length > 1) {
+      moves.forEach((m) => {
+
+        // second parameter is called 'rightClicked'
+        // it cleans the areas on moves made with mouse
+        board.markArea(m[0], RED_SQUARE_COLOR, true);
+      });
+    }
+  }
 }
 
 /**
@@ -258,6 +283,7 @@ function parseAlgebraic(move) {
 }
 
 module.exports = {
+  drawMovesOnBoard,
   validateSquareName,
   parseMoveInput,
   getBoard,

@@ -39,9 +39,20 @@ function isEditable(element) {
   return element.matches('input, textarea, [contenteditable]');
 }
 
+/**
+ * Build basic markup for notification showing
+ */
+function buildMessagesMarkup() {
+  const messages = document.createElement('div');
+  messages.setAttribute('id', 'ccHelper-messages');
+  messages.className = 'ccHelper-messages';
+  document.body.appendChild(messages);
+}
+
 module.exports = {
   holdingCtrlOrCmd,
   postMessage,
   isEditable,
+  buildMessagesMarkup,
   RED_SQUARE_COLOR,
 };
