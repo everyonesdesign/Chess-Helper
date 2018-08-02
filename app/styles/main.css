@@ -11,10 +11,16 @@ input.ccHelper-input {
     border: 3px solid transparent;
     box-sizing: border-box;
     background: white;
+    color: #111;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 input.ccHelper-input:focus {
     border-color: #f7ac03;
+}
+
+::placeholder {
+    color: #666;
 }
 
 .ccHelper-messages {
