@@ -80,6 +80,27 @@ function getBoard() {
 }
 
 /**
+ * Check if the player allowed to move pieces
+ * Created to fix the bug allowing to move opponent's pieces
+ * @param {Chessboard} board - board
+ * @return {Boolean} - is move allowed
+ */
+function isPlayersMove(board) {
+  const rootElement = board.rootElement;
+  if (rootElement && rootElement.closest('.cursor-spin')) {
+    return false;
+  }
+
+  const sideToMove = get(board, 'gameSetup.flags.sm');
+  const playerSide = board._player;
+  if (sideToMove && playerSide && sideToMove !== playerSide) {
+    return false;
+  }
+
+  return true;
+}
+
+/**
  * Handle user input and act in appropriate way
  * The function uses active board on the screen if there's any
  * @param  {String} input - input, in format 'e2e4'
@@ -162,7 +183,8 @@ function getLegalMoves(board, move) {
       return (
         new RegExp(`^${move.piece}$`).test(p.type) &&
         new RegExp(`^${move.from}$`).test(p.area) &&
-        board.gameRules.isLegalMove(board.gameSetup, p.area, move.to)
+        board.gameRules.isLegalMove(board.gameSetup, p.area, move.to) &&
+        isPlayersMove(board)
       );
     });
 
@@ -292,4 +314,5 @@ module.exports = {
   parseAlgebraic,
   parseFromTo,
   getLegalMoves,
+  isPlayersMove,
 };
