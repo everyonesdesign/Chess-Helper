@@ -4,6 +4,8 @@
 |
 [Chrome Web Store](https://chrome.google.com/webstore/detail/bghaancnengidpcefpkbbppinjmfnlhh/publish-accepted?hl=en-US)
 
+[![Build Status](https://travis-ci.com/everyonesdesign/Chess-Helper.svg?branch=master)](https://travis-ci.com/everyonesdesign/Chess-Helper)
+
 A small Google Chrome extension adding keyboard navigation to [chess.com](https://www.chess.com/) website.
 
 It supports moves input in:
