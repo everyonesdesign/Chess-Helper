@@ -306,7 +306,7 @@ function parseAlgebraic(move) {
     return null;
   }
 
-  const trimmedMove = move.replace(/( |-)+/g, '');
+  const trimmedMove = move.replace(/[\s\-\(\)]+/g, '');
 
   if (/[o0][o0][o0]/i.test(trimmedMove)) {
     return {
