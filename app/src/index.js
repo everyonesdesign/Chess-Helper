@@ -21,6 +21,7 @@ const {
  */
 function init() {
   const selector = `
+    .analysis-diagram .chess_viewer,
     .main-board .board,
     #chessboard,
     #live-app [class*=board-layout-vertical-component_],
