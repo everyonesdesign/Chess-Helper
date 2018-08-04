@@ -163,6 +163,34 @@ function makeMove(fromField, toField) {
 }
 
 /**
+ * Make a promotion
+ * Needs promotion window to be open
+ * @param  {String} pieceType - what we want the piece to be? q|r|n|b
+ */
+function makePromotion(pieceType) {
+  const style = document.createElement('style');
+  style.id='chessHelper__hidePromotionArea';
+  style.innerHTML = '#divBoard_promotionarea {opacity: .0000001}';
+  document.body.appendChild(style);
+
+  /**
+   * Click element asynchronously
+   * because otherwise the promotion area won't be in time to be shown
+   */
+  setTimeout(function() {
+    const target = document.querySelector(`#divBoard_promotion${pieceType}`);
+    if (target) {
+      const promotionArea = target.closest('#divBoard_promotionarea');
+      if (promotionArea && promotionArea.style.display !== 'none') {
+        target && target.click();
+      }
+    }
+
+    style.parentNode.removeChild(style);
+  }, 50);
+}
+
+/**
  * Get exact from and to coords from move data
  * @param  {ChessBoard} board - ChessBoard instance
  * @param  {Object} move      - object, returned by `parseMoveInput` method
@@ -314,4 +342,5 @@ module.exports = {
   parseFromTo,
   getLegalMoves,
   isPlayersMove,
+  makePromotion,
 };
