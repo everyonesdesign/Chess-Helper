@@ -1,5 +1,6 @@
 require('jsdom-global')();
 const assert = require('assert');
+const domify = require('domify');
 
 const {
   go,
@@ -8,6 +9,7 @@ const {
   parseFromTo,
   getLegalMoves,
   isPlayersMove,
+  makePromotion,
 } = require('../src/chess');
 
 describe('go', function() {
@@ -235,6 +237,25 @@ describe('parseAlgebraic', function() {
   it('ignores not-existing pieces and squares', function() {
     assert.strictEqual(parseAlgebraic('Xd2'), null);
   });
+
+  it('parses pawn promotion', function() {
+    assert.deepEqual(parseAlgebraic('d8=Q'), {
+      piece: 'p',
+      from: '..',
+      to: 'd8',
+      moveType: 'move',
+      promotionPiece: 'q',
+    });
+  });
+
+  it('ignores promotion for pieces', function() {
+    assert.deepEqual(parseAlgebraic('Nd8=Q'), {
+      piece: 'n',
+      from: '..',
+      to: 'd8',
+      moveType: 'move',
+    });
+  });
 });
 
 describe('parseFromTo', function() {
@@ -386,6 +407,20 @@ describe('getLegalMoves', function() {
     });
     assert.deepEqual(result, [['e1', 'c1']]);
   });
+
+  it('returns promotion piece as last param', function() {
+    const board = getChessBoardWithPieces([
+      {color: 2, type: 'p', area: 'd7'},
+    ]);
+    const result = getLegalMoves(board, {
+      piece: 'p',
+      from: '..',
+      to: 'd8',
+      moveType: 'move',
+      promotionPiece: 'q',
+    });
+    assert.deepEqual(result, [['d7', 'd8', 'q']]);
+  });
 });
 
 describe('isPlayersMove', function() {
@@ -457,5 +492,89 @@ describe('isPlayersMove', function() {
       this.cb.gameSetup.flags.sm = 1;
       assert.equal(isPlayersMove(this.cb), false);
     });
+  });
+});
+
+describe('makePromotion', function() {
+  beforeEach(function() {
+    this.promotionArea = domify(`
+      <div id="divBoard_promotionarea">
+        <img piece="q" id="divBoard_promotionq">
+        <img piece="r" id="divBoard_promotionr">
+        <img piece="n" id="divBoard_promotionn">
+        <img piece="b" id="divBoard_promotionb">
+      </div>
+    `);
+
+    document.body.appendChild(this.promotionArea);
+  });
+
+  afterEach(function() {
+    this.promotionArea.parentNode.removeChild(this.promotionArea);
+  });
+
+  it('hides promotion window', function() {
+    assert.equal(false, !!document.querySelector('#chessHelper__hidePromotionArea'));
+    makePromotion('q');
+    assert.equal(true, !!document.querySelector('#chessHelper__hidePromotionArea'));
+  });
+
+  it('shows promotion window in 100ms', function(done) {
+    makePromotion('q');
+    setTimeout(function() {
+      assert.equal(false, !!document.querySelector('#chessHelper__hidePromotionArea'));
+      done();
+    }, 100);
+  });
+
+  it('clicks element with required piece type (async)', function(done) {
+    const n = this.promotionArea.querySelector('#divBoard_promotionn');
+    const r = this.promotionArea.querySelector('#divBoard_promotionr');
+    const q = this.promotionArea.querySelector('#divBoard_promotionq');
+    const b = this.promotionArea.querySelector('#divBoard_promotionb');
+
+    const clicks = {n: 0, r: 0, b: 0, q: 0};
+
+    n.click = () => clicks.n++;
+    r.click = () => clicks.r++;
+    q.click = () => clicks.q++;
+    b.click = () => clicks.b++;
+
+    makePromotion('n');
+    setTimeout(function() {
+      assert.deepEqual(clicks, {n: 1, r: 0, b: 0, q: 0});
+      makePromotion('q');
+    }, 100);
+
+    setTimeout(function() {
+      assert.deepEqual(clicks, {n: 1, r: 0, b: 0, q: 1});
+      makePromotion('b');
+    }, 200);
+
+    setTimeout(function() {
+      assert.deepEqual(clicks, {n: 1, r: 0, b: 1, q: 1});
+      makePromotion('r');
+    }, 300);
+
+    setTimeout(function() {
+      assert.deepEqual(clicks, {n: 1, r: 1, b: 1, q: 1});
+      done();
+    }, 400);
+  });
+
+  it('doesnt click elements if area is not visible', function(done) {
+    let clicked = false;
+
+    this.promotionArea.style.display = 'none';
+
+    const q = this.promotionArea.querySelector('#divBoard_promotionq');
+    q.click = () => clicked = true;
+
+    makePromotion('q');
+
+    setTimeout(() => {
+      assert.equal(clicked, false);
+      done();
+    }, 150);
   });
 });
