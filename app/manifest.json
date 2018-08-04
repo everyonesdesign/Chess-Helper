@@ -1,8 +1,8 @@
 {
-  "name": "Chess Helper",
+  "name": "Chess.com Keyboard",
   "version": "1.2.0",
   "manifest_version": 2,
-  "description": "Little tool, helping to use chess.com website",
+  "description": "Make moves on Chess.com using your keyboard!",
   "icons": {
     "16": "images/icon-16.png",
     "128": "images/icon-128.png"
