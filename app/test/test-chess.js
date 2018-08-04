@@ -237,6 +237,25 @@ describe('parseAlgebraic', function() {
   it('ignores not-existing pieces and squares', function() {
     assert.strictEqual(parseAlgebraic('Xd2'), null);
   });
+
+  it('parses pawn promotion', function() {
+    assert.deepEqual(parseAlgebraic('d8=Q'), {
+      piece: 'p',
+      from: '..',
+      to: 'd8',
+      moveType: 'move',
+      promotionPiece: 'q',
+    });
+  });
+
+  it('ignores promotion for pieces', function() {
+    assert.deepEqual(parseAlgebraic('Nd8=Q'), {
+      piece: 'n',
+      from: '..',
+      to: 'd8',
+      moveType: 'move',
+    });
+  });
 });
 
 describe('parseFromTo', function() {
@@ -387,6 +406,20 @@ describe('getLegalMoves', function() {
       moveType: 'long-castling',
     });
     assert.deepEqual(result, [['e1', 'c1']]);
+  });
+
+  it('returns promotion piece as last param', function() {
+    const board = getChessBoardWithPieces([
+      {color: 2, type: 'p', area: 'd7'},
+    ]);
+    const result = getLegalMoves(board, {
+      piece: 'p',
+      from: '..',
+      to: 'd8',
+      moveType: 'move',
+      promotionPiece: 'q',
+    });
+    assert.deepEqual(result, [['d7', 'd8', 'q']]);
   });
 });
 

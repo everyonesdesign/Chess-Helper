@@ -111,7 +111,13 @@ function go(input) {
     const parseResult = parseMoveInput(input);
     const moves = getLegalMoves(board, parseResult);
     if (moves.length === 1) {
-      makeMove(...moves[0]);
+      const move = moves[0];
+      makeMove(...move);
+
+      if (move[2]) {
+        makePromotion(move[2]);
+      }
+
       return true;
     } else if (moves.length > 1) {
       sendDataToAnalytics({
@@ -215,7 +221,15 @@ function getLegalMoves(board, move) {
       );
     });
 
-    return matchingPieces.map((piece) => [piece.area, move.to]);
+    return matchingPieces.map((piece) => {
+      const coords = [piece.area, move.to];
+
+      if (move.promotionPiece) {
+        coords.push(move.promotionPiece);
+      }
+
+      return coords;
+    });
   }
 
   return [];
@@ -306,7 +320,7 @@ function parseAlgebraic(move) {
     };
   }
 
-  const regex = /^([RQKNB])?([a-h])?([1-8])?(x)?([a-h])([1-8])(e\.?p\.?)?[+#]?$/;
+  const regex = /^([RQKNB])?([a-h])?([1-8])?(x)?([a-h])([1-8])(e\.?p\.?)?(=[QRNBqrnb])?[+#]?$/;
   const result = trimmedMove.match(regex);
 
   if (!result) {
@@ -315,20 +329,29 @@ function parseAlgebraic(move) {
 
   const [
     _, // eslint-disable-line no-unused-vars
-    piece,
+    pieceName,
     fromHor,
     fromVer,
     isCapture,
     toHor,
     toVer,
+    ep, // eslint-disable-line no-unused-vars
+    promotion,
   ] = result;
 
-  return {
-    piece: (piece || 'p').toLowerCase(),
+  const piece = (pieceName || 'p').toLowerCase();
+  const data = {
+    piece,
     moveType: isCapture ? 'capture' : 'move',
     from: `${fromHor || '.'}${fromVer || '.'}`,
     to: `${toHor || '.'}${toVer || '.'}`,
   };
+
+  if (promotion && piece === 'p') {
+    data.promotionPiece = promotion[1].toLowerCase();
+  }
+
+  return data;
 }
 
 module.exports = {
