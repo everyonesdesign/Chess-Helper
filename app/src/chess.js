@@ -33,7 +33,6 @@ function drawMovesOnBoard(board, input) {
       board.markArrow(...moves[0]);
     } else if (moves.length > 1) {
       moves.forEach((m) => {
-
         // second parameter is called 'rightClicked'
         // it cleans the areas on moves made with mouse
         board.markArea(m[0], RED_SQUARE_COLOR, true);
