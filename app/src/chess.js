@@ -9,7 +9,7 @@ const {
   RED_SQUARE_COLOR,
 } = require('./utils');
 const {
-  markedAreasStorage,
+  drawCache,
 } = require('./globals');
 
 /**
@@ -30,23 +30,45 @@ function drawMovesOnBoard(board, input) {
   const parseResults = parseMoveInput(input.value);
   const moves = getLegalMoves(board, parseResults);
 
-  const markedAreas = markedAreasStorage.get(board) || [];
-
   if (board) {
-    board.clearMarkedArrows();
-    markedAreas.forEach((area) => board.unmarkArea(area, true));
+    clearBoardDrawings(board);
 
     if (moves.length === 1) {
-      board.markArrow(...moves[0]);
+      const move = moves[0];
+      board.markArrow(...move);
+      drawCache.set(board, {
+        arrows: [[move[0], move[1]]],
+        areas: [],
+      });
     } else if (moves.length > 1) {
-      markedAreasStorage.set(board, moves.map((m) => {
-        // second parameter is called 'rightClicked'
-        // it cleans the areas on moves made with mouse
-        board.markArea(m[0], RED_SQUARE_COLOR, true);
-        return m[0];
-      }));
+      drawCache.set(board, {
+        arrows: [],
+        areas: moves.map((m) => {
+          // second parameter is called 'rightClicked'
+          // it cleans the areas on moves made with mouse
+          board.markArea(m[0], RED_SQUARE_COLOR, true);
+          return m[0];
+        }),
+      });
     }
   }
+}
+
+/**
+ * Clear all arrows and markings
+ * @param {ChessBoard} board
+ */
+function clearBoardDrawings(board) {
+  const cache = drawCache.get(board) || {
+    areas: [],
+    arrows: [],
+  };
+  cache.arrows.forEach((a) => board.unmarkArrow(a[0], a[1], true));
+  cache.areas.forEach((area) => board.unmarkArea(area, true));
+  drawCache.set(board, {
+    areas: [],
+    arrows: [],
+  });
 }
 
 /**
