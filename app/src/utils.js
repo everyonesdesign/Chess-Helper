@@ -49,10 +49,21 @@ function buildMessagesMarkup() {
   document.body.appendChild(messages);
 }
 
+/**
+ * Is modifier key pressed during keydown
+ * (ctrl/shift/meta/alt)
+ * @param {KeybaordEvent} e
+ * @return {Boolean}
+ */
+function isModifierPressed(e) {
+  return e.altKey || e.ctrlKey || e.metaKey || e.shiftKey;
+}
+
 module.exports = {
   holdingCtrlOrCmd,
   postMessage,
   isEditable,
   buildMessagesMarkup,
+  isModifierPressed,
   RED_SQUARE_COLOR,
 };

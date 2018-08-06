@@ -8,6 +8,7 @@ const {
 const {
   holdingCtrlOrCmd,
   isEditable,
+  isModifierPressed,
 } = require('./utils');
 
 const KEY_CODES = {
@@ -25,6 +26,12 @@ const KEY_CODES = {
  */
 function bindInputFocus(input) {
   document.addEventListener('keydown', (e) => {
+    if (isModifierPressed(e)) {
+      // prevent native events from being prevented
+      // e.g. Ctrl + C
+      return;
+    }
+
     if (e.keyCode === KEY_CODES.escape && e.target !== input) {
       setTimeout(() => {
         document.activeElement.blur();
