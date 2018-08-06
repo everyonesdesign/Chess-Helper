@@ -26,7 +26,6 @@ const KEY_CODES = {
 function bindInputFocus(input) {
   document.addEventListener('keydown', (e) => {
     if (e.keyCode === KEY_CODES.escape && e.target !== input) {
-      debugger;
       setTimeout(() => {
         document.activeElement.blur();
       });
