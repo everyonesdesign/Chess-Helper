@@ -23,35 +23,39 @@ function validateSquareName(input) {
 
 /**
  * Draw all needed arrows and marks on the board
+ * Note that drawing is async,
+ * otherwise it can be triggered during opponent's move
  * @param {ChessBoard} board
  * @param {String} inputText
  */
 function drawMovesOnBoard(board, inputText) {
-  const parseResults = parseMoveInput(inputText);
-  const moves = getLegalMoves(board, parseResults);
+  setImmediate(() => {
+    const parseResults = parseMoveInput(inputText);
+    const moves = getLegalMoves(board, parseResults);
 
-  if (board) {
-    clearBoardDrawings(board);
+    if (board) {
+      clearBoardDrawings(board);
 
-    if (moves.length === 1) {
-      const move = moves[0];
-      board.markArrow(...move);
-      drawCache.set(board, {
-        arrows: [[move[0], move[1]]],
-        areas: [],
-      });
-    } else if (moves.length > 1) {
-      drawCache.set(board, {
-        arrows: [],
-        areas: moves.map((m) => {
-          // second parameter is called 'rightClicked'
-          // it cleans the areas on moves made with mouse
-          board.markArea(m[0], RED_SQUARE_COLOR, true);
-          return m[0];
-        }),
-      });
+      if (moves.length === 1) {
+        const move = moves[0];
+        board.markArrow(...move);
+        drawCache.set(board, {
+          arrows: [[move[0], move[1]]],
+          areas: [],
+        });
+      } else if (moves.length > 1) {
+        drawCache.set(board, {
+          arrows: [],
+          areas: moves.map((m) => {
+            // second parameter is called 'rightClicked'
+            // it cleans the areas on moves made with mouse
+            board.markArea(m[0], RED_SQUARE_COLOR, true);
+            return m[0];
+          }),
+        });
+      }
     }
-  }
+  });
 }
 
 /**

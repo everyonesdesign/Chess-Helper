@@ -45,7 +45,7 @@ function init() {
     input.addEventListener('input', () => {
       try {
         const board = getBoard();
-        const draw = () => setImmediate(() => drawMovesOnBoard(board, input.value));
+        const draw = () => drawMovesOnBoard(board, input.value);
         draw();
 
         if (!boardsCallbacks.get(board)) {
