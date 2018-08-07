@@ -24,10 +24,10 @@ function validateSquareName(input) {
 /**
  * Draw all needed arrows and marks on the board
  * @param {ChessBoard} board
- * @param {Element} input
+ * @param {String} inputText
  */
-function drawMovesOnBoard(board, input) {
-  const parseResults = parseMoveInput(input.value);
+function drawMovesOnBoard(board, inputText) {
+  const parseResults = parseMoveInput(inputText);
   const moves = getLegalMoves(board, parseResults);
 
   if (board) {

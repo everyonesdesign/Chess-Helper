@@ -14,6 +14,9 @@ const {
   isEditable,
   buildMessagesMarkup,
 } = require('./utils');
+const {
+  boardsCallbacks,
+} = require('./globals');
 
 
 /**
@@ -39,14 +42,22 @@ function init() {
     boardElement.appendChild(input);
     setImmediate(() => input.focus());
 
-    let redrawInterval = null;
     input.addEventListener('input', () => {
       try {
-        clearInterval(redrawInterval);
         const board = getBoard();
-        const draw = () => drawMovesOnBoard(board, input);
+        const draw = () => setImmediate(() => drawMovesOnBoard(board, input.value));
         draw();
-        setInterval(draw, 500);
+
+        if (!boardsCallbacks.get(board)) {
+          // bind redraws on certain events
+          // (if it's not bound yet)
+          const events = [
+            board.attachEvent('onDropPiece', draw),
+            board.attachEvent('onAfterMoveAnimated', draw),
+            board.attachEvent('onRefresh', draw),
+          ];
+          boardsCallbacks.set(board, events);
+        }
       } catch (e) {
         console.error(e);
       }

@@ -3,4 +3,9 @@ module.exports = {
   // if we don't remember it later on
   // it will be really tricky to clear it
   drawCache: new WeakMap,
+
+  // store callbacks bound per board
+  // now we only store callbacks connected with
+  // redrawing
+  boardsCallbacks: new WeakMap,
 };
