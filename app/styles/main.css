@@ -1,5 +1,6 @@
 .ccHelper-wrapper {
     position: relative;
+    margin-top: 10px;
 }
 
 /*
@@ -9,8 +10,8 @@
 input[type="text"].ccHelper-input {
     display: block;
     width: 100%;
-    margin-top: 10px;
     padding: 0 12px;
+    margin: 0;
     height: 46px;
     line-height: 46px;
     border: none;
