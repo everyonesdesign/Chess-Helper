@@ -1,9 +1,18 @@
-input.ccHelper-input {
+.ccHelper-wrapper {
+    position: relative;
+}
+
+/*
+ * Full selector is provided to deal with
+ * specificity issues
+ */
+input[type="text"].ccHelper-input {
     display: block;
     width: 100%;
     margin-top: 10px;
     padding: 0 12px;
-    line-height: 42px;
+    height: 46px;
+    line-height: 46px;
     border: none;
     border-radius: 3px;
     outline: none;
@@ -15,12 +24,36 @@ input.ccHelper-input {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-input.ccHelper-input:focus {
+input[type="text"].ccHelper-input:focus {
     border-color: #f7ac03;
 }
 
-::placeholder {
+input[type="text"].ccHelper-input::placeholder {
     color: #666;
+}
+
+.ccHelper-label {
+    display: none;
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    top: 0;
+    bottom: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 46px;
+    font-size: 16px;
+    color: #666;
+    pointer-events: none;
+    font-weight: normal;
+}
+
+.ccHelper-input:not(:focus):placeholder-shown::placeholder {
+    color: transparent;
+}
+
+.ccHelper-input:not(:focus):placeholder-shown ~ .ccHelper-label  {
+    display: block;
 }
 
 .ccHelper-messages {

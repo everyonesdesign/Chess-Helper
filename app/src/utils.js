@@ -1,3 +1,5 @@
+const domify = require('domify');
+
 // value is stored inside of chessboard.rightClickMarkColors
 const RED_SQUARE_COLOR = '#f42a32';
 
@@ -59,6 +61,32 @@ function isModifierPressed(e) {
   return e.altKey || e.ctrlKey || e.metaKey || e.shiftKey;
 }
 
+/**
+ * Provide initial elements for the app
+ * @return {Object}
+ */
+function createInitialElements() {
+  const wrapper = domify(`
+    <div class="ccHelper-wrapper">
+      <input
+        type="text"
+        class="ccHelper-input"
+        id="ccHelper-input"
+        placeholder="Enter your move..."
+      >
+      <div class="ccHelper-label" aria-hidden="true"></div>
+    </div>
+  `);
+  const input = wrapper.querySelector('#ccHelper-input');
+  const unfocusedLabel = wrapper.querySelector('.ccHelper-label');
+
+  return {
+    wrapper,
+    input,
+    unfocusedLabel,
+  };
+}
+
 module.exports = {
   holdingCtrlOrCmd,
   postMessage,
@@ -66,4 +94,5 @@ module.exports = {
   buildMessagesMarkup,
   isModifierPressed,
   RED_SQUARE_COLOR,
+  createInitialElements,
 };

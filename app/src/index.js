@@ -13,6 +13,7 @@ const {
 const {
   isEditable,
   buildMessagesMarkup,
+  createInitialElements,
 } = require('./utils');
 const {
   boardsCallbacks,
@@ -34,12 +35,15 @@ function init() {
   if (boardElement) {
     initAnalytics();
 
-    const input = document.createElement('input');
-    input.setAttribute('id', 'ccHelper-input');
-    input.className = 'ccHelper-input';
+    const {
+      wrapper,
+      input,
+      unfocusedLabel,
+    } = createInitialElements();
+
     bindInputKeyDown(input);
     bindInputFocus(input);
-    boardElement.appendChild(input);
+    boardElement.appendChild(wrapper);
     setImmediate(() => input.focus());
 
     input.addEventListener('input', () => {
@@ -63,9 +67,13 @@ function init() {
       }
     });
 
-    updatePlaceholder(input);
-    document.addEventListener('focusin', () => updatePlaceholder(input));
-    document.addEventListener('focusout', () => updatePlaceholder(input));
+    updatePlaceholder(input, unfocusedLabel);
+    ['focusin', 'focusout'].forEach((e) => {
+      document.addEventListener(
+        e,
+        () => updatePlaceholder(input, unfocusedLabel)
+      );
+    });
 
     // see https://trello.com/c/aT95jsv5
     sendLayoutOverlappingStatus();
@@ -77,16 +85,21 @@ function init() {
 /**
  * Handle focusin/focusout events on page
  * to show relevant placeholder in the input
+ *
+ * Unfocused placeholder is synthesised by
+ * an additional element for a11y reasons
+ * (to keep placeholder in the same state always)
+ *
  * @param  {Element} input
+ * @param  {Element} unfocusedLabel
  */
-function updatePlaceholder(input) {
+function updatePlaceholder(input, unfocusedLabel) {
   const active = document.activeElement;
-  if (active === input) {
-    input.placeholder = 'Enter your move...';
-  } else if (isEditable(active)) {
-    input.placeholder = 'Press Esc + C to focus move field...';
+
+  if (isEditable(active)) {
+    unfocusedLabel.textContent = 'Press Esc + C to focus move field...';
   } else {
-    input.placeholder = 'Press C to focus move field...';
+    unfocusedLabel.textContent = 'Press C to focus move field...';
   }
 }
 
