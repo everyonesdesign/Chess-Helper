@@ -450,6 +450,14 @@ describe('isPlayersMove', function() {
     assert.equal(isPlayersMove(this.cb), false);
   });
 
+  it('takes into account chessboard._enabled flag', function() {
+    assert.equal(isPlayersMove(this.cb), true);
+    this.chessboardEl.chessBoard._enabled = true;
+    assert.equal(isPlayersMove(this.cb), true);
+    this.chessboardEl.chessBoard._enabled = false;
+    assert.equal(isPlayersMove(this.cb), false);
+  });
+
   describe('player to move flags', function() {
     /**
      * chessboard.gameSetup.flags.sm - flag showing who is to move

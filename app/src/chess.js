@@ -124,6 +124,10 @@ function isPlayersMove(board) {
     return false;
   }
 
+  if (board._enabled === false) {
+    return false;
+  }
+
   const sideToMove = get(board, 'gameSetup.flags.sm');
   const playerSide = board._player;
   if (sideToMove && playerSide && sideToMove !== playerSide) {
