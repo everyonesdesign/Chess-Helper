@@ -1,4 +1,7 @@
 const domify = require('domify');
+const {
+  ariaHiddenElements,
+} = require('./globals');
 
 // value is stored inside of chessboard.rightClickMarkColors
 const RED_SQUARE_COLOR = '#f42a32';
@@ -87,6 +90,26 @@ function createInitialElements() {
   };
 }
 
+/**
+ * Chessboard markup is a mess
+ * This function hides it from screen readers
+ * @param  {ChessBoard} board
+ */
+function startUpdatingAriaHiddenElements() {
+  const update = () => {
+    const elements = document.querySelectorAll('.chessboard');
+    [...elements].forEach((element) => {
+      if (!ariaHiddenElements.get(element)) {
+        element.setAttribute('aria-hidden', 'true');
+        ariaHiddenElements.set(element, true);
+      }
+    });
+  };
+
+  update();
+  setInterval(update, 1000);
+}
+
 module.exports = {
   holdingCtrlOrCmd,
   postMessage,
@@ -95,4 +118,5 @@ module.exports = {
   isModifierPressed,
   RED_SQUARE_COLOR,
   createInitialElements,
+  startUpdatingAriaHiddenElements,
 };

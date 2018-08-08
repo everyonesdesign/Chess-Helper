@@ -8,4 +8,7 @@ module.exports = {
   // now we only store callbacks connected with
   // redrawing
   boardsCallbacks: new WeakMap,
+
+  // elements hidden from screen readers
+  ariaHiddenElements: new WeakMap,
 };

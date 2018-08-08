@@ -14,6 +14,7 @@ const {
   isEditable,
   buildMessagesMarkup,
   createInitialElements,
+  startUpdatingAriaHiddenElements,
 } = require('./utils');
 const {
   boardsCallbacks,
@@ -46,6 +47,7 @@ function init() {
     boardElement.appendChild(wrapper);
     setImmediate(() => input.focus());
 
+    startUpdatingAriaHiddenElements();
     input.addEventListener('input', () => {
       try {
         const board = getBoard();
