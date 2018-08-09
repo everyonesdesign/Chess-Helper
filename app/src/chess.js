@@ -241,7 +241,7 @@ function makePromotion(pieceType) {
  * @return {Array}            - array [[from, to]?]
  */
 function getLegalMoves(board, move) {
-  if (!board || !move) {
+  if (!board || !move || !isPlayersMove(board)) {
     return [];
   }
 
@@ -254,8 +254,7 @@ function getLegalMoves(board, move) {
       return (
         new RegExp(`^${move.piece}$`).test(p.type) &&
         new RegExp(`^${move.from}$`).test(p.area) &&
-        board.gameRules.isLegalMove(board.gameSetup, p.area, move.to) &&
-        isPlayersMove(board)
+        board.gameRules.isLegalMove(board.gameSetup, p.area, move.to)
       );
     });
 
