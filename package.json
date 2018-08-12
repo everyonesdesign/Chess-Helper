@@ -6,7 +6,8 @@
     "watch": "watchify app/src/index.js -o app/build.js",
     "test": "mocha app/test",
     "test-watch": "npm t -- -w",
-    "lint": "eslint app/src"
+    "lint": "eslint app/src",
+    "pack": "rm app.zip; cd app && zip -r ../app.zip *"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.2",
