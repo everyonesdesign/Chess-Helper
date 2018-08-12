@@ -3,6 +3,8 @@
 [Trello Board](https://trello.com/b/xaiPLyB0)
 |
 [Chrome Web Store](https://chrome.google.com/webstore/detail/bghaancnengidpcefpkbbppinjmfnlhh/publish-accepted?hl=en-US)
+|
+[Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/chess-com-keyboard/)
 
 [![Build Status](https://travis-ci.com/everyonesdesign/Chess-Helper.svg?branch=master)](https://travis-ci.com/everyonesdesign/Chess-Helper)
 
