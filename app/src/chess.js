@@ -214,7 +214,7 @@ function makeMove(fromField, toField) {
 function makePromotion(pieceType) {
   const style = document.createElement('style');
   style.id='chessHelper__hidePromotionArea';
-  style.innerHTML = '#divBoard_promotionarea {opacity: .0000001}';
+  style.innerHTML = '.promotion-area {opacity: .0000001}';
   document.body.appendChild(style);
 
   /**
@@ -222,12 +222,10 @@ function makePromotion(pieceType) {
    * because otherwise the promotion area won't be in time to be shown
    */
   setTimeout(function() {
-    const target = document.querySelector(`#divBoard_promotion${pieceType}`);
-    if (target) {
-      const promotionArea = target.closest('#divBoard_promotionarea');
-      if (promotionArea && promotionArea.style.display !== 'none') {
-        target && target.click();
-      }
+    const promotionArea = document.querySelector('.promotion-area');
+    if (promotionArea && promotionArea.style.display !== 'none') {
+      const target = promotionArea.querySelector(`[piece="${pieceType}"]`);
+      target && target.click();
     }
 
     style.parentNode.removeChild(style);

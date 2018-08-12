@@ -506,7 +506,7 @@ describe('isPlayersMove', function() {
 describe('makePromotion', function() {
   beforeEach(function() {
     this.promotionArea = domify(`
-      <div id="divBoard_promotionarea">
+      <div class="promotion-area">
         <img piece="q" id="divBoard_promotionq">
         <img piece="r" id="divBoard_promotionr">
         <img piece="n" id="divBoard_promotionn">
