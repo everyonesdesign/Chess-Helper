@@ -75,3 +75,48 @@ input[type="text"].ccHelper-input::placeholder {
     font-size: 15px;
     overflow: hidden;
 }
+
+.ccHelper-autocomplete {
+    display: none;
+    position: absolute;
+    top: 100%;
+    border: 3px solid #979797;
+    background: white;
+    border-radius: 3px;
+}
+
+.ccHelper-autocompleteSuggestions {
+     position: absolute;
+     display: none;
+     z-index: 9999;
+     max-height: 254px;
+     overflow: hidden;
+     overflow-y: auto;
+     margin-top: -46px;
+     transform: translateY(-100%);
+     text-align: left;
+     cursor: default;
+     border: 1px solid #ccc;
+     border-top: 0;
+     background: white;
+     box-sizing: border-box;
+     border-radius: 3px;
+}
+ .ccHelper-autocompleteSuggestion {
+     padding: 10px 16px;
+     line-height: 23px;
+     white-space: nowrap;
+     overflow: hidden;
+     text-overflow: ellipsis;
+     font-size: 16px;
+     color: #333;
+}
+/* matched part of a word */
+ .ccHelper-autocompleteSuggestion b {
+    font-weight: inherit;
+}
+ .ccHelper-autocompleteSuggestion--selected {
+    background: #ffdd90;
+    box-shadow: inset 0 -2px 0 0 #ffdd90;
+}
+

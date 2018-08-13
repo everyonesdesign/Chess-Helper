@@ -1,3 +1,4 @@
+const map = require('lodash/map');
 const {
   initAnalytics,
   sendLayoutOverlappingStatus,
@@ -19,6 +20,10 @@ const {
 const {
   boardsCallbacks,
 } = require('./globals');
+const {
+  commands,
+} = require('./commands');
+const Autocomplete = require('./lib/autocomplete');
 
 
 /**
@@ -46,6 +51,16 @@ function init() {
     bindInputFocus(input);
     boardElement.appendChild(wrapper);
     setImmediate(() => input.focus());
+
+    new Autocomplete({
+      selector: '.ccHelper-input',
+      minChars: 1,
+      source: (term, suggest) => {
+        term = term.toLowerCase();
+        const choices = map(commands, (v, k) => `/${k}`);
+        suggest(choices.filter((choice) => !choice.toLowerCase().indexOf(term)));
+      },
+    });
 
     startUpdatingAriaHiddenElements();
     input.addEventListener('input', () => {
