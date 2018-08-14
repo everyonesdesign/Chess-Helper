@@ -75,7 +75,7 @@ function createInitialElements() {
         type="text"
         class="ccHelper-input"
         id="ccHelper-input"
-        placeholder="Enter your move..."
+        placeholder="Enter your move or type / to see commands..."
       >
       <div class="ccHelper-label" aria-hidden="true"></div>
     </div>
