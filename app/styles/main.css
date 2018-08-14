@@ -81,7 +81,7 @@ input[type="text"].ccHelper-input::placeholder {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    z-index: 20;
+    z-index: 100;
     top: 0;
     right: 0;
     bottom: 0;
