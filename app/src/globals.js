@@ -11,4 +11,7 @@ module.exports = {
 
   // elements hidden from screen readers
   ariaHiddenElements: new WeakMap,
+
+  // blindfold overlays
+  blindfoldOverlays: new WeakMap,
 };

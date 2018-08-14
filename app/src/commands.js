@@ -4,7 +4,7 @@ const {
 
 const commands = {
   blindfold: () => {
-    document.body.classList.toggle('ccHelper--blindfolded');
+    document.body.classList.toggle('ccHelper-docBody--blindfolded');
   },
 };
 

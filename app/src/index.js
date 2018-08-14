@@ -10,12 +10,14 @@ const {
 const {
   bindInputKeyDown,
   bindInputFocus,
+  bindBlindFoldPeek,
 } = require('./keyboard');
 const {
   isEditable,
   buildMessagesMarkup,
   createInitialElements,
   startUpdatingAriaHiddenElements,
+  initBlindFoldOverlay,
 } = require('./utils');
 const {
   boardsCallbacks,
@@ -63,11 +65,15 @@ function init() {
     });
 
     startUpdatingAriaHiddenElements();
+    bindBlindFoldPeek();
+
     input.addEventListener('input', () => {
       try {
         const board = getBoard();
         const draw = () => drawMovesOnBoard(board, input.value);
         draw();
+
+        initBlindFoldOverlay(board);
 
         if (!boardsCallbacks.get(board)) {
           // bind redraws on certain events

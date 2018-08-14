@@ -99,7 +99,20 @@ function bindInputKeyDown(input) {
   });
 }
 
+/**
+ * Bind keyboards listeners to peek from keyboard
+ * in blindfold mode
+ */
+function bindBlindFoldPeek() {
+  const updatePeekClass = (e) => {
+    document.body.classList.toggle('ccHelper-docBody--peeked', !!e.ctrlKey);
+  };
+  document.body.addEventListener('keydown', updatePeekClass);
+  document.body.addEventListener('keyup', updatePeekClass);
+}
+
 module.exports = {
   bindInputKeyDown,
   bindInputFocus,
+  bindBlindFoldPeek,
 };
