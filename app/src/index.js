@@ -29,7 +29,7 @@ function init() {
     .analysis-diagram .chess_viewer,
     .main-board .board,
     #chessboard,
-    #live-app [class*=board-layout-vertical-component_],
+    #live-app [class*=board-layout-vertical-component],
     #chess_com_tactics_board
   `;
   const boardElement = document.querySelector(selector);
