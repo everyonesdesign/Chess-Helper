@@ -1,3 +1,4 @@
+const map = require('lodash/map');
 const {
   initAnalytics,
   sendLayoutOverlappingStatus,
@@ -9,16 +10,22 @@ const {
 const {
   bindInputKeyDown,
   bindInputFocus,
+  bindBlindFoldPeek,
 } = require('./keyboard');
 const {
   isEditable,
   buildMessagesMarkup,
   createInitialElements,
   startUpdatingAriaHiddenElements,
+  initBlindFoldOverlay,
 } = require('./utils');
 const {
   boardsCallbacks,
 } = require('./globals');
+const {
+  commands,
+} = require('./commands');
+const Autocomplete = require('./lib/autocomplete');
 
 
 /**
@@ -47,12 +54,26 @@ function init() {
     boardElement.appendChild(wrapper);
     setImmediate(() => input.focus());
 
+    new Autocomplete({
+      selector: '.ccHelper-input',
+      minChars: 1,
+      source: (term, suggest) => {
+        term = term.toLowerCase();
+        const choices = map(commands, (v, k) => `/${k}`);
+        suggest(choices.filter((choice) => !choice.toLowerCase().indexOf(term)));
+      },
+    });
+
     startUpdatingAriaHiddenElements();
+    bindBlindFoldPeek();
+
     input.addEventListener('input', () => {
       try {
         const board = getBoard();
         const draw = () => drawMovesOnBoard(board, input.value);
         draw();
+
+        initBlindFoldOverlay(board);
 
         if (!boardsCallbacks.get(board)) {
           // bind redraws on certain events

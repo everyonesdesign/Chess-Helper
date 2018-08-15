@@ -11,6 +11,9 @@ const {
 const {
   drawCache,
 } = require('./globals');
+const {
+  parseCommand,
+} = require('./commands');
 
 /**
  * Check if input is valid square name
@@ -146,6 +149,12 @@ function isPlayersMove(board) {
 function go(input) {
   const board = getBoard();
   if (board) {
+    const command = parseCommand(input);
+    if (command) {
+      command();
+      return true;
+    }
+
     const parseResult = parseMoveInput(input);
     const moves = getLegalMoves(board, parseResult);
     if (moves.length === 1) {

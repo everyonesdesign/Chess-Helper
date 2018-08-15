@@ -65,7 +65,7 @@ function bindInputKeyDown(input) {
         return;
       }
 
-      const successfulMove = go(input.value);
+      const success = go(input.value);
 
       const board = getBoard();
       board && board.clearMarkedArrows();
@@ -76,8 +76,15 @@ function bindInputKeyDown(input) {
         label: input.value,
       });
 
-      if (successfulMove) {
+      if (success) {
         input.value = '';
+
+        // needed to remove autocomplete
+        // after successful command execution
+        setTimeout(() => {
+          const event = new Event('keyup');
+          input.dispatchEvent(event);
+        }, 200);
       }
 
       input.focus();
@@ -99,7 +106,20 @@ function bindInputKeyDown(input) {
   });
 }
 
+/**
+ * Bind keyboards listeners to peek from keyboard
+ * in blindfold mode
+ */
+function bindBlindFoldPeek() {
+  const updatePeekClass = (e) => {
+    document.body.classList.toggle('ccHelper-docBody--peeked', !!e.ctrlKey);
+  };
+  document.body.addEventListener('keydown', updatePeekClass);
+  document.body.addEventListener('keyup', updatePeekClass);
+}
+
 module.exports = {
   bindInputKeyDown,
   bindInputFocus,
+  bindBlindFoldPeek,
 };
