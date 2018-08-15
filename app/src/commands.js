@@ -6,6 +6,14 @@ const commands = {
   blindfold: () => {
     document.body.classList.toggle('ccHelper-docBody--blindfolded');
   },
+  resign: () => {
+    const resignButton = document.querySelector('.resign-button-component');
+    resignButton && resignButton.click();
+  },
+  draw: () => {
+    const drawButton = document.querySelector('.draw-button-component');
+    drawButton && drawButton.click();
+  },
 };
 
 /**
