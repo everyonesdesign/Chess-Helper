@@ -1,6 +1,7 @@
 const map = require('lodash/map');
 const {
   initAnalytics,
+  sendDataToAnalytics,
   sendLayoutOverlappingStatus,
 } = require('./analytics');
 const {
@@ -85,6 +86,13 @@ function init() {
             board.attachEvent('onRefresh', draw),
           ];
           boardsCallbacks.set(board, events);
+        }
+
+        if (input.value[0] === '/') {
+          sendDataToAnalytics({
+            category: 'command',
+            action: 'autocomplete-shown',
+          });
         }
       } catch (e) {
         console.error(e);
