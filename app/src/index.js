@@ -37,7 +37,8 @@ function init() {
     .main-board .board,
     #chessboard,
     #live-app [class*=board-layout-vertical-component],
-    #chess_com_tactics_board
+    #chess_com_tactics_board,
+    [id^=chess_com_chessmentor_board_]
   `;
   const boardElement = document.querySelector(selector);
   if (boardElement) {
