@@ -23,12 +23,35 @@ class VueChessboard {
   }
 
   makeMove(fromAreaId, targetAreaId) {
-    const { left, top, width, height } = this.element.getBoundingClientRect();
-
     const fromCoords = squareToCoords(fromAreaId);
-    const piece = this.element.querySelector(`.piece.square-${fromCoords.join('')}`);
-    if (piece) {
-      alert('at least im here');
+    const pieceElement = this.element.querySelector(`.piece.square-${fromCoords.join('')}`);
+    if (pieceElement) {
+      const toCoords = squareToCoords(targetAreaId);
+      const { left, top, width } = this.element.getBoundingClientRect();
+      const squareWidth = width / 8;
+      const correction = squareWidth / 2;
+
+      pieceElement.dispatchEvent(new MouseEvent("mousedown", {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+        which: 0,
+        clientX: left + (squareWidth) * Number(fromCoords[0]) - correction,
+        clientY: top + width - (squareWidth) * Number(fromCoords[1]) + correction,
+      }));
+
+      const mouseupEvent = new MouseEvent("mouseup", {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+        which: 0,
+        clientX: left + (squareWidth) * Number(toCoords[0]) - correction,
+        clientY: top + width - (squareWidth) * Number(toCoords[1]) + correction,
+      });
+
+      pieceElement.dispatchEvent(mouseupEvent);
+
+      console.log('here');
     }
   }
 
