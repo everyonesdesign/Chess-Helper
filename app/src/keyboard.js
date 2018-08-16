@@ -1,7 +1,9 @@
 const {
-  getBoard,
   go,
 } = require('./chess');
+const {
+  getBoard,
+} = require('./chessboard');
 const {
   sendDataToAnalytics,
 } = require('./analytics');

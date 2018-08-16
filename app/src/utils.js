@@ -124,7 +124,7 @@ function startUpdatingAriaHiddenElements() {
 function initBlindFoldOverlay(board) {
   const existingOverlay = blindfoldOverlays.get(board);
   if (!existingOverlay) {
-    const element = board.rootElement;
+    const element = board.getElement();
     if (element) {
       const boardarea = [...element.children].filter((c) => c.matches('[id*=boardarea]'))[0];
       if (boardarea) {
