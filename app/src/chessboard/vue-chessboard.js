@@ -2,6 +2,13 @@
  * Global chessboard
  */
 
+const MOUSE_BUTTONS = {
+  no: 0,
+  left: 1,
+  middle: 2,
+  right: 3,
+};
+
 function squareToCoords(square) {
   const hor = '0' + ('abcdefgh'.indexOf(square[0]) + 1);
   const ver = '0' + square[1];
@@ -13,6 +20,22 @@ function coordsToSquare(coords) {
   return numbers[coords.slice(1, 2)] + coords.slice(3, 4);
 }
 
+function dispatchMouseEvent(element, {
+  name,
+  which = MOUSE_BUTTONS.left,
+  x = 0,
+  y = 0,
+}) {
+  element.dispatchEvent(new MouseEvent(name, {
+    bubbles: true,
+    cancelable: true,
+    view: window,
+    which,
+    clientX: x,
+    clientY: y,
+  }));
+}
+
 class VueChessboard {
   constructor(element) {
     this.element = element;
@@ -22,36 +45,26 @@ class VueChessboard {
     return this.element;
   }
 
-  makeMove(fromAreaId, targetAreaId) {
-    const fromCoords = squareToCoords(fromAreaId);
+  makeMove(fromSq, toSq) {
+    this.markArrow(fromSq, toSq);
+    this.markArea(toSq);
+
+    const fromCoords = squareToCoords(fromSq);
     const pieceElement = this.element.querySelector(`.piece.square-${fromCoords.join('')}`);
     if (pieceElement) {
-      const toCoords = squareToCoords(targetAreaId);
-      const { left, top, width } = this.element.getBoundingClientRect();
-      const squareWidth = width / 8;
-      const correction = squareWidth / 2;
-
-      pieceElement.dispatchEvent(new MouseEvent("mousedown", {
-        bubbles: true,
-        cancelable: true,
-        view: window,
-        which: 0,
-        clientX: left + (squareWidth) * Number(fromCoords[0]) - correction,
-        clientY: top + width - (squareWidth) * Number(fromCoords[1]) + correction,
-      }));
-
-      const mouseupEvent = new MouseEvent("mouseup", {
-        bubbles: true,
-        cancelable: true,
-        view: window,
-        which: 0,
-        clientX: left + (squareWidth) * Number(toCoords[0]) - correction,
-        clientY: top + width - (squareWidth) * Number(toCoords[1]) + correction,
+      const fromPosition = this._getSquarePosition(fromSq);
+      dispatchMouseEvent(pieceElement, {
+        name: 'mousedown',
+        x: fromPosition.x,
+        y: fromPosition.y,
       });
 
-      pieceElement.dispatchEvent(mouseupEvent);
-
-      console.log('here');
+      const toPosition = this._getSquarePosition(toSq);
+      dispatchMouseEvent(pieceElement, {
+        name: 'mouseup',
+        x: toPosition.x,
+        y: toPosition.y,
+      });
     }
   }
 
@@ -81,15 +94,59 @@ class VueChessboard {
     return pieces;
   }
 
-  markArrow(fromSq, toSq) {}
+  markArrow(fromSq, toSq) {
+    const fromPosition = this._getSquarePosition(fromSq);
+    dispatchMouseEvent(this.element, {
+      name: 'mousedown',
+      which: MOUSE_BUTTONS.right,
+      x: fromPosition.x,
+      y: fromPosition.y,
+    });
+
+    const toPosition = this._getSquarePosition(toSq);
+    dispatchMouseEvent(this.element, {
+      name: 'mouseup',
+      which: MOUSE_BUTTONS.right,
+      x: toPosition.x,
+      y: toPosition.y,
+    });
+  }
 
   unmarkArrow(fromSq, toSq) {}
 
   clearMarkedArrows() {}
 
-  markArea(coord) {}
+  markArea(square) {
+    const position = this._getSquarePosition(square);
+    dispatchMouseEvent(this.element, {
+      name: 'click',
+      which: MOUSE_BUTTONS.right,
+      x: position.x,
+      y: position.y,
+    });
+  }
 
-  unmarkArea(coord) {}
+  unmarkArea(square) {}
+
+  _getSquarePosition(square) {
+    const isFlipped = this.element.classList.contains('flipped');
+    const coords = squareToCoords(square).map((c) => Number(c));
+    const { left, top, width } = this.element.getBoundingClientRect();
+    const squareWidth = width / 8;
+    const correction = squareWidth / 2;
+
+    if (!isFlipped) {
+      return {
+        x: left + squareWidth * coords[0] - correction,
+        y: top + width - squareWidth * coords[1] + correction,
+      };
+    } else {
+      return {
+        x: left + width - squareWidth * coords[0] + correction,
+        y: top + squareWidth * coords[1] - correction,
+      };
+    }
+  }
 }
 
 module.exports = VueChessboard;
