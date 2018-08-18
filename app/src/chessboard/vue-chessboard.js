@@ -174,14 +174,7 @@ class VueChessboard {
   }
 
   markArea(square) {
-    const position = this._getSquarePosition(square);
-    dispatchMouseEvent(this.element, {
-      name: 'click',
-      which: MOUSE_WHICH.right,
-      button: MOUSE_BUTTON.right,
-      x: position.x,
-      y: position.y,
-    });
+    // TODO: implement
   }
 
   unmarkArea(square) {}
