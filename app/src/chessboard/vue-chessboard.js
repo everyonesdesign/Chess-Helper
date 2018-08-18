@@ -60,8 +60,8 @@ class VueChessboard {
     this.element = element;
     this.draw = SVG(this.element.id);
 
-    const viewSize = this.element.clientWidth;
-    this.draw.viewbox(0, 0, viewSize, viewSize);
+    this.viewSize = this.element.clientWidth;
+    this.draw.viewbox(0, 0, this.viewSize, this.viewSize);
     this.draw.group().id('board-group');
   }
 
@@ -125,12 +125,20 @@ class VueChessboard {
     const fromPosition = this._getSquarePosition(fromSq, false);
     const toPosition = this._getSquarePosition(toSq, false);
 
+    // what if the board became bigger/smaller?
+    const sizeRatio = this.element.clientWidth / this.viewSize;
+
     const boardGroup = SVG.get('board-group');
     const line = this
       .draw
-      .line(fromPosition.x, fromPosition.y, toPosition.x, toPosition.y)
+      .line(
+        fromPosition.x / sizeRatio,
+        fromPosition.y / sizeRatio,
+        toPosition.x / sizeRatio,
+        toPosition.y / sizeRatio,
+      )
       .stroke({
-        width: 6,
+        width: this.element.clientWidth / 90 / sizeRatio,
         color: 'orange',
         opacity: 1,
       });
