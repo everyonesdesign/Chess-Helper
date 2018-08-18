@@ -90,7 +90,8 @@ class VueChessboard {
   }
 
   isLegalMove(fromSq, toSq) {
-    return true;
+    const { legalMoves } = this._getInternalVueState();
+    return legalMoves.some((m) => m.from === fromSq && m.to === toSq);
   }
 
   isPlayersMove() {
@@ -203,6 +204,10 @@ class VueChessboard {
         y: (absolute ? top : 0) + squareWidth * coords[1] - correction,
       };
     }
+  }
+
+  _getInternalVueState() {
+    return this.element.__vue__.chessboard.state;
   }
 }
 
