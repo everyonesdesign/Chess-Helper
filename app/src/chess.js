@@ -1,4 +1,3 @@
-const get = require('lodash/get');
 const filter = require('lodash/filter');
 const find = require('lodash/find');
 const {
