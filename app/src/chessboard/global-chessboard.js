@@ -18,6 +18,7 @@ class GlobalChessboard {
     if (existingBoard) {
       return existingBoard;
     }
+    boards.set(element, this);
 
     this.element = element;
     this.board = element.chessBoard;
