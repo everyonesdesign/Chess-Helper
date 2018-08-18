@@ -1,12 +1,23 @@
+const SVG = require('svg.js');
+const get = require('lodash/get');
+const {
+  boards,
+} = require('../globals');
+
 /**
  * Global chessboard
  */
 
-const MOUSE_BUTTONS = {
+const MOUSE_WHICH = {
   no: 0,
   left: 1,
   middle: 2,
   right: 3,
+};
+
+const MOUSE_BUTTON = {
+  left: 0,
+  right: 2,
 };
 
 function squareToCoords(square) {
@@ -22,7 +33,8 @@ function coordsToSquare(coords) {
 
 function dispatchMouseEvent(element, {
   name,
-  which = MOUSE_BUTTONS.left,
+  which = MOUSE_WHICH.left,
+  button = MOUSE_BUTTON.left,
   x = 0,
   y = 0,
 }) {
@@ -31,6 +43,7 @@ function dispatchMouseEvent(element, {
     cancelable: true,
     view: window,
     which,
+    buttons: which,
     clientX: x,
     clientY: y,
   }));
@@ -38,7 +51,18 @@ function dispatchMouseEvent(element, {
 
 class VueChessboard {
   constructor(element) {
+    const existingBoard = boards.get(element);
+    if (existingBoard) {
+      return existingBoard;
+    }
+    boards.set(element, this);
+
     this.element = element;
+    this.draw = SVG(this.element.id);
+
+    const viewSize = this.element.clientWidth;
+    this.draw.viewbox(0, 0, viewSize, viewSize);
+    this.draw.group().id('board-group');
   }
 
   getElement() {
@@ -46,9 +70,6 @@ class VueChessboard {
   }
 
   makeMove(fromSq, toSq) {
-    this.markArrow(fromSq, toSq);
-    this.markArea(toSq);
-
     const fromCoords = squareToCoords(fromSq);
     const pieceElement = this.element.querySelector(`.piece.square-${fromCoords.join('')}`);
     if (pieceElement) {
@@ -95,32 +116,61 @@ class VueChessboard {
   }
 
   markArrow(fromSq, toSq) {
-    const fromPosition = this._getSquarePosition(fromSq);
-    dispatchMouseEvent(this.element, {
-      name: 'mousedown',
-      which: MOUSE_BUTTONS.right,
-      x: fromPosition.x,
-      y: fromPosition.y,
+    const lineId = `ccHelper-arrow-${fromSq}${toSq}`;
+
+    if (SVG.get(lineId)) {
+      return;
+    }
+
+    const fromPosition = this._getSquarePosition(fromSq, false);
+    const toPosition = this._getSquarePosition(toSq, false);
+
+    const boardGroup = SVG.get('board-group');
+    const line = this
+      .draw
+      .line(fromPosition.x, fromPosition.y, toPosition.x, toPosition.y)
+      .stroke({
+        width: 6,
+        color: 'orange',
+        opacity: 1,
+      });
+
+    boardGroup.add(line);
+    line.id(lineId);
+    line.attr({
+      'class': 'arrow',
+      'pointer-events': 'none'
     });
 
-    const toPosition = this._getSquarePosition(toSq);
-    dispatchMouseEvent(this.element, {
-      name: 'mouseup',
-      which: MOUSE_BUTTONS.right,
-      x: toPosition.x,
-      y: toPosition.y,
+    line.marker('end', 4, 4, function(add) {
+      add.polygon('0,0 0,4 4,2').fill('orange').opacity(1);
+      this.ref(0,2);
     });
   }
 
-  unmarkArrow(fromSq, toSq) {}
+  unmarkArrow(fromSq, toSq) {
+    const lineId = `ccHelper-arrow-${fromSq}${toSq}`;
+    if (SVG.get(lineId)) {
+      SVG.get(lineId).remove();
+    }
+  }
 
-  clearMarkedArrows() {}
+  clearMarkedArrows() {
+    const boardGroup = SVG.get('board-group');
+    boardGroup.each((i, item) => {
+      const id = get(item, '0.node.id');
+      if (id && id.startsWith('ccHelper-arrow-')) {
+        SVG.get(id).remove();
+      }
+    });
+  }
 
   markArea(square) {
     const position = this._getSquarePosition(square);
     dispatchMouseEvent(this.element, {
       name: 'click',
-      which: MOUSE_BUTTONS.right,
+      which: MOUSE_WHICH.right,
+      button: MOUSE_BUTTON.right,
       x: position.x,
       y: position.y,
     });
@@ -128,7 +178,13 @@ class VueChessboard {
 
   unmarkArea(square) {}
 
-  _getSquarePosition(square) {
+  /**
+   * Get position in pixels for some square
+   * @param  {String}  square    in format a2
+   * @param  {Boolean} absolute  if true, offset is made from document, otherwise from closest element
+   * @return {Object}            coordinates, { x, y }
+   */
+  _getSquarePosition(square, absolute = true) {
     const isFlipped = this.element.classList.contains('flipped');
     const coords = squareToCoords(square).map((c) => Number(c));
     const { left, top, width } = this.element.getBoundingClientRect();
@@ -137,13 +193,13 @@ class VueChessboard {
 
     if (!isFlipped) {
       return {
-        x: left + squareWidth * coords[0] - correction,
-        y: top + width - squareWidth * coords[1] + correction,
+        x: (absolute ? left : 0) + squareWidth * coords[0] - correction,
+        y: (absolute ? top : 0) + width - squareWidth * coords[1] + correction,
       };
     } else {
       return {
-        x: left + width - squareWidth * coords[0] + correction,
-        y: top + squareWidth * coords[1] - correction,
+        x: (absolute ? left : 0) + width - squareWidth * coords[0] + correction,
+        y: (absolute ? top : 0) + squareWidth * coords[1] - correction,
       };
     }
   }
