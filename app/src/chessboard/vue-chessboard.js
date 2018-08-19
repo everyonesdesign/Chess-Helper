@@ -234,10 +234,10 @@ class VueChessboard {
   /**
    * Get position in pixels for some square
    * @param  {String}  square    in format a2
-   * @param  {Boolean} absolute  if true, offset is made from document, otherwise from closest el
+   * @param  {Boolean} fromDoc  if true, offset is made from document, otherwise from closest el
    * @return {Object}            coordinates, { x, y }
    */
-  _getSquarePosition(square, absolute = true) {
+  _getSquarePosition(square, fromDoc = true) {
     const isFlipped = this.element.classList.contains('flipped');
     const coords = squareToCoords(square).map((c) => Number(c));
     const {left, top, width} = this.element.getBoundingClientRect();
@@ -246,13 +246,13 @@ class VueChessboard {
 
     if (!isFlipped) {
       return {
-        x: (absolute ? left : 0) + squareWidth * coords[0] - correction,
-        y: (absolute ? top : 0) + width - squareWidth * coords[1] + correction,
+        x: (fromDoc ? left : 0) + squareWidth * coords[0] - correction,
+        y: (fromDoc ? top : 0) + width - squareWidth * coords[1] + correction,
       };
     } else {
       return {
-        x: (absolute ? left : 0) + width - squareWidth * coords[0] + correction,
-        y: (absolute ? top : 0) + squareWidth * coords[1] - correction,
+        x: (fromDoc ? left : 0) + width - squareWidth * coords[0] + correction,
+        y: (fromDoc ? top : 0) + squareWidth * coords[1] - correction,
       };
     }
   }
