@@ -27,7 +27,7 @@ class VueChessboard {
     this.arrowEnd = this.draw.marker(4, 4, function(add) {
       add.polygon('0,0 0,4 4,2').fill('orange').opacity(1);
       this.ref(0, 2); // eslint-disable-line no-invalid-this
-    });
+    }).size(4, 4);
 
     setInterval(() => {
       const event = new Event('ccHelper-draw');
@@ -175,7 +175,7 @@ class VueChessboard {
         toPosition.y / sizeRatio + compensation.y.end,
       )
       .stroke({
-        width: elementWidth / 90,
+        width: elementWidth / 55,
         color: 'orange',
         opacity: 1,
       });
