@@ -3,117 +3,11 @@ const assert = require('assert');
 const domify = require('domify');
 
 const {
-  go,
-  getBoard,
   parseAlgebraic,
   parseFromTo,
   getLegalMoves,
-  isPlayersMove,
   makePromotion,
 } = require('../src/chess');
-
-describe('go', function() {
-  const initChessBoard = (isLegal) => {
-    const pieces = {
-      1: {color: 2, type: 'p', area: 'e2'},
-    };
-
-    window.myEvent = {
-      capturingBoard: {
-        gameSetup: {pieces},
-        gameRules: {
-          isLegalMove: () => isLegal,
-        },
-        fireEvent: () => {},
-      },
-    };
-  };
-
-  beforeEach(function() {
-    this.msg = document.createElement('div');
-    this.msg.id = 'ccHelper-messages';
-    document.body.appendChild(this.msg);
-  });
-
-  afterEach(function() {
-    delete window.myEvent;
-    this.msg.parentNode.removeChild(this.msg);
-  });
-
-  it('returns true on valid move', function() {
-    initChessBoard(true);
-    assert.deepEqual(go('e2e4'), true);
-  });
-
-  it('returns false on invalid move', function() {
-    initChessBoard(false);
-    assert.deepEqual(go('e2e4'), false);
-  });
-});
-
-describe('getBoard', function() {
-  it('should return board based on prop of dom element', function() {
-    const cbElement = document.createElement('div');
-    cbElement.className = 'chessboard';
-    cbElement.chessBoard = 'chessboard!';
-    document.body.appendChild(cbElement);
-
-    const board = getBoard();
-    assert.equal(board, 'chessboard!');
-
-    cbElement.parentNode.removeChild(cbElement);
-  });
-
-  it('should return board for computer chess', function() {
-    window.myEvent = {
-      capturingBoard: 'chessboard!',
-    };
-
-    const board = getBoard();
-
-    assert.equal(board, 'chessboard!');
-
-    delete window.myEvent;
-  });
-
-  it('should return board for old live chess', function() {
-    window.boardsService = {
-      getSelectedBoard() {
-        return {
-          chessboard: 'chessboard!',
-        };
-      },
-    };
-
-    const board = getBoard();
-
-    assert.equal(board, 'chessboard!');
-
-    delete window.boardsService;
-  });
-
-  it('should return board for new live chess', function() {
-    window.liveClient = {
-      controller: {
-        activeBoard: {
-          chessboard: 'chessboard!',
-        },
-      },
-    };
-
-    const board = getBoard();
-
-    assert.equal(board, 'chessboard!');
-
-    delete window.liveClient;
-  });
-
-  it('should return null if theres no board', function() {
-    const board = getBoard();
-
-    assert.strictEqual(board, null);
-  });
-});
 
 describe('parseAlgebraic', function() {
   it('parses short algebraic moves', function() {
@@ -286,10 +180,9 @@ describe('getLegalMoves', function() {
     });
 
     return {
-      gameSetup: {pieces},
-      gameRules: {
-        isLegalMove: () => true,
-      },
+      isLegalMove: () => true,
+      isPlayersMove: () => true,
+      getPiecesSetup: () => pieces,
     };
   };
 
@@ -420,86 +313,6 @@ describe('getLegalMoves', function() {
       promotionPiece: 'q',
     });
     assert.deepEqual(result, [['d7', 'd8', 'q']]);
-  });
-});
-
-describe('isPlayersMove', function() {
-  beforeEach(function() {
-    this.parent = document.createElement('div');
-    this.chessboardEl = document.createElement('div');
-    this.parent.appendChild(this.chessboardEl);
-
-     this.cb = {
-      rootElement: this.chessboardEl,
-      gameSetup: {
-        flags: {},
-      },
-    };
-    this.chessboardEl.chessBoard = this.cb;
-
-    document.body.appendChild(this.parent);
-  });
-
-  afterEach(function() {
-    this.parent.parentNode.removeChild(this.parent);
-  });
-
-  it('takes into account "cursor-spin" class', function() {
-    assert.equal(isPlayersMove(this.cb), true);
-    this.parent.classList.add('cursor-spin');
-    assert.equal(isPlayersMove(this.cb), false);
-  });
-
-  it('takes into account chessboard._enabled flag', function() {
-    assert.equal(isPlayersMove(this.cb), true);
-    this.chessboardEl.chessBoard._enabled = true;
-    assert.equal(isPlayersMove(this.cb), true);
-    this.chessboardEl.chessBoard._enabled = false;
-    assert.equal(isPlayersMove(this.cb), false);
-  });
-
-  describe('player to move flags', function() {
-    /**
-     * chessboard.gameSetup.flags.sm - flag showing who is to move
-     * (1 means white, 2 means black)
-     * chessboard._player - flag showing who are we
-     *
-     * the flags might be missing (seen only on live board)
-     */
-
-    it('allows to make a move if one of flags is undefined', function() {
-      // in this case we don't know what to do
-      // we just wash our hands off of it
-      assert.equal(isPlayersMove(this.cb), true);
-
-
-      this.cb._player = 1;
-      assert.equal(isPlayersMove(this.cb), true);
-
-      delete this.cb._player;
-      this.cb.gameSetup.flags.sm = 1;
-      assert.equal(isPlayersMove(this.cb), true);
-    });
-
-    it('allows to make a move if flags are the same', function() {
-      this.cb._player = 1;
-      this.cb.gameSetup.flags.sm = 1;
-      assert.equal(isPlayersMove(this.cb), true);
-
-      this.cb._player = 2;
-      this.cb.gameSetup.flags.sm = 2;
-      assert.equal(isPlayersMove(this.cb), true);
-    });
-
-    it('doesnt allow to make a move if flags differ', function() {
-      this.cb._player = 1;
-      this.cb.gameSetup.flags.sm = 2;
-      assert.equal(isPlayersMove(this.cb), false);
-
-      this.cb._player = 2;
-      this.cb.gameSetup.flags.sm = 1;
-      assert.equal(isPlayersMove(this.cb), false);
-    });
   });
 });
 

@@ -124,10 +124,9 @@ function startUpdatingAriaHiddenElements() {
 function initBlindFoldOverlay(board) {
   const existingOverlay = blindfoldOverlays.get(board);
   if (!existingOverlay) {
-    const element = board.rootElement;
-    if (element) {
-      const boardarea = [...element.children].filter((c) => c.matches('[id*=boardarea]'))[0];
-      if (boardarea) {
+    const container = board.getRelativeContainer();
+    if (container) {
+      if (container) {
         const overlay = domify(`
           <div class="ccHelper-blindfold">
             <div class="ccHelper-blindfoldPeek">
@@ -151,13 +150,74 @@ function initBlindFoldOverlay(board) {
         button.addEventListener('click', () => commands.blindfold());
 
         blindfoldOverlays.set(board, overlay);
-        boardarea.appendChild(overlay);
+        container.appendChild(overlay);
       } else {
         // maybe set some dummy value to `blindfoldOverlays` set
         // to optimise this function?
       }
     }
   }
+}
+
+/**
+ * Translate square string to coords
+ * @param  {String} square e2
+ * @return {Array<String>} ['05','02']
+ */
+function squareToCoords(square) {
+  const hor = '0' + ('abcdefgh'.indexOf(square[0]) + 1);
+  const ver = '0' + square[1];
+  return [hor, ver];
+}
+
+/**
+ * Translate coords string to square
+ * @param  {String} coords '0502'
+ * @return {String}        'e2'
+ */
+function coordsToSquare(coords) {
+  const numbers = ['', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+  return numbers[coords.slice(1, 2)] + coords.slice(3, 4);
+}
+
+const MOUSE_WHICH = {
+  no: 0,
+  left: 1,
+  middle: 2,
+  right: 3,
+};
+
+const MOUSE_BUTTON = {
+  left: 0,
+  right: 2,
+};
+
+/**
+ * Simulate mouse event
+ * @param  {Element} element
+ * @param  {String} options.name
+ * @param  {Number} options.which
+ * @param  {Number} options.button
+ * @param  {Number} options.x
+ * @param  {Number} options.y
+ * @param  {Object} options
+ */
+function dispatchMouseEvent(element, {
+  name,
+  which = MOUSE_WHICH.left,
+  button = MOUSE_BUTTON.left,
+  x = 0,
+  y = 0,
+}) {
+  element.dispatchEvent(new MouseEvent(name, {
+    bubbles: true,
+    cancelable: true,
+    view: window,
+    which,
+    buttons: which,
+    clientX: x,
+    clientY: y,
+  }));
 }
 
 module.exports = {
@@ -170,4 +230,9 @@ module.exports = {
   createInitialElements,
   startUpdatingAriaHiddenElements,
   initBlindFoldOverlay,
+  squareToCoords,
+  coordsToSquare,
+  dispatchMouseEvent,
+  MOUSE_WHICH,
+  MOUSE_BUTTON,
 };

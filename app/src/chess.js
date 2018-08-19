@@ -1,12 +1,11 @@
-const get = require('lodash/get');
 const filter = require('lodash/filter');
+const isEqual = require('lodash/isEqual');
 const find = require('lodash/find');
 const {
   sendDataToAnalytics,
 } = require('./analytics');
 const {
   postMessage,
-  RED_SQUARE_COLOR,
 } = require('./utils');
 const {
   drawCache,
@@ -14,6 +13,9 @@ const {
 const {
   parseCommand,
 } = require('./commands');
+const {
+  getBoard,
+} = require('./chessboard');
 
 /**
  * Check if input is valid square name
@@ -24,6 +26,11 @@ function validateSquareName(input) {
   return /^[a-h][1-8]$/.test(input);
 }
 
+const emptyDrawCache = {
+  arrows: [],
+  areas: [],
+};
+
 /**
  * Draw all needed arrows and marks on the board
  * Note that drawing is async,
@@ -32,157 +39,90 @@ function validateSquareName(input) {
  * @param {String} inputText
  */
 function drawMovesOnBoard(board, inputText) {
+  if (!board) {
+    return;
+  }
+
   setImmediate(() => {
     const parseResults = parseMoveInput(inputText);
     const moves = getLegalMoves(board, parseResults);
 
-    if (board) {
-      clearBoardDrawings(board);
+    const prevState = drawCache.get(board) || emptyDrawCache;
+    let newState = emptyDrawCache;
 
-      if (moves.length === 1) {
-        const move = moves[0];
-        board.markArrow(...move);
-        drawCache.set(board, {
-          arrows: [[move[0], move[1]]],
-          areas: [],
-        });
-      } else if (moves.length > 1) {
-        drawCache.set(board, {
-          arrows: [],
-          areas: moves.map((m) => {
-            // second parameter is called 'rightClicked'
-            // it cleans the areas on moves made with mouse
-            board.markArea(m[0], RED_SQUARE_COLOR, true);
-            return m[0];
-          }),
-        });
-      }
+    if (moves.length === 1) {
+      const move = moves[0];
+      newState = {
+        arrows: [[move[0], move[1]]],
+        areas: [],
+      };
+    } else if (moves.length > 1) {
+      newState = {
+        arrows: [],
+        areas: moves.map((m) => {
+          board.markArea(m[0]);
+          return m[0];
+        }),
+      };
     }
-  });
-}
 
-/**
- * Clear all arrows and markings
- * @param {ChessBoard} board
- */
-function clearBoardDrawings(board) {
-  const cache = drawCache.get(board) || {
-    areas: [],
-    arrows: [],
-  };
-  cache.arrows.forEach((a) => board.unmarkArrow(a[0], a[1], true));
-  cache.areas.forEach((area) => board.unmarkArea(area, true));
-  drawCache.set(board, {
-    areas: [],
-    arrows: [],
-  });
-}
-
-/**
- * Get active board instance
- * @return {ChessBoard?}
- */
-function getBoard() {
-  let cb;
-
-  try {
-    cb = document.querySelector('.chessboard').chessBoard;
-  } catch (e) {}
-
-  if (!cb) {
-    cb = (
-      // board for training with computer
-      get(window, 'myEvent.capturingBoard') ||
-    // new live mode
-      get(window, 'liveClient.controller.activeBoard.chessboard')
-    );
-  }
-
-
-  if (!cb) {
-    // legacy old chessboard
-    // probably should be removed
-    const getSelectedBoard = get(window, 'boardsService.getSelectedBoard');
-    if (getSelectedBoard) {
-      const activeBoard = getSelectedBoard();
-
-      if (activeBoard) {
-        cb = activeBoard.chessboard;
-      }
+    if (isEqual(prevState, newState)) {
+      return;
     }
-  }
 
-  return cb || null;
-}
+    // unmark old aread
+    prevState.arrows.forEach((arrow) => board.unmarkArrow(...arrow));
+    prevState.areas.forEach((area) => board.unmarkArea(area));
 
-/**
- * Check if the player allowed to move pieces
- * Created to fix the bug allowing to move opponent's pieces
- * @param {Chessboard} board - board
- * @return {Boolean} - is move allowed
- */
-function isPlayersMove(board) {
-  const rootElement = board.rootElement;
-  if (rootElement && rootElement.closest('.cursor-spin')) {
-    return false;
-  }
+    // draw new ones
+    newState.arrows.forEach((arrow) => board.markArrow(...arrow));
+    newState.areas.forEach((area) => board.markArea(area));
 
-  if (board._enabled === false) {
-    return false;
-  }
-
-  const sideToMove = get(board, 'gameSetup.flags.sm');
-  const playerSide = board._player;
-  if (sideToMove && playerSide && sideToMove !== playerSide) {
-    return false;
-  }
-
-  return true;
+    drawCache.set(board, newState);
+  });
 }
 
 /**
  * Handle user input and act in appropriate way
  * The function uses active board on the screen if there's any
+ * @param  {ChessBoard} board
  * @param  {String} input - input, in format 'e2e4'
  * @return {Boolean} if the move was successfully consumed
  */
-function go(input) {
-  const board = getBoard();
-  if (board) {
-    const command = parseCommand(input);
-    if (command) {
-      command();
-      return true;
+function go(board, input) {
+  const command = parseCommand(input);
+  if (command) {
+    command();
+    return true;
+  }
+
+  const parseResult = parseMoveInput(input);
+  const moves = getLegalMoves(board, parseResult);
+  if (moves.length === 1) {
+    const move = moves[0];
+    makePlainMove(board, ...move);
+
+    if (move[2]) {
+      makrPromotionMove(move[2]);
     }
 
-    const parseResult = parseMoveInput(input);
-    const moves = getLegalMoves(board, parseResult);
-    if (moves.length === 1) {
-      const move = moves[0];
-      makeMove(...move);
+    return true;
+  } else if (moves.length > 1) {
+    sendDataToAnalytics({
+      category: 'ambiguous',
+      action: 'input',
+      label: input,
+    });
 
-      if (move[2]) {
-        makePromotion(move[2]);
-      }
+    postMessage('Ambiguous move: ' + input);
+  } else {
+    sendDataToAnalytics({
+      category: 'incorrect',
+      action: 'input',
+      label: input,
+    });
 
-      return true;
-    } else if (moves.length > 1) {
-      sendDataToAnalytics({
-        category: 'ambiguous',
-        action: 'input',
-        label: input,
-      });
-
-      postMessage('Ambiguous move: ' + input);
-    } else {
-      sendDataToAnalytics({
-        category: 'incorrect',
-        action: 'input',
-        label: input,
-      });
-
-      postMessage('Incorrect move: ' + input);
-    }
+    postMessage('Incorrect move: ' + input);
   }
 
   return false;
@@ -191,17 +131,13 @@ function go(input) {
 /**
  * Check move and make it if it's legal
  * This function relies on chess.com chessboard interface
+ * @param  {ChessBoard} board
  * @param  {String} fromField - starting field, e.g. 'e2'
  * @param  {String} toField   - ending field, e.g. 'e4'
  */
-function makeMove(fromField, toField) {
-  const board = getBoard();
-  if (board.gameRules.isLegalMove(board.gameSetup, fromField, toField)) {
-      board._clickedPieceElement = fromField;
-      board.fireEvent('onDropPiece', {
-          fromAreaId: fromField,
-          targetAreaId: toField,
-      });
+function makePlainMove(board, fromField, toField) {
+  if (board.isLegalMove(fromField, toField)) {
+      board.makeMove(fromField, toField);
   } else {
     const move = fromField + '-' + toField;
 
@@ -220,7 +156,7 @@ function makeMove(fromField, toField) {
  * Needs promotion window to be open
  * @param  {String} pieceType - what we want the piece to be? q|r|n|b
  */
-function makePromotion(pieceType) {
+function makrPromotionMove(pieceType) {
   const style = document.createElement('style');
   style.id='chessHelper__hidePromotionArea';
   style.innerHTML = '.promotion-area {opacity: .0000001}';
@@ -248,20 +184,20 @@ function makePromotion(pieceType) {
  * @return {Array}            - array [[from, to]?]
  */
 function getLegalMoves(board, move) {
-  if (!board || !move || !isPlayersMove(board)) {
+  if (!board || !move || !board.isPlayersMove()) {
     return [];
   }
 
   if (['short-castling', 'long-castling'].includes(move.moveType)) {
     return getLegalCastlingMoves(board, move);
   } else if (['move', 'capture'].includes(move.moveType)) {
-    const pieces = get(board, 'gameSetup.pieces', []);
+    const pieces = board.getPiecesSetup();
 
     const matchingPieces = filter(pieces, (p) => {
       return (
         new RegExp(`^${move.piece}$`).test(p.type) &&
         new RegExp(`^${move.from}$`).test(p.area) &&
-        board.gameRules.isLegalMove(board.gameSetup, p.area, move.to)
+        board.isLegalMove(p.area, move.to)
       );
     });
 
@@ -293,11 +229,11 @@ function getLegalCastlingMoves(board, move) {
     moves = [['e1', 'c1'], ['e8', 'c8']];
   }
 
-  const pieces = get(board, 'gameSetup.pieces', []);
+  const pieces = board.getPiecesSetup();
   const legalMoves = moves.filter(([fromSq, toSq]) => {
     return (
       find(pieces, {type: 'k', area: fromSq}) &&
-      board.gameRules.isLegalMove(board.gameSetup, fromSq, toSq)
+      board.isLegalMove(fromSq, toSq)
     );
   });
 
@@ -404,10 +340,9 @@ module.exports = {
   parseMoveInput,
   getBoard,
   go,
-  makeMove,
+  makePlainMove,
   parseAlgebraic,
   parseFromTo,
   getLegalMoves,
-  isPlayersMove,
-  makePromotion,
+  makrPromotionMove,
 };

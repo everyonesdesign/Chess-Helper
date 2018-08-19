@@ -239,3 +239,9 @@ input[type="text"].ccHelper-input::placeholder {
     box-shadow: inset 0 -2px 0 0 #ffdd90;
 }
 
+.ccHelper-customArrows {
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
+}
+

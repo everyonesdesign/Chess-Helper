@@ -1,7 +1,9 @@
 const {
-  getBoard,
   go,
 } = require('./chess');
+const {
+  getBoard,
+} = require('./chessboard');
 const {
   sendDataToAnalytics,
 } = require('./analytics');
@@ -60,31 +62,35 @@ function bindInputFocus(input) {
  */
 function bindInputKeyDown(input) {
   input.addEventListener('keydown', (e) => {
+    e.stopPropagation();
+
     if (e.keyCode === KEY_CODES.enter) {
       if (!input.value) {
         return;
       }
 
-      const success = go(input.value);
-
       const board = getBoard();
-      board && board.clearMarkedArrows();
 
-      sendDataToAnalytics({
-        category: 'enter',
-        action: 'press',
-        label: input.value,
-      });
+      if (board) {
+        const success = go(board, input.value);
+        board && board.clearMarkedArrows();
 
-      if (success) {
-        input.value = '';
+        sendDataToAnalytics({
+          category: 'enter',
+          action: 'press',
+          label: input.value,
+        });
 
-        // needed to remove autocomplete
-        // after successful command execution
-        setTimeout(() => {
-          const event = new Event('keyup');
-          input.dispatchEvent(event);
-        }, 200);
+        if (success) {
+          input.value = '';
+
+          // needed to remove autocomplete
+          // after successful command execution
+          setTimeout(() => {
+            const event = new Event('keyup');
+            input.dispatchEvent(event);
+          }, 200);
+        }
       }
 
       input.focus();
@@ -96,11 +102,19 @@ function bindInputKeyDown(input) {
       e.preventDefault();
     } else if (holdingCtrlOrCmd(e)) {
       if (e.keyCode === KEY_CODES.leftArrow) {
-        const sel = '.move-list-buttons .icon-chevron-left, .control-group .icon-chevron-left';
-        document.querySelector(sel).parentNode.click();
+        const sel = `
+          .move-list-buttons .icon-chevron-left,
+          .control-group .icon-chevron-left,
+          .move-list-buttons-component .icon-chevron-left
+        `;
+        document.querySelector(sel).click();
       } else if (e.keyCode === KEY_CODES.rightArrow) {
-        const sel = '.move-list-buttons .icon-chevron-right, .control-group .icon-chevron-right';
-        document.querySelector(sel).parentNode.click();
+        const sel = `
+          .move-list-buttons .icon-chevron-right,
+          .control-group .icon-chevron-right,
+          .move-list-buttons-component .icon-chevron-right
+        `;
+        document.querySelector(sel).click();
       }
     }
   });

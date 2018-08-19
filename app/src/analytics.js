@@ -31,9 +31,9 @@ function sendLayoutOverlappingStatus() {
     if (!isLive) return;
 
     const input = document.getElementById('ccHelper-input');
-    const board = document.querySelector('.chessboard');
+    const boardEl = document.querySelector('.chessboard');
     const inputRect = input.getBoundingClientRect();
-    const boardRect = board.getBoundingClientRect();
+    const boardRect = boardEl.getBoundingClientRect();
 
     const isOverlapping = (boardRect.top + boardRect.height + 40) > inputRect.top;
 

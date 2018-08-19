@@ -5,9 +5,11 @@ const {
   sendLayoutOverlappingStatus,
 } = require('./analytics');
 const {
-  getBoard,
   drawMovesOnBoard,
 } = require('./chess');
+const {
+  getBoard,
+} = require('./chessboard');
 const {
   bindInputKeyDown,
   bindInputFocus,
@@ -20,9 +22,6 @@ const {
   startUpdatingAriaHiddenElements,
   initBlindFoldOverlay,
 } = require('./utils');
-const {
-  boardsCallbacks,
-} = require('./globals');
 const {
   commands,
 } = require('./commands');
@@ -69,24 +68,18 @@ function init() {
     startUpdatingAriaHiddenElements();
     bindBlindFoldPeek();
 
+    document.addEventListener('ccHelper-draw', () => {
+      const board = getBoard();
+      drawMovesOnBoard(board, input.value);
+    });
+
     input.addEventListener('input', () => {
       try {
         const board = getBoard();
-        const draw = () => drawMovesOnBoard(board, input.value);
-        draw();
+
+        drawMovesOnBoard(board, input.value);
 
         initBlindFoldOverlay(board);
-
-        if (!boardsCallbacks.get(board)) {
-          // bind redraws on certain events
-          // (if it's not bound yet)
-          const events = [
-            board.attachEvent('onDropPiece', draw),
-            board.attachEvent('onAfterMoveAnimated', draw),
-            board.attachEvent('onRefresh', draw),
-          ];
-          boardsCallbacks.set(board, events);
-        }
 
         if (input.value[0] === '/') {
           sendDataToAnalytics({
