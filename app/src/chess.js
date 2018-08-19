@@ -1,4 +1,5 @@
 const filter = require('lodash/filter');
+const isEqual = require('lodash/isEqual');
 const find = require('lodash/find');
 const {
   sendDataToAnalytics,
@@ -25,6 +26,11 @@ function validateSquareName(input) {
   return /^[a-h][1-8]$/.test(input);
 }
 
+const emptyDrawCache = {
+  arrows: [],
+  areas: [],
+};
+
 /**
  * Draw all needed arrows and marks on the board
  * Note that drawing is async,
@@ -33,47 +39,46 @@ function validateSquareName(input) {
  * @param {String} inputText
  */
 function drawMovesOnBoard(board, inputText) {
+  if (!board) {
+    return;
+  }
+
   setImmediate(() => {
     const parseResults = parseMoveInput(inputText);
     const moves = getLegalMoves(board, parseResults);
 
-    if (board) {
-      clearBoardDrawings(board);
+    const prevState = drawCache.get(board) || emptyDrawCache;
+    let newState = emptyDrawCache;
 
-      if (moves.length === 1) {
-        const move = moves[0];
-        board.markArrow(...move);
-        drawCache.set(board, {
-          arrows: [[move[0], move[1]]],
-          areas: [],
-        });
-      } else if (moves.length > 1) {
-        drawCache.set(board, {
-          arrows: [],
-          areas: moves.map((m) => {
-            board.markArea(m[0]);
-            return m[0];
-          }),
-        });
-      }
+    if (moves.length === 1) {
+      const move = moves[0];
+      newState = {
+        arrows: [[move[0], move[1]]],
+        areas: [],
+      };
+    } else if (moves.length > 1) {
+      newState = {
+        arrows: [],
+        areas: moves.map((m) => {
+          board.markArea(m[0]);
+          return m[0];
+        }),
+      };
     }
-  });
-}
 
-/**
- * Clear all arrows and markings
- * @param {ChessBoard} board
- */
-function clearBoardDrawings(board) {
-  const cache = drawCache.get(board) || {
-    areas: [],
-    arrows: [],
-  };
-  cache.arrows.forEach((a) => board.unmarkArrow(a[0], a[1]));
-  cache.areas.forEach((area) => board.unmarkArea(area));
-  drawCache.set(board, {
-    areas: [],
-    arrows: [],
+    if (isEqual(prevState, newState)) {
+      return;
+    }
+
+    // unmark old aread
+    prevState.arrows.forEach((arrow) => board.unmarkArrow(...arrow));
+    prevState.areas.forEach((area) => board.unmarkArea(area));
+
+    // draw new ones
+    newState.arrows.forEach((arrow) => board.markArrow(...arrow));
+    newState.areas.forEach((area) => board.markArea(area));
+
+    drawCache.set(board, newState);
   });
 }
 
