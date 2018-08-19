@@ -23,6 +23,10 @@ class VueChessboard {
     this.viewSize = this.element.clientWidth;
     this.draw.viewbox(0, 0, this.viewSize, this.viewSize);
     this.draw.group().id('board-group');
+    this.arrowEnd = this.draw.marker(4, 4, function(add) {
+      add.polygon('0,0 0,4 4,2').fill('orange').opacity(1);
+      this.ref(0, 2); // eslint-disable-line no-invalid-this
+    });
 
     setInterval(() => {
       const event = new Event('ccHelper-draw');
@@ -150,10 +154,7 @@ class VueChessboard {
       'pointer-events': 'none',
     });
 
-    line.marker('end', 4, 4, function(add) {
-      add.polygon('0,0 0,4 4,2').fill('orange').opacity(1);
-      this.ref(0, 2); // eslint-disable-line no-invalid-this
-    });
+    line.marker('end', this.arrowEnd);
   }
 
   /**
