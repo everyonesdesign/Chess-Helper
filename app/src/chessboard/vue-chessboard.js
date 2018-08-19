@@ -30,7 +30,7 @@ class VueChessboard {
     this.arrowEnd = this.drawArrows.marker(4, 4, function(add) {
       add.polygon('0,0 0,4 4,2').fill('orange').opacity(1);
       this.ref(0, 2); // eslint-disable-line no-invalid-this
-    }).size(4, 4);
+    }).size(3, 3);
 
     this.drawAreas = svg(this.element.id);
     this.drawAreas.node.classList.add('ccHelper-customAreas');
