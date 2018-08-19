@@ -80,46 +80,44 @@ function clearBoardDrawings(board) {
 /**
  * Handle user input and act in appropriate way
  * The function uses active board on the screen if there's any
+ * @param  {ChessBoard} board
  * @param  {String} input - input, in format 'e2e4'
  * @return {Boolean} if the move was successfully consumed
  */
-function go(input) {
-  const board = getBoard();
-  if (board) {
-    const command = parseCommand(input);
-    if (command) {
-      command();
-      return true;
+function go(board, input) {
+  const command = parseCommand(input);
+  if (command) {
+    command();
+    return true;
+  }
+
+  const parseResult = parseMoveInput(input);
+  const moves = getLegalMoves(board, parseResult);
+  if (moves.length === 1) {
+    const move = moves[0];
+    makePlainMove(board, ...move);
+
+    if (move[2]) {
+      makrPromotionMove(move[2]);
     }
 
-    const parseResult = parseMoveInput(input);
-    const moves = getLegalMoves(board, parseResult);
-    if (moves.length === 1) {
-      const move = moves[0];
-      makeMove(...move);
+    return true;
+  } else if (moves.length > 1) {
+    sendDataToAnalytics({
+      category: 'ambiguous',
+      action: 'input',
+      label: input,
+    });
 
-      if (move[2]) {
-        makePromotion(move[2]);
-      }
+    postMessage('Ambiguous move: ' + input);
+  } else {
+    sendDataToAnalytics({
+      category: 'incorrect',
+      action: 'input',
+      label: input,
+    });
 
-      return true;
-    } else if (moves.length > 1) {
-      sendDataToAnalytics({
-        category: 'ambiguous',
-        action: 'input',
-        label: input,
-      });
-
-      postMessage('Ambiguous move: ' + input);
-    } else {
-      sendDataToAnalytics({
-        category: 'incorrect',
-        action: 'input',
-        label: input,
-      });
-
-      postMessage('Incorrect move: ' + input);
-    }
+    postMessage('Incorrect move: ' + input);
   }
 
   return false;
@@ -128,13 +126,12 @@ function go(input) {
 /**
  * Check move and make it if it's legal
  * This function relies on chess.com chessboard interface
+ * @param  {ChessBoard} board
  * @param  {String} fromField - starting field, e.g. 'e2'
  * @param  {String} toField   - ending field, e.g. 'e4'
  */
-function makeMove(fromField, toField) {
-  const board = getBoard();
+function makePlainMove(board, fromField, toField) {
   if (board.isLegalMove(fromField, toField)) {
-      board._clickedPieceElement = fromField;
       board.makeMove(fromField, toField);
   } else {
     const move = fromField + '-' + toField;
@@ -154,7 +151,7 @@ function makeMove(fromField, toField) {
  * Needs promotion window to be open
  * @param  {String} pieceType - what we want the piece to be? q|r|n|b
  */
-function makePromotion(pieceType) {
+function makrPromotionMove(pieceType) {
   const style = document.createElement('style');
   style.id='chessHelper__hidePromotionArea';
   style.innerHTML = '.promotion-area {opacity: .0000001}';
@@ -338,9 +335,9 @@ module.exports = {
   parseMoveInput,
   getBoard,
   go,
-  makeMove,
+  makePlainMove,
   parseAlgebraic,
   parseFromTo,
   getLegalMoves,
-  makePromotion,
+  makrPromotionMove,
 };

@@ -68,6 +68,11 @@ function init() {
     startUpdatingAriaHiddenElements();
     bindBlindFoldPeek();
 
+    document.addEventListener('ccHelper-draw', () => {
+      const board = getBoard();
+      drawMovesOnBoard(board, input.value);
+    });
+
     input.addEventListener('input', () => {
       try {
         const board = getBoard();

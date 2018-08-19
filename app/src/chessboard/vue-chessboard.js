@@ -1,73 +1,10 @@
 const svg = require('svg.js');
 const get = require('lodash/get');
 const {
-  boards,
-} = require('../globals');
-
-/**
- * Global chessboard
- */
-
-const MOUSE_WHICH = {
-  no: 0,
-  left: 1,
-  middle: 2,
-  right: 3,
-};
-
-const MOUSE_BUTTON = {
-  left: 0,
-  right: 2,
-};
-
-/**
- * Translate square string to coords
- * @param  {String} square e2
- * @return {Array<String>} ['05','02']
- */
-function squareToCoords(square) {
-  const hor = '0' + ('abcdefgh'.indexOf(square[0]) + 1);
-  const ver = '0' + square[1];
-  return [hor, ver];
-}
-
-/**
- * Translate coords string to square
- * @param  {String} coords '0502'
- * @return {String}        'e2'
- */
-function coordsToSquare(coords) {
-  const numbers = ['', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-  return numbers[coords.slice(1, 2)] + coords.slice(3, 4);
-}
-
-/**
- * Simulate mouse event
- * @param  {Element} element
- * @param  {String} options.name
- * @param  {Number} options.which
- * @param  {Number} options.button
- * @param  {Number} options.x
- * @param  {Number} options.y
- * @param  {Object} options
- */
-function dispatchMouseEvent(element, {
-  name,
-  which = MOUSE_WHICH.left,
-  button = MOUSE_BUTTON.left,
-  x = 0,
-  y = 0,
-}) {
-  element.dispatchEvent(new MouseEvent(name, {
-    bubbles: true,
-    cancelable: true,
-    view: window,
-    which,
-    buttons: which,
-    clientX: x,
-    clientY: y,
-  }));
-}
+  squareToCoords,
+  coordsToSquare,
+  dispatchMouseEvent,
+} = require('../utils');
 
 /**
  * Chessboard implemented with Vue.JS
@@ -77,21 +14,20 @@ class VueChessboard {
   /**
    * Constructor
    * @param  {Element} element
-   * @return {Object}
+   * @constructor
    */
   constructor(element) {
-    const existingBoard = boards.get(element);
-    if (existingBoard) {
-      return existingBoard;
-    }
-    boards.set(element, this);
-
     this.element = element;
     this.draw = svg(this.element.id);
 
     this.viewSize = this.element.clientWidth;
     this.draw.viewbox(0, 0, this.viewSize, this.viewSize);
     this.draw.group().id('board-group');
+
+    setInterval(() => {
+      const event = new Event('ccHelper-draw');
+      document.dispatchEvent(event);
+    }, 500);
   }
 
   /**
@@ -257,7 +193,9 @@ class VueChessboard {
    * Remove marked area
    * @param  {String} square e2
    */
-  unmarkArea(square) {}
+  unmarkArea(square) {
+    // TODO: implement
+  }
 
   /**
    * Get position in pixels for some square

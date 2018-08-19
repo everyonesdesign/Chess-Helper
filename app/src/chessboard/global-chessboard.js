@@ -2,9 +2,6 @@ const get = require('lodash/get');
 const {
   RED_SQUARE_COLOR,
 } = require('../utils');
-const {
-  boards,
-} = require('../globals');
 
 /**
  * Global chessboard
@@ -13,17 +10,19 @@ class GlobalChessboard {
   /**
    * Constructor
    * @param  {Element} element
-   * @return {Object}
+   * @constructor
    */
   constructor(element) {
-    const existingBoard = boards.get(element);
-    if (existingBoard) {
-      return existingBoard;
-    }
-    boards.set(element, this);
-
     this.element = element;
     this.board = element.chessBoard;
+
+    const emitDraw = () => {
+      const event = new Event('ccHelper-draw');
+      document.dispatchEvent(event);
+    };
+    this.board.attachEvent('onDropPiece', emitDraw);
+    this.board.attachEvent('onAfterMoveAnimated', emitDraw);
+    this.board.attachEvent('onRefresh', emitDraw);
   }
 
   /**
@@ -40,7 +39,11 @@ class GlobalChessboard {
    * @param  {String} toSq e4
    */
   makeMove(fromSq, toSq) {
-    this.board.fireEvent('onDropPiece', {fromSq, toSq});
+    this.board._clickedPieceElement = fromSq;
+    this.board.fireEvent('onDropPiece', {
+      fromAreaId: fromSq,
+      targetAreaId: toSq,
+    });
   }
 
   /**

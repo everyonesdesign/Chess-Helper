@@ -3,7 +3,6 @@ const assert = require('assert');
 const domify = require('domify');
 
 const {
-  go,
   parseAlgebraic,
   parseFromTo,
   getLegalMoves,

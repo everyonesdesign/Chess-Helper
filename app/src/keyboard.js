@@ -67,26 +67,28 @@ function bindInputKeyDown(input) {
         return;
       }
 
-      const success = go(input.value);
-
       const board = getBoard();
-      board && board.clearMarkedArrows();
 
-      sendDataToAnalytics({
-        category: 'enter',
-        action: 'press',
-        label: input.value,
-      });
+      if (board) {
+        const success = go(board, input.value);
+        board && board.clearMarkedArrows();
 
-      if (success) {
-        input.value = '';
+        sendDataToAnalytics({
+          category: 'enter',
+          action: 'press',
+          label: input.value,
+        });
 
-        // needed to remove autocomplete
-        // after successful command execution
-        setTimeout(() => {
-          const event = new Event('keyup');
-          input.dispatchEvent(event);
-        }, 200);
+        if (success) {
+          input.value = '';
+
+          // needed to remove autocomplete
+          // after successful command execution
+          setTimeout(() => {
+            const event = new Event('keyup');
+            input.dispatchEvent(event);
+          }, 200);
+        }
       }
 
       input.focus();
