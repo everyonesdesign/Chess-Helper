@@ -1,14 +1,11 @@
 require('jsdom-global')();
 const assert = require('assert');
-const domify = require('domify');
 
 const {
-  getBoard,
   GlobalChessboard,
-  VueChessboard,
 } = require('../src/chessboard');
 
-describe('GlobalChessboard', function () {
+describe('GlobalChessboard', function() {
   describe('isPlayersMove', function() {
     beforeEach(function() {
       this.parent = document.createElement('div');
@@ -20,6 +17,7 @@ describe('GlobalChessboard', function () {
         gameSetup: {
           flags: {},
         },
+        attachEvent: () => {},
       };
       this.chessboardEl.chessBoard = this.internalChessObject;
       this.parent.appendChild(this.chessboardEl);

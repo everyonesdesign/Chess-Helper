@@ -6,7 +6,7 @@ const {
   parseAlgebraic,
   parseFromTo,
   getLegalMoves,
-  makePromotion,
+  makePromotionMove,
 } = require('../src/chess');
 
 describe('parseAlgebraic', function() {
@@ -316,7 +316,7 @@ describe('getLegalMoves', function() {
   });
 });
 
-describe('makePromotion', function() {
+describe('makePromotionMove', function() {
   beforeEach(function() {
     this.promotionArea = domify(`
       <div class="promotion-area">
@@ -336,12 +336,12 @@ describe('makePromotion', function() {
 
   it('hides promotion window', function() {
     assert.equal(false, !!document.querySelector('#chessHelper__hidePromotionArea'));
-    makePromotion('q');
+    makePromotionMove('q');
     assert.equal(true, !!document.querySelector('#chessHelper__hidePromotionArea'));
   });
 
   it('shows promotion window in 100ms', function(done) {
-    makePromotion('q');
+    makePromotionMove('q');
     setTimeout(function() {
       assert.equal(false, !!document.querySelector('#chessHelper__hidePromotionArea'));
       done();
@@ -361,20 +361,20 @@ describe('makePromotion', function() {
     q.click = () => clicks.q++;
     b.click = () => clicks.b++;
 
-    makePromotion('n');
+    makePromotionMove('n');
     setTimeout(function() {
       assert.deepEqual(clicks, {n: 1, r: 0, b: 0, q: 0});
-      makePromotion('q');
+      makePromotionMove('q');
     }, 100);
 
     setTimeout(function() {
       assert.deepEqual(clicks, {n: 1, r: 0, b: 0, q: 1});
-      makePromotion('b');
+      makePromotionMove('b');
     }, 200);
 
     setTimeout(function() {
       assert.deepEqual(clicks, {n: 1, r: 0, b: 1, q: 1});
-      makePromotion('r');
+      makePromotionMove('r');
     }, 300);
 
     setTimeout(function() {
@@ -391,7 +391,7 @@ describe('makePromotion', function() {
     const q = this.promotionArea.querySelector('#divBoard_promotionq');
     q.click = () => clicked = true;
 
-    makePromotion('q');
+    makePromotionMove('q');
 
     setTimeout(() => {
       assert.equal(clicked, false);
