@@ -102,7 +102,7 @@ function go(board, input) {
     makePlainMove(board, ...move);
 
     if (move[2]) {
-      makrPromotionMove(move[2]);
+      makePromotionMove(move[2]);
     }
 
     return true;
@@ -155,7 +155,7 @@ function makePlainMove(board, fromField, toField) {
  * Needs promotion window to be open
  * @param  {String} pieceType - what we want the piece to be? q|r|n|b
  */
-function makrPromotionMove(pieceType) {
+function makePromotionMove(pieceType) {
   const style = document.createElement('style');
   style.id='chessHelper__hidePromotionArea';
   style.innerHTML = '.promotion-area {opacity: .0000001}';
@@ -343,5 +343,5 @@ module.exports = {
   parseAlgebraic,
   parseFromTo,
   getLegalMoves,
-  makrPromotionMove,
+  makePromotionMove,
 };
