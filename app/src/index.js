@@ -66,7 +66,7 @@ function init() {
     });
 
     startUpdatingAriaHiddenElements();
-    bindBlindFoldPeek();
+    bindBlindFoldPeek(input);
 
     document.addEventListener('ccHelper-draw', () => {
       const board = getBoard();
