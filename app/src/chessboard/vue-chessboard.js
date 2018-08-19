@@ -141,18 +141,41 @@ class VueChessboard {
 
     // what if the board became bigger/smaller?
     const sizeRatio = this.element.clientWidth / this.viewSize;
+    const elementWidth = this.element.clientWidth / sizeRatio;
+
+    const compensationSize = elementWidth / 32; // half of a square
+    const compensation = {
+      x: {start: 0, end: 0},
+      y: {start: 0, end: 0},
+    };
+
+    if (fromPosition.x < toPosition.x) {
+      compensation.x.start = compensationSize;
+      compensation.x.end = -compensationSize;
+    } else if (fromPosition.x > toPosition.x) {
+      compensation.x.start = -compensationSize;
+      compensation.x.end = compensationSize;
+    }
+
+    if (fromPosition.y < toPosition.y) {
+      compensation.y.start = compensationSize;
+      compensation.y.end = -compensationSize;
+    } else if (fromPosition.y > toPosition.y) {
+      compensation.y.start = -compensationSize;
+      compensation.y.end = compensationSize;
+    }
 
     const boardGroup = svg.get('board-group');
     const line = this
       .draw
       .line(
-        fromPosition.x / sizeRatio,
-        fromPosition.y / sizeRatio,
-        toPosition.x / sizeRatio,
-        toPosition.y / sizeRatio,
+        fromPosition.x / sizeRatio + compensation.x.start,
+        fromPosition.y / sizeRatio + compensation.y.start,
+        toPosition.x / sizeRatio + compensation.x.end,
+        toPosition.y / sizeRatio + compensation.y.end,
       )
       .stroke({
-        width: this.element.clientWidth / 90 / sizeRatio,
+        width: elementWidth / 90,
         color: 'orange',
         opacity: 1,
       });
