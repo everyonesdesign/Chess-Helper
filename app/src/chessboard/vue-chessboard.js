@@ -43,6 +43,15 @@ class VueChessboard {
   }
 
   /**
+   * Return DOM element for relative positioning
+   * e.g. for blindfold mode
+   * @return {Element}
+   */
+  getRelativeContainer() {
+    return this.element;
+  }
+
+  /**
    * Make move
    * @param  {String} fromSq   e2
    * @param  {String} toSq e4

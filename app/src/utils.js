@@ -124,10 +124,9 @@ function startUpdatingAriaHiddenElements() {
 function initBlindFoldOverlay(board) {
   const existingOverlay = blindfoldOverlays.get(board);
   if (!existingOverlay) {
-    const element = board.getElement();
-    if (element) {
-      const boardarea = [...element.children].filter((c) => c.matches('[id*=boardarea]'))[0];
-      if (boardarea) {
+    const container = board.getRelativeContainer();
+    if (container) {
+      if (container) {
         const overlay = domify(`
           <div class="ccHelper-blindfold">
             <div class="ccHelper-blindfoldPeek">
@@ -151,7 +150,7 @@ function initBlindFoldOverlay(board) {
         button.addEventListener('click', () => commands.blindfold());
 
         blindfoldOverlays.set(board, overlay);
-        boardarea.appendChild(overlay);
+        container.appendChild(overlay);
       } else {
         // maybe set some dummy value to `blindfoldOverlays` set
         // to optimise this function?
