@@ -60,7 +60,6 @@ function drawMovesOnBoard(board, inputText) {
       newState = {
         arrows: [],
         areas: moves.map((m) => {
-          board.markArea(m[0]);
           return m[0];
         }),
       };
