@@ -62,6 +62,8 @@ function bindInputFocus(input) {
  */
 function bindInputKeyDown(input) {
   input.addEventListener('keydown', (e) => {
+    e.stopPropagation();
+
     if (e.keyCode === KEY_CODES.enter) {
       if (!input.value) {
         return;
@@ -100,11 +102,19 @@ function bindInputKeyDown(input) {
       e.preventDefault();
     } else if (holdingCtrlOrCmd(e)) {
       if (e.keyCode === KEY_CODES.leftArrow) {
-        const sel = '.move-list-buttons .icon-chevron-left, .control-group .icon-chevron-left';
-        document.querySelector(sel).parentNode.click();
+        const sel = `
+          .move-list-buttons .icon-chevron-left,
+          .control-group .icon-chevron-left,
+          .move-list-buttons-component .icon-chevron-left
+        `;
+        document.querySelector(sel).click();
       } else if (e.keyCode === KEY_CODES.rightArrow) {
-        const sel = '.move-list-buttons .icon-chevron-right, .control-group .icon-chevron-right';
-        document.querySelector(sel).parentNode.click();
+        const sel = `
+          .move-list-buttons .icon-chevron-right,
+          .control-group .icon-chevron-right,
+          .move-list-buttons-component .icon-chevron-right
+        `;
+        document.querySelector(sel).click();
       }
     }
   });
