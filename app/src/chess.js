@@ -166,9 +166,10 @@ function makePromotionMove(pieceType) {
    * because otherwise the promotion area won't be in time to be shown
    */
   setTimeout(function() {
-    const promotionArea = document.querySelector('.promotion-area');
+    const promotionArea = document.querySelector('.promotion-area, .promotion-menu');
     if (promotionArea && promotionArea.style.display !== 'none') {
-      const target = promotionArea.querySelector(`[piece="${pieceType}"]`);
+      const selector = `[piece="${pieceType}"], [data-type="${pieceType}"]`;
+      const target = promotionArea.querySelector(selector);
       target && target.click();
     }
 

@@ -239,9 +239,21 @@ input[type="text"].ccHelper-input::placeholder {
     box-shadow: inset 0 -2px 0 0 #ffdd90;
 }
 
+.ccHelper-customAreas,
 .ccHelper-customArrows {
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     z-index: 1;
     pointer-events: none;
 }
 
+.board .piece {
+    z-index: 2;
+}
+
+.ccHelper-customArrows {
+    z-index: 3;
+}

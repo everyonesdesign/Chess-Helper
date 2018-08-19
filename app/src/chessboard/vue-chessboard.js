@@ -4,6 +4,7 @@ const {
   squareToCoords,
   coordsToSquare,
   dispatchMouseEvent,
+  RED_SQUARE_COLOR,
 } = require('../utils');
 
 /**
@@ -18,16 +19,20 @@ class VueChessboard {
    */
   constructor(element) {
     this.element = element;
-    this.draw = svg(this.element.id);
-    this.draw.node.classList.add('ccHelper-customArrows');
 
     this.viewSize = this.element.clientWidth;
-    this.draw.viewbox(0, 0, this.viewSize, this.viewSize);
-    this.draw.group().id('board-group');
-    this.arrowEnd = this.draw.marker(4, 4, function(add) {
+
+    this.drawArrows = svg(this.element.id);
+    this.drawArrows.node.classList.add('ccHelper-customArrows');
+    this.drawArrows.viewbox(0, 0, this.viewSize, this.viewSize);
+    this.arrowEnd = this.drawArrows.marker(4, 4, function(add) {
       add.polygon('0,0 0,4 4,2').fill('orange').opacity(1);
       this.ref(0, 2); // eslint-disable-line no-invalid-this
     }).size(4, 4);
+
+    this.drawAreas = svg(this.element.id);
+    this.drawAreas.node.classList.add('ccHelper-customAreas');
+    this.drawAreas.viewbox(0, 0, this.viewSize, this.viewSize);
 
     setInterval(() => {
       const event = new Event('ccHelper-draw');
@@ -139,7 +144,6 @@ class VueChessboard {
     const fromPosition = this._getSquarePosition(fromSq, false);
     const toPosition = this._getSquarePosition(toSq, false);
 
-    // what if the board became bigger/smaller?
     const sizeRatio = this.element.clientWidth / this.viewSize;
     const elementWidth = this.element.clientWidth / sizeRatio;
 
@@ -165,9 +169,7 @@ class VueChessboard {
       compensation.y.end = compensationSize;
     }
 
-    const boardGroup = svg.get('board-group');
-    const line = this
-      .draw
+    const line = this.drawArrows
       .line(
         fromPosition.x / sizeRatio + compensation.x.start,
         fromPosition.y / sizeRatio + compensation.y.start,
@@ -180,12 +182,8 @@ class VueChessboard {
         opacity: 1,
       });
 
-    boardGroup.add(line);
+    this.drawArrows.add(line);
     line.id(lineId);
-    line.attr({
-      'class': 'arrow',
-      'pointer-events': 'none',
-    });
 
     line.marker('end', this.arrowEnd);
   }
@@ -197,8 +195,9 @@ class VueChessboard {
    */
   unmarkArrow(fromSq, toSq) {
     const lineId = `ccHelper-arrow-${fromSq}${toSq}`;
-    if (svg.get(lineId)) {
-      svg.get(lineId).remove();
+    const line = svg.get(lineId);
+    if (line) {
+      line.remove();
     }
   }
 
@@ -206,8 +205,7 @@ class VueChessboard {
    * Remove all arrows
    */
   clearMarkedArrows() {
-    const boardGroup = svg.get('board-group');
-    boardGroup.each((i, item) => {
+    this.drawArrows.each((i, item) => {
       const id = get(item, '0.node.id');
       if (id && id.startsWith('ccHelper-arrow-')) {
         svg.get(id).remove();
@@ -220,7 +218,23 @@ class VueChessboard {
    * @param  {String} square e2
    */
   markArea(square) {
-    // TODO: implement
+    const rectId = `ccHelper-rect-${square}`;
+
+    const position = this._getSquarePosition(square, false);
+    const sizeRatio = this.element.clientWidth / this.viewSize;
+    const elementWidth = this.element.clientWidth / sizeRatio;
+    const squareWidth = elementWidth / 8;
+
+    const rect = this.drawAreas
+      .rect(squareWidth, squareWidth)
+      .attr({
+        x: position.x - squareWidth / 2,
+        y: position.y - squareWidth / 2,
+        fill: RED_SQUARE_COLOR,
+      });
+
+    this.drawAreas.add(rect);
+    rect.id(rectId);
   }
 
   /**
@@ -228,7 +242,11 @@ class VueChessboard {
    * @param  {String} square e2
    */
   unmarkArea(square) {
-    // TODO: implement
+    const rectId = `ccHelper-rect-${square}`;
+    const rect = svg.get(rectId);
+    if (rect) {
+      rect.remove();
+    }
   }
 
   /**
