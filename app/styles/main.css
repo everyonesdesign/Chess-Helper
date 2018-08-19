@@ -250,10 +250,18 @@ input[type="text"].ccHelper-input::placeholder {
     pointer-events: none;
 }
 
-.board .piece {
+.ccHelper-board--inited .piece {
     z-index: 2;
 }
 
-.ccHelper-customArrows {
+.ccHelper-board--inited .piece.dragging {
     z-index: 3;
+}
+
+.ccHelper-customArrows {
+    z-index: 4;
+}
+
+.ccHelper-board--inited .promotion-menu {
+    z-index: 5;
 }

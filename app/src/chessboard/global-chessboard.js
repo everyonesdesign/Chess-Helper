@@ -16,6 +16,8 @@ class GlobalChessboard {
     this.element = element;
     this.board = element.chessBoard;
 
+    this.element.classList.add('ccHelper-board--inited');
+
     const emitDraw = () => {
       const event = new Event('ccHelper-draw');
       document.dispatchEvent(event);

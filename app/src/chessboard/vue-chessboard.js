@@ -20,6 +20,8 @@ class VueChessboard {
   constructor(element) {
     this.element = element;
 
+    this.element.classList.add('ccHelper-board--inited');
+
     this.viewSize = this.element.clientWidth;
 
     this.drawArrows = svg(this.element.id);
