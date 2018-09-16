@@ -39,7 +39,7 @@ class VueChessboard {
     setInterval(() => {
       const event = new Event('ccHelper-draw');
       document.dispatchEvent(event);
-    }, 500);
+    }, 200);
   }
 
   /**
