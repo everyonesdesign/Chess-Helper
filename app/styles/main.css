@@ -265,3 +265,30 @@ input[type="text"].ccHelper-input::placeholder {
 .ccHelper-board--inited .promotion-menu {
     z-index: 5;
 }
+
+/*
+    HACK TO FIX THE BOARD INTERFACE FOR VUE.JS APP
+
+    Vue.js re-rendered the whole board, and made the controls disappear,
+    so we append the controls to an ancestor node instead.
+
+    This change required some styles overrides.
+*/
+
+#live-app {
+    padding-bottom: 64px;
+}
+
+#live-app .main-board-component {
+    align-self: flex-start;
+}
+
+#live-app .sidebar-component {
+    margin-bottom: -49px;
+}
+
+#live-app .ccHelper-wrapper {
+    width: calc(100% - 29px);
+    position: absolute;
+    top: 100%;
+}

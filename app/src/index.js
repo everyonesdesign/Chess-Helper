@@ -36,7 +36,7 @@ function init() {
     .analysis-diagram .chess_viewer,
     .main-board .board,
     #chessboard,
-    #live-app [class*=board-layout-vertical-component],
+    #live-app .main-board-component,
     #chess_com_tactics_board,
     [id^=chess_com_chessmentor_board_]
   `;
