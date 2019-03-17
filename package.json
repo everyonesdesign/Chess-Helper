@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "domify": "^1.4.0",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "svg.js": "^2.6.5"
   }
 }
