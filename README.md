@@ -1,5 +1,7 @@
 # Chess Helper Extension
 
+[Demo Video](https://www.youtube.com/watch?v=C99DwXs6JNU)
+|
 [Trello Board](https://trello.com/b/xaiPLyB0)
 |
 [Chrome Web Store](https://chrome.google.com/webstore/detail/bghaancnengidpcefpkbbppinjmfnlhh/publish-accepted?hl=en-US)
