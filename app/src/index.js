@@ -38,6 +38,7 @@ function init() {
     #chessboard,
     #live-app .main-board-component,
     #chess_com_tactics_board,
+    #board-layout-main,
     [id^=chess_com_chessmentor_board_]
   `;
   const boardElement = document.querySelector(selector);
