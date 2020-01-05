@@ -46,15 +46,20 @@ class GlobalChessboard {
 
   /**
    * Make move
-   * @param  {String} fromSq   e2
-   * @param  {String} toSq e4
+   * @param  {String} fromSq - e2
+   * @param  {String} toSq - e4
+   * @param  {String} promotionPiece - q
    */
-  makeMove(fromSq, toSq) {
+  makeMove(fromSq, toSq, promotionPiece = null) {
     this.board._clickedPieceElement = fromSq;
     this.board.fireEvent('onDropPiece', {
       fromAreaId: fromSq,
       targetAreaId: toSq,
     });
+
+    if (promotionPiece) {
+      this.implementPromotion(promotionPiece);
+    }
   }
 
   /**
@@ -138,6 +143,40 @@ class GlobalChessboard {
    */
   unmarkArea(square) {
     this.board.unmarkArea(square, true);
+  }
+
+  /**
+   * Make a promotion
+   * @param  {String} pieceType - what we want the piece to be? q|r|n|b
+   */
+  implementPromotion(pieceType) {
+    const style = document.createElement('style');
+    style.id='chessHelper__hidePromotionArea';
+    style.innerHTML = '.promotion-area, .promotion-menu {opacity: .0000001}';
+    document.body.appendChild(style);
+
+    /**
+     * Click element asynchronously
+     * because otherwise the promotion area won't be in time to be shown
+     */
+    setTimeout(function() {
+      const promotionArea = document.querySelector('.promotion-area, .promotion-menu');
+      if (promotionArea && promotionArea.style.display !== 'none') {
+        const selector = `[piece="${pieceType}"], [data-type="${pieceType}"]`;
+        const target = promotionArea.querySelector(selector);
+
+        if (target) {
+          const clickEvent = new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: true,
+          });
+          target.dispatchEvent(clickEvent);
+        }
+      }
+
+      style.parentNode.removeChild(style);
+    }, 50);
   }
 }
 

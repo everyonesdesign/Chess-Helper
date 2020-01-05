@@ -61,10 +61,11 @@ class VueChessboard {
 
   /**
    * Make move
-   * @param  {String} fromSq   e2
-   * @param  {String} toSq e4
+   * @param  {String} fromSq - e2
+   * @param  {String} toSq - e4
+   * @param  {String} promotionPiece - q
    */
-  makeMove(fromSq, toSq) {
+  makeMove(fromSq, toSq, promotionPiece = null) {
     const fromCoords = squareToCoords(fromSq);
     const pieceElement = this.element.querySelector(`.piece.square-${fromCoords.join('')}`);
     if (pieceElement) {
@@ -81,6 +82,10 @@ class VueChessboard {
         x: toPosition.x,
         y: toPosition.y,
       });
+
+      if (promotionPiece) {
+        this._getInternalVue().dispatch('selectPromotionPiece', promotionPiece);
+      }
     }
   }
 
@@ -91,7 +96,7 @@ class VueChessboard {
    * @return {Boolean}        [description]
    */
   isLegalMove(fromSq, toSq) {
-    const {legalMoves} = this._getInternalVueState();
+    const {legalMoves} = this._getInternalVue().chessboard.state;
     return legalMoves.some((m) => m.from === fromSq && m.to === toSq);
   }
 
@@ -100,7 +105,7 @@ class VueChessboard {
    * @return {Boolean} [description]
    */
   isPlayersMove() {
-    const {playingAs, sideToMove} = this._getInternalVueState();
+    const {playingAs, sideToMove} = this._getInternalVue().chessboard.state;
 
     if (playingAs !== undefined && sideToMove !== undefined) {
       return playingAs === sideToMove;
@@ -281,8 +286,8 @@ class VueChessboard {
    * Get access to Vue state object
    * @return {Object}
    */
-  _getInternalVueState() {
-    return this.element.__vue__.chessboard.state;
+  _getInternalVue() {
+    return this.element.__vue__;
   }
 }
 
