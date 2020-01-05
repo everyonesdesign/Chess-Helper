@@ -136,7 +136,7 @@ function makePlainMove(board, fromField, toField) {
 function makePromotionMove(pieceType) {
   const style = document.createElement('style');
   style.id='chessHelper__hidePromotionArea';
-  style.innerHTML = '.promotion-area {opacity: .0000001}';
+  style.innerHTML = '.promotion-area, .promotion-menu {opacity: .0000001}';
   document.body.appendChild(style);
 
   /**
