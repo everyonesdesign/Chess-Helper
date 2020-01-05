@@ -1,36 +1,18 @@
 const {
   postMessage,
 } = require('./utils');
-const {
-  sendDataToAnalytics,
-} = require('./analytics');
 
 const commands = {
   blindfold: () => {
     document.body.classList.toggle('ccHelper-docBody--blindfolded');
-    sendDataToAnalytics({
-      category: 'command',
-      action: 'activate',
-      label: 'blindfold',
-    });
   },
   resign: () => {
     const resignButton = document.querySelector('.resign-button-component');
     resignButton && resignButton.click();
-    sendDataToAnalytics({
-      category: 'command',
-      action: 'activate',
-      label: 'resign',
-    });
   },
   draw: () => {
     const drawButton = document.querySelector('.draw-button-component');
     drawButton && drawButton.click();
-    sendDataToAnalytics({
-      category: 'command',
-      action: 'activate',
-      label: 'draw',
-    });
   },
 };
 

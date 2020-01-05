@@ -1,10 +1,5 @@
 const map = require('lodash/map');
 const {
-  initAnalytics,
-  sendDataToAnalytics,
-  sendLayoutOverlappingStatus,
-} = require('./analytics');
-const {
   drawMovesOnBoard,
 } = require('./chess');
 const {
@@ -43,8 +38,6 @@ function init() {
   `;
   const boardElement = document.querySelector(selector);
   if (boardElement) {
-    initAnalytics();
-
     const {
       wrapper,
       input,
@@ -81,13 +74,6 @@ function init() {
         drawMovesOnBoard(board, input.value);
 
         initBlindFoldOverlay(board);
-
-        if (input.value[0] === '/') {
-          sendDataToAnalytics({
-            category: 'command',
-            action: 'autocomplete-shown',
-          });
-        }
       } catch (e) {
         console.error(e);
       }
@@ -100,9 +86,6 @@ function init() {
         () => updatePlaceholder(input, unfocusedLabel)
       );
     });
-
-    // see https://trello.com/c/aT95jsv5
-    sendLayoutOverlappingStatus();
 
     buildMessagesMarkup();
   }
