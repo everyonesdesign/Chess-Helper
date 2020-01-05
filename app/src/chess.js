@@ -96,11 +96,7 @@ function go(board, input) {
   const moves = getLegalMoves(board, parseResult);
   if (moves.length === 1) {
     const move = moves[0];
-    makePlainMove(board, ...move);
-
-    if (move[2]) {
-      makePromotionMove(move[2]);
-    }
+    makeMove(board, ...move);
 
     return true;
   } else if (moves.length > 1) {
@@ -118,41 +114,15 @@ function go(board, input) {
  * @param  {ChessBoard} board
  * @param  {String} fromField - starting field, e.g. 'e2'
  * @param  {String} toField   - ending field, e.g. 'e4'
+ * @param  {String} promotionPiece - type of promotion piece
  */
-function makePlainMove(board, fromField, toField) {
+function makeMove(board, fromField, toField, promotionPiece = null) {
   if (board.isLegalMove(fromField, toField)) {
-      board.makeMove(fromField, toField);
+      board.makeMove(fromField, toField, promotionPiece);
   } else {
     const move = fromField + '-' + toField;
     postMessage('Move "' + move + '" is illegal');
   }
-}
-
-/**
- * Make a promotion
- * Needs promotion window to be open
- * @param  {String} pieceType - what we want the piece to be? q|r|n|b
- */
-function makePromotionMove(pieceType) {
-  const style = document.createElement('style');
-  style.id='chessHelper__hidePromotionArea';
-  style.innerHTML = '.promotion-area, .promotion-menu {opacity: .0000001}';
-  document.body.appendChild(style);
-
-  /**
-   * Click element asynchronously
-   * because otherwise the promotion area won't be in time to be shown
-   */
-  setTimeout(function() {
-    const promotionArea = document.querySelector('.promotion-area, .promotion-menu');
-    if (promotionArea && promotionArea.style.display !== 'none') {
-      const selector = `[piece="${pieceType}"], [data-type="${pieceType}"]`;
-      const target = promotionArea.querySelector(selector);
-      target && target.click();
-    }
-
-    style.parentNode.removeChild(style);
-  }, 50);
 }
 
 /**
@@ -318,9 +288,8 @@ module.exports = {
   parseMoveInput,
   getBoard,
   go,
-  makePlainMove,
+  makeMove,
   parseAlgebraic,
   parseFromTo,
   getLegalMoves,
-  makePromotionMove,
 };
