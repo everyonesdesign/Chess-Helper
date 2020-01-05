@@ -5,9 +5,6 @@ const {
   getBoard,
 } = require('./chessboard');
 const {
-  sendDataToAnalytics,
-} = require('./analytics');
-const {
   holdingCtrlOrCmd,
   isEditable,
   isModifierPressed,
@@ -46,11 +43,6 @@ function bindInputFocus(input) {
     ) {
       e.preventDefault();
       input.focus();
-
-      sendDataToAnalytics({
-        category: 'focused-from-keyboard',
-        action: 'press',
-      });
     }
   });
 }
@@ -74,12 +66,6 @@ function bindInputKeyDown(input) {
       if (board) {
         const success = go(board, input.value);
         board && board.clearMarkedArrows();
-
-        sendDataToAnalytics({
-          category: 'enter',
-          action: 'press',
-          label: input.value,
-        });
 
         if (success) {
           input.value = '';

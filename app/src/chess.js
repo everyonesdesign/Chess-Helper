@@ -2,9 +2,6 @@ const filter = require('lodash/filter');
 const isEqual = require('lodash/isEqual');
 const find = require('lodash/find');
 const {
-  sendDataToAnalytics,
-} = require('./analytics');
-const {
   postMessage,
 } = require('./utils');
 const {
@@ -107,20 +104,8 @@ function go(board, input) {
 
     return true;
   } else if (moves.length > 1) {
-    sendDataToAnalytics({
-      category: 'ambiguous',
-      action: 'input',
-      label: input,
-    });
-
     postMessage('Ambiguous move: ' + input);
   } else {
-    sendDataToAnalytics({
-      category: 'incorrect',
-      action: 'input',
-      label: input,
-    });
-
     postMessage('Incorrect move: ' + input);
   }
 
@@ -139,13 +124,6 @@ function makePlainMove(board, fromField, toField) {
       board.makeMove(fromField, toField);
   } else {
     const move = fromField + '-' + toField;
-
-    sendDataToAnalytics({
-      category: 'illegal',
-      action: 'input',
-      label: move,
-    });
-
     postMessage('Move "' + move + '" is illegal');
   }
 }
