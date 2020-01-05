@@ -1,12 +1,10 @@
 require('jsdom-global')();
 const assert = require('assert');
-const domify = require('domify');
 
 const {
   parseAlgebraic,
   parseFromTo,
   getLegalMoves,
-  makePromotionMove,
 } = require('../src/chess');
 
 describe('parseAlgebraic', function() {
