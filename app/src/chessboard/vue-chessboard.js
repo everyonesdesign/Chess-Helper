@@ -105,7 +105,11 @@ class VueChessboard {
    * @return {Boolean} [description]
    */
   isPlayersMove() {
-    const {playingAs, sideToMove} = this._getInternalVue().chessboard.state;
+    const {playingAs, sideToMove, gameSettings} = this._getInternalVue().chessboard.state;
+
+    if (gameSettings.analysis === true) {
+      return true;
+    }
 
     if (playingAs !== undefined && sideToMove !== undefined) {
       return playingAs === sideToMove;
