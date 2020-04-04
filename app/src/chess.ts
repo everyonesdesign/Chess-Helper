@@ -1,29 +1,39 @@
-const filter = require('lodash/filter');
-const isEqual = require('lodash/isEqual');
-const find = require('lodash/find');
-const {
+import filter from 'lodash/filter';
+import isEqual from 'lodash/isEqual';
+import find from 'lodash/find';
+import {
   postMessage,
-} = require('./utils');
-const {
+} from './utils';
+import {
   drawCache,
-} = require('./globals');
-const {
+} from './globals';
+import {
   parseCommand,
-} = require('./commands');
-const {
+} from './commands';
+import {
   getBoard,
-} = require('./chessboard');
+} from './chessboard';
+import {
+  IChessboard,
+  TArea,
+  TPiece,
+  IMoveTemplate,
+  IMove,
+  TFromTo,
+  TMoveType,
+  Nullable,
+} from './types';
 
 /**
  * Check if input is valid square name
  * @param  {String} input
  * @return {Boolean}
  */
-function validateSquareName(input) {
+export function validateSquareName(input: string) : boolean {
   return /^[a-h][1-8]$/.test(input);
 }
 
-const emptyDrawCache = {
+const emptyDrawCache : { arrows: TFromTo[], areas: TArea[] } = {
   arrows: [],
   areas: [],
 };
@@ -35,12 +45,12 @@ const emptyDrawCache = {
  * @param {ChessBoard} board
  * @param {String} inputText
  */
-function drawMovesOnBoard(board, inputText) {
+export function drawMovesOnBoard(board: IChessboard, inputText: string) : void {
   if (!board) {
     return;
   }
 
-  setImmediate(() => {
+  setTimeout(() => {
     const parseResults = parseMoveInput(inputText);
     const moves = getLegalMoves(board, parseResults);
 
@@ -50,14 +60,14 @@ function drawMovesOnBoard(board, inputText) {
     if (moves.length === 1) {
       const move = moves[0];
       newState = {
-        arrows: [[move[0], move[1]]],
+        arrows: [[move.from, move.to]],
         areas: [],
       };
     } else if (moves.length > 1) {
       newState = {
         arrows: [],
         areas: moves.map((m) => {
-          return m[0];
+          return m.from;
         }),
       };
     }
@@ -67,12 +77,12 @@ function drawMovesOnBoard(board, inputText) {
     }
 
     // unmark old aread
-    prevState.arrows.forEach((arrow) => board.unmarkArrow(...arrow));
-    prevState.areas.forEach((area) => board.unmarkArea(area));
+    prevState.arrows.forEach((arrow: TFromTo) => board.unmarkArrow(...arrow));
+    prevState.areas.forEach((area: TArea) => board.unmarkArea(area));
 
     // draw new ones
-    newState.arrows.forEach((arrow) => board.markArrow(...arrow));
-    newState.areas.forEach((area) => board.markArea(area));
+    newState.arrows.forEach((arrow: TFromTo) => board.markArrow(...arrow));
+    newState.areas.forEach((area: TArea) => board.markArea(area));
 
     drawCache.set(board, newState);
   });
@@ -85,7 +95,7 @@ function drawMovesOnBoard(board, inputText) {
  * @param  {String} input - input, in format 'e2e4'
  * @return {Boolean} if the move was successfully consumed
  */
-function go(board, input) {
+export function go(board: IChessboard, input: string) : boolean {
   const command = parseCommand(input);
   if (command) {
     command();
@@ -96,7 +106,7 @@ function go(board, input) {
   const moves = getLegalMoves(board, parseResult);
   if (moves.length === 1) {
     const move = moves[0];
-    makeMove(board, ...move);
+    makeMove(board, move.from, move.to, move.promotionPiece);
 
     return true;
   } else if (moves.length > 1) {
@@ -116,7 +126,12 @@ function go(board, input) {
  * @param  {String} toField   - ending field, e.g. 'e4'
  * @param  {String} promotionPiece - type of promotion piece
  */
-function makeMove(board, fromField, toField, promotionPiece = null) {
+export function makeMove(
+  board: IChessboard,
+  fromField: TArea,
+  toField: TArea,
+  promotionPiece?: TPiece,
+) {
   if (board.isLegalMove(fromField, toField)) {
       board.makeMove(fromField, toField, promotionPiece);
   } else {
@@ -131,7 +146,7 @@ function makeMove(board, fromField, toField, promotionPiece = null) {
  * @param  {Object} move      - object, returned by `parseMoveInput` method
  * @return {Array}            - array [[from, to]?]
  */
-function getLegalMoves(board, move) {
+export function getLegalMoves(board: IChessboard, move: Nullable<IMoveTemplate>) : IMove[] {
   if (!board || !move || !board.isPlayersMove()) {
     return [];
   }
@@ -150,13 +165,10 @@ function getLegalMoves(board, move) {
     });
 
     return matchingPieces.map((piece) => {
-      const coords = [piece.area, move.to];
-
-      if (move.promotionPiece) {
-        coords.push(move.promotionPiece);
-      }
-
-      return coords;
+      return {
+        ...move,
+        from: <TArea>piece.area,
+      };
     });
   }
 
@@ -169,19 +181,29 @@ function getLegalMoves(board, move) {
  * @param  {Object} move
  * @return {Array} array [[from, to]?]
  */
-function getLegalCastlingMoves(board, move) {
+function getLegalCastlingMoves(board: IChessboard, move: IMoveTemplate) : IMove[] {
   let moves;
   if (move.moveType === 'short-castling') {
-    moves = [['e1', 'g1'], ['e8', 'g8']];
+    moves = [
+      { piece: 'k', from: 'e1', to: 'g1', moveType: 'castling' },
+      { piece: 'k', from: 'e8', to: 'g8', moveType: 'castling' },
+    ];
   } else if (move.moveType === 'long-castling') {
-    moves = [['e1', 'c1'], ['e8', 'c8']];
+    moves = [
+      { piece: 'k', from: 'e1', to: 'c1', moveType: 'castling' },
+      { piece: 'k', from: 'e8', to: 'c8', moveType: 'castling' },
+    ];
+  }
+
+  if (!moves) {
+    return [];
   }
 
   const pieces = board.getPiecesSetup();
-  const legalMoves = moves.filter(([fromSq, toSq]) => {
+  const legalMoves = moves.filter(({ from , to }) => {
     return (
-      find(pieces, {type: 'k', area: fromSq}) &&
-      board.isLegalMove(fromSq, toSq)
+      find(pieces, {type: 'k', area: from}) &&
+      board.isLegalMove(from, to)
     );
   });
 
@@ -197,7 +219,7 @@ function getLegalCastlingMoves(board, move) {
  * @param  {String} input
  * @return {Object?} - move data
  */
-function parseMoveInput(input) {
+export function parseMoveInput(input: string) : Nullable<IMoveTemplate> {
   return parseAlgebraic(input) || parseFromTo(input);
 }
 
@@ -206,10 +228,10 @@ function parseMoveInput(input) {
  * @param  {String} input
  * @return {Object?}
  */
-function parseFromTo(input) {
+export function parseFromTo(input: string) : Nullable<IMoveTemplate> {
   const filteredSymbols = input.replace(/( |-)+/g, '');
-  const fromSquare = filteredSymbols.slice(0, 2);
-  const toSquare = filteredSymbols.slice(2, 4);
+  const fromSquare = <TArea>filteredSymbols.slice(0, 2);
+  const toSquare = <TArea>filteredSymbols.slice(2, 4);
 
   if (validateSquareName(fromSquare) && validateSquareName(toSquare)) {
     return {
@@ -225,26 +247,28 @@ function parseFromTo(input) {
 
 /**
  * Extract all possible information from algebraic notation
- * @param  {String} move
+ * @param  {String} input
  * @return {Object?}
  */
-function parseAlgebraic(move) {
+export function parseAlgebraic(input: string) : Nullable<IMoveTemplate> {
   // ignore from-to notation
-  if (/^\s*[a-h][1-8][a-h][1-8]\s*$/.test(move)) {
+  if (/^\s*[a-h][1-8][a-h][1-8]\s*$/.test(input)) {
     return null;
   }
 
-  const trimmedMove = move.replace(/[\s\-\(\)]+/g, '');
+  const trimmedMove = input.replace(/[\s\-\(\)]+/g, '');
 
   if (/[o0][o0][o0]/i.test(trimmedMove)) {
     return {
       piece: 'k',
       moveType: 'long-castling',
+      to: '',
     };
   } else if (/[o0][o0]/i.test(trimmedMove)) {
     return {
       piece: 'k',
       moveType: 'short-castling',
+      to: '',
     };
   }
 
@@ -256,40 +280,28 @@ function parseAlgebraic(move) {
   }
 
   const [
-    _, // eslint-disable-line no-unused-vars
+    _,
     pieceName,
     fromHor,
     fromVer,
     isCapture,
     toHor,
     toVer,
-    ep, // eslint-disable-line no-unused-vars
+    enPassant,
     promotion,
   ] = result;
 
-  const piece = (pieceName || 'p').toLowerCase();
-  const data = {
+  const piece = <TPiece>(pieceName || 'p').toLowerCase();
+  const move : IMoveTemplate = {
     piece,
-    moveType: isCapture ? 'capture' : 'move',
-    from: `${fromHor || '.'}${fromVer || '.'}`,
-    to: `${toHor || '.'}${toVer || '.'}`,
+    moveType: <TMoveType>(isCapture ? 'capture' : 'move'),
+    from: <TArea>`${fromHor || '.'}${fromVer || '.'}`,
+    to: <TArea>`${toHor || '.'}${toVer || '.'}`,
   };
 
   if (promotion && piece === 'p') {
-    data.promotionPiece = promotion[1].toLowerCase();
+    move.promotionPiece = <TPiece>promotion[1].toLowerCase();
   }
 
-  return data;
+  return move;
 }
-
-module.exports = {
-  drawMovesOnBoard,
-  validateSquareName,
-  parseMoveInput,
-  getBoard,
-  go,
-  makeMove,
-  parseAlgebraic,
-  parseFromTo,
-  getLegalMoves,
-};

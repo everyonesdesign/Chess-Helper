@@ -1,14 +1,17 @@
-const {
+import {
   go,
-} = require('./chess');
-const {
+} from './chess';
+import {
   getBoard,
-} = require('./chessboard');
-const {
+} from './chessboard';
+import {
   holdingCtrlOrCmd,
   isEditable,
   isModifierPressed,
-} = require('./utils');
+} from './utils';
+import {
+  Nullable,
+} from './types';
 
 const KEY_CODES = {
   enter: 13,
@@ -23,7 +26,7 @@ const KEY_CODES = {
  * Bind hotkeys connected with focusing of the input
  * @param  {Element} input
  */
-function bindInputFocus(input) {
+export function bindInputFocus(input: HTMLInputElement) {
   document.addEventListener('keydown', (e) => {
     if (isModifierPressed(e)) {
       // prevent native events from being prevented
@@ -33,13 +36,16 @@ function bindInputFocus(input) {
 
     if (e.keyCode === KEY_CODES.escape && e.target !== input) {
       setTimeout(() => {
-        document.activeElement.blur();
+        if (document.activeElement) {
+          const activeElement = <HTMLElement>document.activeElement;
+          activeElement.blur();
+        }
       });
     } else if (
       // latin & cyrillic
       /^[cс]$/i.test(e.key) &&
       e.target !== input &&
-      !isEditable(e.target)
+      !isEditable(<Nullable<Element>>e.target)
     ) {
       e.preventDefault();
       input.focus();
@@ -52,7 +58,7 @@ function bindInputFocus(input) {
  * Responsible for submitting move, backward/forward moves, etc.
  * @param  {Element} input
  */
-function bindInputKeyDown(input) {
+export function bindInputKeyDown(input: HTMLInputElement) {
   input.addEventListener('keydown', (e) => {
     e.stopPropagation();
 
@@ -93,14 +99,22 @@ function bindInputKeyDown(input) {
           .control-group .icon-chevron-left,
           .move-list-buttons-component .icon-chevron-left
         `;
-        document.querySelector(sel).click();
+        const potentialElement = document.querySelector(sel);
+        if (potentialElement) {
+          const clickTarget = <HTMLElement>potentialElement;
+          clickTarget.click();
+        }
       } else if (e.keyCode === KEY_CODES.rightArrow) {
         const sel = `
           .move-list-buttons .icon-chevron-right,
           .control-group .icon-chevron-right,
           .move-list-buttons-component .icon-chevron-right
         `;
-        document.querySelector(sel).click();
+        const potentialElement = document.querySelector(sel);
+        if (potentialElement) {
+          const clickTarget = <HTMLElement>potentialElement;
+          clickTarget.click();
+        }
       }
     }
   });
@@ -111,8 +125,8 @@ function bindInputKeyDown(input) {
  * in blindfold mode
  * @param {InputElement} input
  */
-function bindBlindFoldPeek(input) {
-  const updatePeekClass = (e) => {
+export function bindBlindFoldPeek(input: HTMLInputElement) {
+  const updatePeekClass = (e: KeyboardEvent) => {
     document.body.classList.toggle('ccHelper-docBody--peeked', !!e.ctrlKey);
   };
   document.body.addEventListener('keydown', updatePeekClass);
@@ -123,9 +137,3 @@ function bindBlindFoldPeek(input) {
   input.addEventListener('keydown', updatePeekClass);
   input.addEventListener('keyup', updatePeekClass);
 }
-
-module.exports = {
-  bindInputKeyDown,
-  bindInputFocus,
-  bindBlindFoldPeek,
-};

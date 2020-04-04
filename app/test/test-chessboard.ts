@@ -1,5 +1,7 @@
-require('jsdom-global')();
-const assert = require('assert');
+import jsDomGlobal from 'jsdom-global';
+import assert from 'assert';
+
+jsDomGlobal();
 
 const {
   GlobalChessboard,

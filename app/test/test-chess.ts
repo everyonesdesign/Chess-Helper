@@ -1,11 +1,17 @@
-require('jsdom-global')();
-const assert = require('assert');
+import jsDomGlobal from 'jsdom-global';
+import assert from 'assert';
 
-const {
+jsDomGlobal();
+
+import {
   parseAlgebraic,
   parseFromTo,
   getLegalMoves,
-} = require('../src/chess');
+} from '../src/chess';
+import {
+  IChessboard,
+  TArea,
+} from '../src/types';
 
 describe('parseAlgebraic', function() {
   it('parses short algebraic moves', function() {
@@ -107,21 +113,25 @@ describe('parseAlgebraic', function() {
   it('parses castling', function() {
     assert.deepEqual(parseAlgebraic('o-o'), {
       piece: 'k',
+      to: '',
       moveType: 'short-castling',
     });
 
     assert.deepEqual(parseAlgebraic('0-0'), {
       piece: 'k',
+      to: '',
       moveType: 'short-castling',
     });
 
     assert.deepEqual(parseAlgebraic('ooo'), {
       piece: 'k',
+      to: '',
       moveType: 'long-castling',
     });
 
     assert.deepEqual(parseAlgebraic('0-0-0'), {
       piece: 'k',
+      to: '',
       moveType: 'long-castling',
     });
   });
@@ -170,8 +180,10 @@ describe('parseFromTo', function() {
 });
 
 describe('getLegalMoves', function() {
-  const getChessBoardWithPieces = (input) => {
-    const pieces = {};
+  interface IPiece { color: number, type: string, area: string };
+
+  const getChessBoardWithPieces = (input: IPiece[]) : IChessboard => {
+    const pieces: Record<string, IPiece> = {};
 
     input.forEach((p, i) => {
       pieces[i] = p;
@@ -181,6 +193,14 @@ describe('getLegalMoves', function() {
       isLegalMove: () => true,
       isPlayersMove: () => true,
       getPiecesSetup: () => pieces,
+      getElement: () => document.createElement('div'),
+      getRelativeContainer: () => document.createElement('div'),
+      makeMove: (fromSq: TArea, toSq: TArea, promotionPiece?: string) => {},
+      markArrow: (fromSq: TArea, toSq: TArea) => {},
+      unmarkArrow: (fromSq: TArea, toSq: TArea) => {},
+      clearMarkedArrows: () => {},
+      markArea: (square: TArea) => {},
+      unmarkArea: (square: TArea) => {},
     };
   };
 
@@ -195,7 +215,12 @@ describe('getLegalMoves', function() {
       moveType: 'move',
     });
 
-    assert.deepEqual(result, [['e2', 'e4']]);
+    assert.deepEqual(result, [{
+      from: 'e2',
+      moveType: 'move',
+      piece: '.',
+      to: 'e4',
+    }]);
   });
 
   it('handles partial matches', function() {
@@ -209,7 +234,12 @@ describe('getLegalMoves', function() {
       moveType: 'move',
     });
 
-    assert.deepEqual(result, [['e2', 'e4']]);
+    assert.deepEqual(result, [{
+      from: 'e2',
+      moveType: 'move',
+      piece: '.',
+      to: 'e4',
+    }]);
   });
 
   it('ignores ambiguous results', function() {
@@ -225,7 +255,18 @@ describe('getLegalMoves', function() {
       moveType: 'move',
     });
 
-    assert.deepEqual(result, [['e2', 'e4'], ['c2', 'e4']]);
+    assert.deepEqual(result, [{
+      from: 'e2',
+      moveType: 'move',
+      piece: '.',
+      to: 'e4',
+    },
+    {
+      from: 'c2',
+      moveType: 'move',
+      piece: '.',
+      to: 'e4',
+    }]);
   });
 
   it('returns empty if there are no matching pieces', function() {
@@ -266,18 +307,18 @@ describe('getLegalMoves', function() {
       {color: 2, type: 'k', area: 'e1'},
       {color: 2, type: 'r', area: 'h1'},
     ]);
-    board.gameRules = {
-      isLegalMove: (_1, fromSq, toSq) => {
-        return fromSq === 'e1' && toSq === 'g1';
-      },
-    };
     const result = getLegalMoves(board, {
       piece: 'k',
       from: 'e2',
       to: 'g1',
       moveType: 'short-castling',
     });
-    assert.deepEqual(result, [['e1', 'g1']]);
+    assert.deepEqual(result, [{
+      from: 'e1',
+      moveType: 'castling',
+      piece: 'k',
+      to: 'g1',
+    }]);
   });
 
   it('returns correct move for long castling', function() {
@@ -285,21 +326,21 @@ describe('getLegalMoves', function() {
       {color: 2, type: 'k', area: 'e1'},
       {color: 2, type: 'r', area: 'a1'},
     ]);
-    board.gameRules = {
-      isLegalMove: (_1, fromSq, toSq) => {
-        return fromSq === 'e1' && toSq === 'c1';
-      },
-    };
     const result = getLegalMoves(board, {
       piece: 'k',
       from: 'e2',
       to: 'g1',
       moveType: 'long-castling',
     });
-    assert.deepEqual(result, [['e1', 'c1']]);
+    assert.deepEqual(result, [{
+      from: 'e1',
+      moveType: 'castling',
+      piece: 'k',
+      to: 'c1',
+    }]);
   });
 
-  it('returns promotion piece as last param', function() {
+  it('returns promotion piece properly', function() {
     const board = getChessBoardWithPieces([
       {color: 2, type: 'p', area: 'd7'},
     ]);
@@ -310,6 +351,12 @@ describe('getLegalMoves', function() {
       moveType: 'move',
       promotionPiece: 'q',
     });
-    assert.deepEqual(result, [['d7', 'd8', 'q']]);
+    assert.deepEqual(result, [{
+      from: 'd7',
+      moveType: 'move',
+      piece: 'p',
+      promotionPiece: 'q',
+      to: 'd8',
+    }]);
   });
 });

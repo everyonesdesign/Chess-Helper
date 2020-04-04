@@ -1,17 +1,20 @@
-const {
+import {
   postMessage,
-} = require('./utils');
+} from './utils';
+import {
+  Nullable,
+} from './types';
 
-const commands = {
+export const commands : Record<string, () => void> = {
   blindfold: () => {
     document.body.classList.toggle('ccHelper-docBody--blindfolded');
   },
   resign: () => {
-    const resignButton = document.querySelector('.resign-button-component');
+    const resignButton = <Nullable<HTMLButtonElement>>document.querySelector('.resign-button-component');
     resignButton && resignButton.click();
   },
   draw: () => {
-    const drawButton = document.querySelector('.draw-button-component');
+    const drawButton = <Nullable<HTMLButtonElement>>document.querySelector('.draw-button-component');
     drawButton && drawButton.click();
   },
 };
@@ -21,9 +24,10 @@ const commands = {
  * @param  {String} input
  * @return {Function?} - body of the found command
  */
-function parseCommand(input) {
+export function parseCommand(input: string) {
   if (input[0] === '/') {
     const command = commands[input.slice(1)];
+
     return command || (() => {
       postMessage(`Can't find command ${input}`);
     });
@@ -31,8 +35,3 @@ function parseCommand(input) {
 
   return null;
 }
-
-module.exports = {
-  commands,
-  parseCommand,
-};

@@ -1,26 +1,26 @@
-const map = require('lodash/map');
-const {
+import map from 'lodash/map';
+import {
   drawMovesOnBoard,
-} = require('./chess');
-const {
+} from './chess';
+import {
   getBoard,
-} = require('./chessboard');
-const {
+} from './chessboard';
+import {
   bindInputKeyDown,
   bindInputFocus,
   bindBlindFoldPeek,
-} = require('./keyboard');
-const {
+} from './keyboard';
+import {
   isEditable,
   buildMessagesMarkup,
   createInitialElements,
   startUpdatingAriaHiddenElements,
   initBlindFoldOverlay,
-} = require('./utils');
-const {
+} from './utils';
+import {
   commands,
-} = require('./commands');
-const Autocomplete = require('./lib/autocomplete');
+} from './commands';
+import autocomplete from './lib/autocomplete';
 
 
 /**
@@ -47,9 +47,9 @@ function init() {
     bindInputKeyDown(input);
     bindInputFocus(input);
     boardElement.appendChild(wrapper);
-    setImmediate(() => input.focus());
+    setTimeout(() => input.focus());
 
-    new Autocomplete({
+    autocomplete({
       selector: '.ccHelper-input',
       minChars: 1,
       source: (term, suggest) => {
@@ -64,26 +64,29 @@ function init() {
 
     document.addEventListener('ccHelper-draw', () => {
       const board = getBoard();
-      drawMovesOnBoard(board, input.value);
+      if (board) {
+        drawMovesOnBoard(board, input.value);
+      }
     });
 
     input.addEventListener('input', () => {
       try {
         const board = getBoard();
 
-        drawMovesOnBoard(board, input.value);
-
-        initBlindFoldOverlay(board);
+        if (board) {
+          drawMovesOnBoard(board, input.value);
+          initBlindFoldOverlay(board);
+        }
       } catch (e) {
         console.error(e);
       }
     });
 
-    updatePlaceholder(input, unfocusedLabel);
+    updatePlaceholder(unfocusedLabel);
     ['focusin', 'focusout'].forEach((e) => {
       document.addEventListener(
         e,
-        () => updatePlaceholder(input, unfocusedLabel)
+        () => updatePlaceholder(unfocusedLabel)
       );
     });
 
@@ -99,10 +102,9 @@ function init() {
  * an additional element for a11y reasons
  * (to keep placeholder in the same state always)
  *
- * @param  {Element} input
  * @param  {Element} unfocusedLabel
  */
-function updatePlaceholder(input, unfocusedLabel) {
+function updatePlaceholder(unfocusedLabel: HTMLElement) {
   const active = document.activeElement;
 
   if (isEditable(active)) {
