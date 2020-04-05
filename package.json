@@ -6,7 +6,6 @@
     "watch": "webpack -w",
     "build-prod": "npm run build && uglifyjs app/build.js --compress --mangle -o app/build.js",
     "test": "ts-mocha -p tsconfig.json  app/test/**.ts",
-    "test-watch": "ts-mocha --watch -p tsconfig.json  app/test/**.ts",
     "pack": "rm app.zip; npm run build-prod; cd app && zip -r ../app.zip *"
   },
   "devDependencies": {
