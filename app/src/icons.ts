@@ -1,4 +1,4 @@
-const blindFoldIcon = `
+export const blindFoldIcon = `
   <svg
     width="100px"
     height="98px"
@@ -53,7 +53,3 @@ const blindFoldIcon = `
       </g>
   </svg>
 `;
-
-module.exports = {
-  blindFoldIcon,
-};

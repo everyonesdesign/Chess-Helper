@@ -1,24 +1,29 @@
-const domify = require('domify');
-const {
+import domify from 'domify';
+import {
   ariaHiddenElements,
   blindfoldOverlays,
-} = require('./globals');
-const {
+} from './globals';
+import {
   blindFoldIcon,
-} = require('./icons');
-const {
+} from './icons';
+import {
   commands,
-} = require('./commands');
+} from './commands';
+import {
+  IChessboard,
+  TArea,
+  Nullable,
+} from './types';
 
 // value is stored inside of chessboard.rightClickMarkColors
-const RED_SQUARE_COLOR = '#f42a32';
+export const RED_SQUARE_COLOR = '#f42a32';
 
 /**
  * Is user holding Ctrl (on PC) or Cmd (on Mac)
  * @param {Event} e
  * @return {Boolean}
  */
-function holdingCtrlOrCmd(e) {
+export function holdingCtrlOrCmd(e: KeyboardEvent) {
   if (navigator.platform === 'MacIntel') {
     return e.metaKey;
   }
@@ -30,16 +35,19 @@ function holdingCtrlOrCmd(e) {
  * Write some message to the user
  * @param {String} text - text of the message
  */
-function postMessage(text) {
+export function postMessage(text: string) {
   const messagesContainer = document.getElementById('ccHelper-messages');
-  const message = document.createElement('div');
-  message.className = 'ccHelper-messagesItem';
-  message.textContent = text;
-  messagesContainer.appendChild(message);
 
-  setTimeout(() => {
-    messagesContainer.removeChild(message);
-  }, 3000);
+  if (messagesContainer) {
+    const message = document.createElement('div');
+    message.className = 'ccHelper-messagesItem';
+    message.textContent = text;
+    messagesContainer.appendChild(message);
+
+    setTimeout(() => {
+      messagesContainer.removeChild(message);
+    }, 3000);
+  }
 }
 
 /**
@@ -47,14 +55,18 @@ function postMessage(text) {
  * @param  {Element}  element
  * @return {Boolean}
  */
-function isEditable(element) {
-  return element.matches('input, textarea, [contenteditable]');
+export function isEditable(element: Nullable<Element>) : boolean {
+  if (element) {
+    return element.matches('input, textarea, [contenteditable]');
+  }
+
+  return false;
 }
 
 /**
  * Build basic markup for notification showing
  */
-function buildMessagesMarkup() {
+export function buildMessagesMarkup() {
   const messages = document.createElement('div');
   messages.setAttribute('id', 'ccHelper-messages');
   messages.className = 'ccHelper-messages';
@@ -67,7 +79,7 @@ function buildMessagesMarkup() {
  * @param {KeybaordEvent} e
  * @return {Boolean}
  */
-function isModifierPressed(e) {
+export function isModifierPressed(e: KeyboardEvent) {
   return e.altKey || e.ctrlKey || e.metaKey || e.shiftKey;
 }
 
@@ -75,7 +87,7 @@ function isModifierPressed(e) {
  * Provide initial elements for the app
  * @return {Object}
  */
-function createInitialElements() {
+export function createInitialElements() {
   const wrapper = domify(`
     <div class="ccHelper-wrapper">
       <input
@@ -87,8 +99,8 @@ function createInitialElements() {
       <div class="ccHelper-label" aria-hidden="true"></div>
     </div>
   `);
-  const input = wrapper.querySelector('#ccHelper-input');
-  const unfocusedLabel = wrapper.querySelector('.ccHelper-label');
+  const input = <HTMLInputElement>wrapper.querySelector('#ccHelper-input');
+  const unfocusedLabel = <HTMLElement>wrapper.querySelector('.ccHelper-label');
 
   return {
     wrapper,
@@ -102,10 +114,10 @@ function createInitialElements() {
  * This function hides it from screen readers
  * @param  {ChessBoard} board
  */
-function startUpdatingAriaHiddenElements() {
+export function startUpdatingAriaHiddenElements() {
   const update = () => {
-    const elements = document.querySelectorAll('.chessboard');
-    [...elements].forEach((element) => {
+    const elements = Array.from(document.querySelectorAll('.chessboard'));
+    elements.forEach((element) => {
       if (!ariaHiddenElements.get(element)) {
         element.setAttribute('aria-hidden', 'true');
         ariaHiddenElements.set(element, true);
@@ -121,7 +133,7 @@ function startUpdatingAriaHiddenElements() {
  * Create a blindfold overlay for a board element
  * @param  {ChessBoard} board
  */
-function initBlindFoldOverlay(board) {
+export function initBlindFoldOverlay(board: IChessboard) {
   const existingOverlay = blindfoldOverlays.get(board);
   if (!existingOverlay) {
     const container = board.getRelativeContainer();
@@ -147,7 +159,9 @@ function initBlindFoldOverlay(board) {
 
         // toggle blindfold mode on button click...
         const button = overlay.querySelector('.ccHelper-blindfoldButton');
-        button.addEventListener('click', () => commands.blindfold());
+        if (button) {
+          button.addEventListener('click', () => commands.blindfold());
+        }
 
         blindfoldOverlays.set(board, overlay);
         container.appendChild(overlay);
@@ -164,7 +178,7 @@ function initBlindFoldOverlay(board) {
  * @param  {String} square e2
  * @return {Array<String>} ['05','02']
  */
-function squareToCoords(square) {
+export function squareToCoords(square: TArea) : string[] {
   const hor = '0' + ('abcdefgh'.indexOf(square[0]) + 1);
   const ver = '0' + square[1];
   return [hor, ver];
@@ -175,19 +189,12 @@ function squareToCoords(square) {
  * @param  {String} coords '0502'
  * @return {String}        'e2'
  */
-function coordsToSquare(coords) {
+export function coordsToSquare(coords: string) : TArea {
   const numbers = ['', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-  return numbers[coords.slice(1, 2)] + coords.slice(3, 4);
+  return numbers[Number(coords.slice(1, 2))] + coords.slice(3, 4);
 }
 
-const MOUSE_WHICH = {
-  no: 0,
-  left: 1,
-  middle: 2,
-  right: 3,
-};
-
-const MOUSE_BUTTON = {
+export const MOUSE_BUTTON = {
   left: 0,
   right: 2,
 };
@@ -202,37 +209,21 @@ const MOUSE_BUTTON = {
  * @param  {Number} options.y
  * @param  {Object} options
  */
-function dispatchMouseEvent(element, {
-  name,
-  which = MOUSE_WHICH.left,
-  button = MOUSE_BUTTON.left,
-  x = 0,
-  y = 0,
-}) {
+export function dispatchMouseEvent(
+  element: Element,
+  name: string,
+  {
+    button = MOUSE_BUTTON.left,
+    x = 0,
+    y = 0,
+  } : { button?: number, x: number, y: number },
+) {
   element.dispatchEvent(new MouseEvent(name, {
     bubbles: true,
     cancelable: true,
     view: window,
-    which,
-    buttons: which,
+    button,
     clientX: x,
     clientY: y,
   }));
 }
-
-module.exports = {
-  holdingCtrlOrCmd,
-  postMessage,
-  isEditable,
-  buildMessagesMarkup,
-  isModifierPressed,
-  RED_SQUARE_COLOR,
-  createInitialElements,
-  startUpdatingAriaHiddenElements,
-  initBlindFoldOverlay,
-  squareToCoords,
-  coordsToSquare,
-  dispatchMouseEvent,
-  MOUSE_WHICH,
-  MOUSE_BUTTON,
-};

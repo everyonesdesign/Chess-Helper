@@ -1,24 +1,38 @@
-const svg = require('svg.js');
-const get = require('lodash/get');
-const {
+import svg, { Library, Marker } from 'svg.js';
+import get from 'lodash/get';
+import {
   squareToCoords,
   coordsToSquare,
   dispatchMouseEvent,
   RED_SQUARE_COLOR,
-} = require('../utils');
+} from '../../utils';
+import {
+  AnyFunction,
+  IChessboard,
+  TArea,
+} from '../../types';
+import {
+  TElementWithVueChessboard
+} from './types';
 
 /**
  * Chessboard implemented with Vue.JS
  * Beta in August 2018
  */
-class VueChessboard {
+export class VueChessboard implements IChessboard {
+  element: TElementWithVueChessboard
+  viewSize: number
+  arrowEnd: any
+  drawArrows: Library["Doc"]
+  drawAreas: Library["Doc"]
+
   /**
    * Constructor
    * @param  {Element} element
    * @constructor
    */
-  constructor(element) {
-    this.element = element;
+  constructor(element: Element) {
+    this.element = <TElementWithVueChessboard>element;
 
     this.element.classList.add('ccHelper-board--inited');
 
@@ -27,9 +41,9 @@ class VueChessboard {
     this.drawArrows = svg(this.element.id);
     this.drawArrows.node.classList.add('ccHelper-customArrows');
     this.drawArrows.viewbox(0, 0, this.viewSize, this.viewSize);
-    this.arrowEnd = this.drawArrows.marker(4, 4, function(add) {
+    this.arrowEnd = this.drawArrows.marker(4, 4, function(this: Marker, add) {
       add.polygon('0,0 0,4 4,2').fill('orange').opacity(1);
-      this.ref(0, 2); // eslint-disable-line no-invalid-this
+      this.ref(0, 2);
     }).size(3, 3);
 
     this.drawAreas = svg(this.element.id);
@@ -65,20 +79,18 @@ class VueChessboard {
    * @param  {String} toSq - e4
    * @param  {String} promotionPiece - q
    */
-  makeMove(fromSq, toSq, promotionPiece = null) {
+  makeMove(fromSq: TArea, toSq: TArea, promotionPiece?: string) {
     const fromCoords = squareToCoords(fromSq);
     const pieceElement = this.element.querySelector(`.piece.square-${fromCoords.join('')}`);
     if (pieceElement) {
       const fromPosition = this._getSquarePosition(fromSq);
-      dispatchMouseEvent(pieceElement, {
-        name: 'mousedown',
+      dispatchMouseEvent(pieceElement, 'mousedown', {
         x: fromPosition.x,
         y: fromPosition.y,
       });
 
       const toPosition = this._getSquarePosition(toSq);
-      dispatchMouseEvent(pieceElement, {
-        name: 'mouseup',
+      dispatchMouseEvent(pieceElement, 'mouseup', {
         x: toPosition.x,
         y: toPosition.y,
       });
@@ -95,7 +107,7 @@ class VueChessboard {
    * @param  {String}  toSq   e4
    * @return {Boolean}        [description]
    */
-  isLegalMove(fromSq, toSq) {
+  isLegalMove(fromSq: TArea, toSq: TArea) {
     const {legalMoves} = this._getInternalVue().chessboard.state;
     return legalMoves.some((m) => m.from === fromSq && m.to === toSq);
   }
@@ -123,18 +135,26 @@ class VueChessboard {
    * @return {Object} [description]
    */
   getPiecesSetup() {
-    // const pieces = {1: {color: 2, type: 'p', area: 'e2'}, };
-    const piecesElements = this.element.querySelectorAll('.piece');
-    const pieces = {};
+    const piecesElements = Array.from(this.element.querySelectorAll('.piece'));
+    const pieces: Record<string, { color: number, type: string, area: string }> = {};
 
-    [...piecesElements].forEach((el, index) => {
+    piecesElements.forEach((el, index) => {
       const background = el.getAttribute('style');
 
-      const color = /b.\.png"/.test(background) ? 2 : 1;
-      const type = background.match(/(.)\.png"/)[1];
-      const area = coordsToSquare(el.className.match(/square-(\d+)/)[1]);
+      if (background) {
+        const color = /b.\.png"/.test(background) ? 2 : 1;
+        const typeMatch = background.match(/(.)\.png"/);
 
-      pieces[index] = {color, type, area};
+        if (typeMatch) {
+          const type = typeMatch[1];
+          const areaMatch = el.className.match(/square-(\d+)/);
+
+          if (areaMatch) {
+            const area = coordsToSquare(areaMatch[1]);
+            pieces[index] = {color, type, area};
+          }
+        }
+      }
     });
 
     return pieces;
@@ -145,7 +165,7 @@ class VueChessboard {
    * @param  {String} fromSq e2
    * @param  {String} toSq   e4
    */
-  markArrow(fromSq, toSq) {
+  markArrow(fromSq: TArea, toSq: TArea) {
     const lineId = `ccHelper-arrow-${fromSq}${toSq}`;
 
     if (svg.get(lineId)) {
@@ -204,7 +224,7 @@ class VueChessboard {
    * @param  {String} fromSq e2
    * @param  {String} toSq   e4
    */
-  unmarkArrow(fromSq, toSq) {
+  unmarkArrow(fromSq: TArea, toSq: TArea) {
     const lineId = `ccHelper-arrow-${fromSq}${toSq}`;
     const line = svg.get(lineId);
     if (line) {
@@ -228,7 +248,7 @@ class VueChessboard {
    * Mark an area
    * @param  {String} square e2
    */
-  markArea(square) {
+  markArea(square: TArea) {
     const rectId = `ccHelper-rect-${square}`;
 
     const position = this._getSquarePosition(square, false);
@@ -252,7 +272,7 @@ class VueChessboard {
    * Remove marked area
    * @param  {String} square e2
    */
-  unmarkArea(square) {
+  unmarkArea(square: TArea) {
     const rectId = `ccHelper-rect-${square}`;
     const rect = svg.get(rectId);
     if (rect) {
@@ -266,7 +286,7 @@ class VueChessboard {
    * @param  {Boolean} fromDoc  if true, offset is made from document, otherwise from closest el
    * @return {Object}            coordinates, { x, y }
    */
-  _getSquarePosition(square, fromDoc = true) {
+  _getSquarePosition(square: TArea, fromDoc: boolean = true) {
     const isFlipped = this.element.classList.contains('flipped');
     const coords = squareToCoords(square).map((c) => Number(c));
     const {left, top, width} = this.element.getBoundingClientRect();
@@ -294,5 +314,3 @@ class VueChessboard {
     return this.element.__vue__;
   }
 }
-
-module.exports = VueChessboard;

@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "lib": [
+        "ES2017",
+        "dom"
+    ],
+    "strict": true,
+    "moduleResolution": "node",
+    "rootDirs": ["app/src"],
+    "typeRoots": [
+        "./node_modules/@types",
+        "./app/src/custom-definitions"
+    ],
+    "esModuleInterop": true
+  }
+}

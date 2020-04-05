@@ -1,20 +1,32 @@
-const get = require('lodash/get');
-const {
+import get from 'lodash/get';
+import {
   RED_SQUARE_COLOR,
-} = require('../utils');
+} from '../../utils';
+import {
+  Nullable,
+  IChessboard,
+  TArea,
+} from '../../types';
+import {
+  IChessBoard,
+  TElementWithChessboard,
+} from './types';
 
 /**
  * Global chessboard
  */
-class GlobalChessboard {
+export class GlobalChessboard implements IChessboard {
+  element: TElementWithChessboard
+  board : IChessBoard
+
   /**
    * Constructor
    * @param  {Element} element
    * @constructor
    */
-  constructor(element) {
-    this.element = element;
-    this.board = element.chessBoard;
+  constructor(element: Element) {
+    this.element = <TElementWithChessboard>element;
+    this.board = this.element.chessBoard;
 
     this.element.classList.add('ccHelper-board--inited');
 
@@ -41,7 +53,7 @@ class GlobalChessboard {
    * @return {Element?}
    */
   getRelativeContainer() {
-    return [...this.element.children].filter((c) => c.matches('[id*=boardarea]'))[0];
+    return Array.from(this.element.children).filter((c) => c.matches('[id*=boardarea]'))[0];
   }
 
   /**
@@ -50,7 +62,7 @@ class GlobalChessboard {
    * @param  {String} toSq - e4
    * @param  {String} promotionPiece - q
    */
-  makeMove(fromSq, toSq, promotionPiece = null) {
+  makeMove(fromSq: TArea, toSq: TArea, promotionPiece?: string) {
     this.board._clickedPieceElement = fromSq;
     this.board.fireEvent('onDropPiece', {
       fromAreaId: fromSq,
@@ -68,7 +80,7 @@ class GlobalChessboard {
    * @param  {String}  toSq   e4
    * @return {Boolean}        [description]
    */
-  isLegalMove(fromSq, toSq) {
+  isLegalMove(fromSq: TArea, toSq: TArea) {
     return this.board.gameRules.isLegalMove(this.board.gameSetup, fromSq, toSq);
   }
 
@@ -107,7 +119,7 @@ class GlobalChessboard {
    * @param  {String} fromSq e2
    * @param  {String} toSq   e4
    */
-  markArrow(fromSq, toSq) {
+  markArrow(fromSq: TArea, toSq: TArea) {
     this.board.markArrow(fromSq, toSq);
   }
 
@@ -116,7 +128,7 @@ class GlobalChessboard {
    * @param  {String} fromSq e2
    * @param  {String} toSq   e4
    */
-  unmarkArrow(fromSq, toSq) {
+  unmarkArrow(fromSq: TArea, toSq: TArea) {
     this.board.unmarkArrow(fromSq, toSq, true);
   }
 
@@ -131,7 +143,7 @@ class GlobalChessboard {
    * Mark an area
    * @param  {String} square e2
    */
-  markArea(square) {
+  markArea(square: TArea) {
     // third parameter is called 'rightClicked'
     // it cleans the areas on moves made with mouse
     this.board.markArea(square, RED_SQUARE_COLOR, true);
@@ -141,7 +153,7 @@ class GlobalChessboard {
    * Remove marked area
    * @param  {String} square e2
    */
-  unmarkArea(square) {
+  unmarkArea(square: TArea) {
     this.board.unmarkArea(square, true);
   }
 
@@ -149,7 +161,7 @@ class GlobalChessboard {
    * Make a promotion
    * @param  {String} pieceType - what we want the piece to be? q|r|n|b
    */
-  implementPromotion(pieceType) {
+  implementPromotion(pieceType: string) {
     const style = document.createElement('style');
     style.id='chessHelper__hidePromotionArea';
     style.innerHTML = '.promotion-area, .promotion-menu {opacity: .0000001}';
@@ -160,7 +172,7 @@ class GlobalChessboard {
      * because otherwise the promotion area won't be in time to be shown
      */
     setTimeout(function() {
-      const promotionArea = document.querySelector('.promotion-area, .promotion-menu');
+      const promotionArea = <Nullable<HTMLElement>>document.querySelector('.promotion-area, .promotion-menu');
       if (promotionArea && promotionArea.style.display !== 'none') {
         const selector = `[piece="${pieceType}"], [data-type="${pieceType}"]`;
         const target = promotionArea.querySelector(selector);
@@ -175,9 +187,9 @@ class GlobalChessboard {
         }
       }
 
-      style.parentNode.removeChild(style);
+      if (style.parentNode) {
+        style.parentNode.removeChild(style);
+      }
     }, 50);
   }
 }
-
-module.exports = GlobalChessboard;
