@@ -1,8 +1,8 @@
 {
   "appName": {
-    "message": "Chess Helper"
+    "message": "Chess.com Keyboard"
   },
   "appDescription": {
-    "message": "Extension adding some nice features to chess.com website"
+    "message": "This browser extension allows you to make moves on Chess.com using your keyboard"
   }
 }

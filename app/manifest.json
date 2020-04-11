@@ -2,7 +2,7 @@
   "name": "Chess.com Keyboard",
   "version": "4.0.0",
   "manifest_version": 2,
-  "description": "Make moves on Chess.com using your keyboard!",
+  "description": "This browser extension allows you to make moves on Chess.com using your keyboard",
   "icons": {
     "16": "images/icon-16.png",
     "128": "images/icon-128.png"

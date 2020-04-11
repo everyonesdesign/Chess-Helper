@@ -1,8 +1,8 @@
 {
   "appName": {
-    "message": "Chess Helper"
+    "message": "Chess.com Keyboard"
   },
   "appDescription": {
-    "message": "Расширение, добавляющее дополнительную функциональность на сайт chess.com"
+    "message": "Расширение, позволяющее делать ходы на Chess.com, используюя клавиатуру"
   }
 }
