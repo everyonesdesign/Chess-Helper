@@ -14,7 +14,7 @@ export interface IChessboard {
   makeMove: (fromSq: TArea, toSq: TArea, promotionPiece?: string) => void
   isLegalMove: (fromSq: TArea, toSq: TArea) => boolean
   isPlayersMove: () => boolean
-  getPiecesSetup: () => Record<string, { color: number, type: string, area: string }>
+  getPiecesSetup: () => Record<string, { color: number, type: string, area: TArea }>
   markArrow: (fromSq: TArea, toSq: TArea) => void
   unmarkArrow: (fromSq: TArea, toSq: TArea) => void
   clearMarkedArrows: () => void
