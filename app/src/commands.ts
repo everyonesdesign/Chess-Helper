@@ -22,8 +22,6 @@ export const commands : Record<string, () => void> = {
 
 /**
  * Parse command text (or return null if not a command)
- * @param  {String} input
- * @return {Function?} - body of the found command
  */
 export function parseCommand(input: string) {
   if (input[0] === '/') {

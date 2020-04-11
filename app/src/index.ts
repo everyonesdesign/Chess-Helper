@@ -102,8 +102,6 @@ function init() {
  * Unfocused placeholder is synthesised by
  * an additional element for a11y reasons
  * (to keep placeholder in the same state always)
- *
- * @param  {Element} unfocusedLabel
  */
 function updatePlaceholder(unfocusedLabel: HTMLElement) {
   const active = document.activeElement;

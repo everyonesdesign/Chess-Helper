@@ -24,7 +24,6 @@ const KEY_CODES = {
 
 /**
  * Bind hotkeys connected with focusing of the input
- * @param  {Element} input
  */
 export function bindInputFocus(input: HTMLInputElement) {
   document.addEventListener('keydown', (e) => {
@@ -56,7 +55,6 @@ export function bindInputFocus(input: HTMLInputElement) {
 /**
  * Handle keyDown event on the input
  * Responsible for submitting move, backward/forward moves, etc.
- * @param  {Element} input
  */
 export function bindInputKeyDown(input: HTMLInputElement) {
   input.addEventListener('keydown', (e) => {
@@ -123,7 +121,6 @@ export function bindInputKeyDown(input: HTMLInputElement) {
 /**
  * Bind keyboards listeners to peek from keyboard
  * in blindfold mode
- * @param {InputElement} input
  */
 export function bindBlindFoldPeek(input: HTMLInputElement) {
   const updatePeekClass = (e: KeyboardEvent) => {

@@ -22,8 +22,6 @@ export const RED_SQUARE_COLOR = '#f42a32';
 
 /**
  * Is user holding Ctrl (on PC) or Cmd (on Mac)
- * @param {Event} e
- * @return {Boolean}
  */
 export function holdingCtrlOrCmd(e: KeyboardEvent) {
   if (navigator.platform === 'MacIntel') {
@@ -35,7 +33,6 @@ export function holdingCtrlOrCmd(e: KeyboardEvent) {
 
 /**
  * Write some message to the user
- * @param {String} text - text of the message
  */
 export function postMessage(text: string) {
   const messagesContainer = document.getElementById('ccHelper-messages');
@@ -54,8 +51,6 @@ export function postMessage(text: string) {
 
 /**
  * Text if passed element can take some text input
- * @param  {Element}  element
- * @return {Boolean}
  */
 export function isEditable(element: Nullable<Element>) : boolean {
   if (element) {
@@ -78,8 +73,6 @@ export function buildMessagesMarkup() {
 /**
  * Is modifier key pressed during keydown
  * (ctrl/shift/meta/alt)
- * @param {KeybaordEvent} e
- * @return {Boolean}
  */
 export function isModifierPressed(e: KeyboardEvent) {
   return e.altKey || e.ctrlKey || e.metaKey || e.shiftKey;
@@ -87,7 +80,6 @@ export function isModifierPressed(e: KeyboardEvent) {
 
 /**
  * Provide initial elements for the app
- * @return {Object}
  */
 export function createInitialElements() {
   const wrapper = domify(`
@@ -114,7 +106,6 @@ export function createInitialElements() {
 /**
  * Chessboard markup is a mess
  * This function hides it from screen readers
- * @param  {ChessBoard} board
  */
 export function startUpdatingAriaHiddenElements() {
   const update = () => {
@@ -133,7 +124,6 @@ export function startUpdatingAriaHiddenElements() {
 
 /**
  * Create a blindfold overlay for a board element
- * @param  {ChessBoard} board
  */
 export function initBlindFoldOverlay(board: IChessboard) {
   const existingOverlay = blindfoldOverlays.get(board);
@@ -179,8 +169,6 @@ export function initBlindFoldOverlay(board: IChessboard) {
 
 /**
  * Translate square string to coords
- * @param  {String} square e2
- * @return {Array<String>} ['05','02']
  */
 export function squareToCoords(square: TArea) : string[] {
   const hor = '0' + ('abcdefgh'.indexOf(square[0]) + 1);
@@ -190,8 +178,6 @@ export function squareToCoords(square: TArea) : string[] {
 
 /**
  * Translate coords string to square
- * @param  {String} coords '0502'
- * @return {String}        'e2'
  */
 export function coordsToSquare(coords: string) : TArea {
   const numbers = ['', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
@@ -205,13 +191,6 @@ export const MOUSE_BUTTON = {
 
 /**
  * Simulate mouse event
- * @param  {Element} element
- * @param  {String} options.name
- * @param  {Number} options.which
- * @param  {Number} options.button
- * @param  {Number} options.x
- * @param  {Number} options.y
- * @param  {Object} options
  */
 export function dispatchMouseEvent(
   element: Element,

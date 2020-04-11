@@ -12,10 +12,6 @@ import {
 export { GlobalChessboard } from './global-chessboard';
 export { VueChessboard } from './vue-chessboard';
 
-/**
- * Get active board instance
- * @return {ChessBoard?}
- */
 export function getBoard() : Nullable<IChessboard> {
   const element = document.querySelector('.chessboard, .board');
 

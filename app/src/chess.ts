@@ -27,8 +27,6 @@ import { i18n } from './i18n';
 
 /**
  * Check if input is valid square name
- * @param  {String} input
- * @return {Boolean}
  */
 export function validateSquareName(input: string) : boolean {
   return /^[a-h][1-8]$/.test(input);
@@ -43,8 +41,6 @@ const emptyDrawCache : { arrows: TFromTo[], areas: TArea[] } = {
  * Draw all needed arrows and marks on the board
  * Note that drawing is async,
  * otherwise it can be triggered during opponent's move
- * @param {ChessBoard} board
- * @param {String} inputText
  */
 export function drawMovesOnBoard(board: IChessboard, inputText: string) : void {
   if (!board) {
@@ -92,9 +88,6 @@ export function drawMovesOnBoard(board: IChessboard, inputText: string) : void {
 /**
  * Handle user input and act in appropriate way
  * The function uses active board on the screen if there's any
- * @param  {ChessBoard} board
- * @param  {String} input - input, in format 'e2e4'
- * @return {Boolean} if the move was successfully consumed
  */
 export function go(board: IChessboard, input: string) : boolean {
   const command = parseCommand(input);
@@ -122,10 +115,6 @@ export function go(board: IChessboard, input: string) : boolean {
 /**
  * Check move and make it if it's legal
  * This function relies on chess.com chessboard interface
- * @param  {ChessBoard} board
- * @param  {String} fromField - starting field, e.g. 'e2'
- * @param  {String} toField   - ending field, e.g. 'e4'
- * @param  {String} promotionPiece - type of promotion piece
  */
 export function makeMove(
   board: IChessboard,
@@ -143,9 +132,6 @@ export function makeMove(
 
 /**
  * Get exact from and to coords from move data
- * @param  {ChessBoard} board - ChessBoard instance
- * @param  {Object} move      - object, returned by `parseMoveInput` method
- * @return {Array}            - array [[from, to]?]
  */
 export function getLegalMoves(board: IChessboard, move: Nullable<IMoveTemplate>) : IMove[] {
   if (!board || !move || !board.isPlayersMove()) {
@@ -178,9 +164,6 @@ export function getLegalMoves(board: IChessboard, move: Nullable<IMoveTemplate>)
 
 /**
  * Get coordinates for castling moves (0-0 and 0-0-0)
- * @param  {ChessBoard} board
- * @param  {Object} move
- * @return {Array} array [[from, to]?]
  */
 function getLegalCastlingMoves(board: IChessboard, move: IMoveTemplate) : IMove[] {
   let moves;
@@ -217,8 +200,6 @@ function getLegalCastlingMoves(board: IChessboard, move: IMoveTemplate) : IMove[
 
 /**
  * Parse message input by user
- * @param  {String} input
- * @return {Object?} - move data
  */
 export function parseMoveInput(input: string) : Nullable<IMoveTemplate> {
   return parseAlgebraic(input) || parseFromTo(input);
@@ -226,8 +207,6 @@ export function parseMoveInput(input: string) : Nullable<IMoveTemplate> {
 
 /**
  * Parse simplest move format: 'e2e4'
- * @param  {String} input
- * @return {Object?}
  */
 export function parseFromTo(input: string) : Nullable<IMoveTemplate> {
   const filteredSymbols = input.replace(/( |-)+/g, '');
@@ -248,8 +227,6 @@ export function parseFromTo(input: string) : Nullable<IMoveTemplate> {
 
 /**
  * Extract all possible information from algebraic notation
- * @param  {String} input
- * @return {Object?}
  */
 export function parseAlgebraic(input: string) : Nullable<IMoveTemplate> {
   // ignore from-to notation

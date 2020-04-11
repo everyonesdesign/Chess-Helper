@@ -26,11 +26,6 @@ export class VueChessboard implements IChessboard {
   drawArrows: Library["Doc"]
   drawAreas: Library["Doc"]
 
-  /**
-   * Constructor
-   * @param  {Element} element
-   * @constructor
-   */
   constructor(element: Element) {
     this.element = <TElementWithVueChessboard>element;
 
@@ -56,29 +51,14 @@ export class VueChessboard implements IChessboard {
     }, 200);
   }
 
-  /**
-   * Return DOM element bound to the board
-   * @return {Element}
-   */
   getElement() {
     return this.element;
   }
 
-  /**
-   * Return DOM element for relative positioning
-   * e.g. for blindfold mode
-   * @return {Element}
-   */
   getRelativeContainer() {
     return this.element;
   }
 
-  /**
-   * Make move
-   * @param  {String} fromSq - e2
-   * @param  {String} toSq - e4
-   * @param  {String} promotionPiece - q
-   */
   makeMove(fromSq: TArea, toSq: TArea, promotionPiece?: string) {
     const fromCoords = squareToCoords(fromSq);
     const pieceElement = this.element.querySelector(`.piece.square-${fromCoords.join('')}`);
@@ -101,21 +81,11 @@ export class VueChessboard implements IChessboard {
     }
   }
 
-  /**
-   * Is move legal
-   * @param  {String}  fromSq e2
-   * @param  {String}  toSq   e4
-   * @return {Boolean}        [description]
-   */
   isLegalMove(fromSq: TArea, toSq: TArea) {
     const {legalMoves} = this._getInternalVue().chessboard.state;
     return legalMoves.some((m) => m.from === fromSq && m.to === toSq);
   }
 
-  /**
-   * Is it players move now?
-   * @return {Boolean} [description]
-   */
   isPlayersMove() {
     const {playingAs, sideToMove, gameSettings} = this._getInternalVue().chessboard.state;
 
@@ -130,10 +100,6 @@ export class VueChessboard implements IChessboard {
     return true;
   }
 
-  /**
-   * Return object with all the pieces
-   * @return {Object} [description]
-   */
   getPiecesSetup() {
     const piecesElements = Array.from(this.element.querySelectorAll('.piece'));
     const pieces: Record<string, { color: number, type: string, area: string }> = {};
@@ -160,11 +126,6 @@ export class VueChessboard implements IChessboard {
     return pieces;
   }
 
-  /**
-   * Draw arrow from one point to another
-   * @param  {String} fromSq e2
-   * @param  {String} toSq   e4
-   */
   markArrow(fromSq: TArea, toSq: TArea) {
     const lineId = `ccHelper-arrow-${fromSq}${toSq}`;
 
@@ -219,11 +180,6 @@ export class VueChessboard implements IChessboard {
     line.marker('end', this.arrowEnd);
   }
 
-  /**
-   * Remove arrow
-   * @param  {String} fromSq e2
-   * @param  {String} toSq   e4
-   */
   unmarkArrow(fromSq: TArea, toSq: TArea) {
     const lineId = `ccHelper-arrow-${fromSq}${toSq}`;
     const line = svg.get(lineId);
@@ -232,9 +188,6 @@ export class VueChessboard implements IChessboard {
     }
   }
 
-  /**
-   * Remove all arrows
-   */
   clearMarkedArrows() {
     this.drawArrows.each((i, item) => {
       const id = get(item, '0.node.id');
@@ -244,10 +197,6 @@ export class VueChessboard implements IChessboard {
     });
   }
 
-  /**
-   * Mark an area
-   * @param  {String} square e2
-   */
   markArea(square: TArea) {
     const rectId = `ccHelper-rect-${square}`;
 
@@ -268,10 +217,6 @@ export class VueChessboard implements IChessboard {
     rect.id(rectId);
   }
 
-  /**
-   * Remove marked area
-   * @param  {String} square e2
-   */
   unmarkArea(square: TArea) {
     const rectId = `ccHelper-rect-${square}`;
     const rect = svg.get(rectId);
@@ -280,12 +225,6 @@ export class VueChessboard implements IChessboard {
     }
   }
 
-  /**
-   * Get position in pixels for some square
-   * @param  {String}  square    in format a2
-   * @param  {Boolean} fromDoc  if true, offset is made from document, otherwise from closest el
-   * @return {Object}            coordinates, { x, y }
-   */
   _getSquarePosition(square: TArea, fromDoc: boolean = true) {
     const isFlipped = this.element.classList.contains('flipped');
     const coords = squareToCoords(square).map((c) => Number(c));
@@ -308,7 +247,6 @@ export class VueChessboard implements IChessboard {
 
   /**
    * Get access to Vue state object
-   * @return {Object}
    */
   _getInternalVue() {
     return this.element.__vue__;
