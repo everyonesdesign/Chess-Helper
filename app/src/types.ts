@@ -48,6 +48,16 @@ export interface IConfig {
 }
 
 export type TTranslationId =
+  'ambiguousMove' |
+  'incorrectMove' |
+  'illegalMove' |
+  'commandNotFound' |
+  'inputHint' |
+  'focusHint' |
+  'focusHintFromOther' |
+  'blindFoldPeekHint' |
+  'blindFoldOn' |
+  'blindfoldToggleHint' |
   '_test' |
   '_test_1_placeholder' |
   '_test_2_placeholders';

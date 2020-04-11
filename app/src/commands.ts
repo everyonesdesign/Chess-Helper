@@ -4,6 +4,7 @@ import {
 import {
   Nullable,
 } from './types';
+import { i18n } from './i18n';
 
 export const commands : Record<string, () => void> = {
   blindfold: () => {
@@ -29,7 +30,7 @@ export function parseCommand(input: string) {
     const command = commands[input.slice(1)];
 
     return command || (() => {
-      postMessage(`Can't find command ${input}`);
+      postMessage(i18n('commandNotFound', { command: input }));
     });
   }
 

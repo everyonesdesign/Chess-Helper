@@ -15,6 +15,7 @@ import {
   Nullable,
   IConfig,
 } from './types';
+import { i18n } from './i18n';
 
 // value is stored inside of chessboard.rightClickMarkColors
 export const RED_SQUARE_COLOR = '#f42a32';
@@ -95,7 +96,7 @@ export function createInitialElements() {
         type="text"
         class="ccHelper-input"
         id="ccHelper-input"
-        placeholder="Enter your move or type / to see commands..."
+        placeholder="${i18n('inputHint')}"
       >
       <div class="ccHelper-label" aria-hidden="true"></div>
     </div>
@@ -144,16 +145,18 @@ export function initBlindFoldOverlay(board: IChessboard) {
           <div class="ccHelper-blindfold">
             <div class="ccHelper-blindfoldPeek">
               <div class="ccHelper-blindfoldPeekContents">
-                Hover here or hold <span class="ccHelper-blindfoldKey">Ctrl</span> to peek
+                ${i18n('blindFoldPeekHint', {
+                  key: '<span class="ccHelper-blindfoldKey">Ctrl</span>'
+                })}
               </div>
             </div>
             <div class="ccHelper-blindfoldBackground"></div>
             <div class="ccHelper-blindfoldTitle">
-              Blindfold mode is on
+              ${i18n('blindFoldOn')}
             </div>
             ${blindFoldIcon}
             <button class="ccHelper-blindfoldButton">
-              Click here or type /blindfold to toggle
+              ${i18n('blindfoldToggleHint')}
             </button>
           </div>
         `);

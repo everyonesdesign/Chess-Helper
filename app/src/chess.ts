@@ -23,6 +23,7 @@ import {
   TMoveType,
   Nullable,
 } from './types';
+import { i18n } from './i18n';
 
 /**
  * Check if input is valid square name
@@ -110,9 +111,9 @@ export function go(board: IChessboard, input: string) : boolean {
 
     return true;
   } else if (moves.length > 1) {
-    postMessage('Ambiguous move: ' + input);
+    postMessage(i18n('ambiguousMove', { move: input }));
   } else {
-    postMessage('Incorrect move: ' + input);
+    postMessage(i18n('incorrectMove', { move: input }));
   }
 
   return false;
@@ -136,7 +137,7 @@ export function makeMove(
       board.makeMove(fromField, toField, promotionPiece);
   } else {
     const move = fromField + '-' + toField;
-    postMessage('Move "' + move + '" is illegal');
+    postMessage(i18n('illegalMove', { move }));
   }
 }
 
