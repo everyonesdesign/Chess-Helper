@@ -7,8 +7,11 @@ import {
 } from './types';
 
 import en from '../_locales/en';
-
-export const LOCALES = { en };
+import ru from '../_locales/ru';
+export const LOCALES = {
+  en,
+  ru,
+};
 
 export function i18n(
   messageId: TTranslationId,
