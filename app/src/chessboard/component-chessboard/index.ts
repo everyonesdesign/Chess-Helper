@@ -7,6 +7,12 @@ import {
   IGame,
   TElementWithGame,
 } from './types';
+import {
+  squareToCoords,
+} from '../../utils';
+import {
+  dispatchPointerEvent,
+} from '../../dom-events';
 
 /**
  * Chessboard implemented with some kinds of web components
@@ -35,22 +41,32 @@ export class ComponentChessboard implements IChessboard {
   }
 
   makeMove(fromSq: TArea, toSq: TArea, promotionPiece?: string) {
-    const move = {
-      from: fromSq,
-      to: toSq,
-    };
+    const move = { from: fromSq, to: toSq };
     const moveDetails = this.game.getMove(move);
     const isPromotion = Boolean(moveDetails.promotion);
 
-    if (!isPromotion) {
-      this.game.move(move)
+    if (!isPromotion || !promotionPiece) {
+      const fromCoords = squareToCoords(fromSq).map(i => Number(i)).join('');
+      const pieceElement = this.element.querySelector(`.piece.square-${fromCoords}`);
+      if (pieceElement) {
+        const fromPosition = this._getSquarePosition(fromSq);
+        dispatchPointerEvent(pieceElement, 'pointerdown', {
+          x: fromPosition.x,
+          y: fromPosition.y,
+        });
+
+        const toPosition = this._getSquarePosition(toSq);
+        dispatchPointerEvent(pieceElement, 'pointerup', {
+          x: toPosition.x,
+          y: toPosition.y,
+        });
+      }
     } else {
-      /**
-       * It seems very tricky to open premove window,
-       * so assume queen in case of promotion
-       * without specifying the piece type
-       */
-      this.game.move({ ...move, promotion: promotionPiece || 'q' })
+      this.game.move({
+        ...move,
+        promotion: promotionPiece,
+        animate: false
+      });
     }
   }
 
@@ -104,6 +120,26 @@ export class ComponentChessboard implements IChessboard {
     const markings = this.game.getMarkings();
     if (markings.square[square]) {
       this.game.toggleMarking({ key: square, type: 'square' });
+    }
+  }
+
+  _getSquarePosition(square: TArea, fromDoc: boolean = true) {
+    const isFlipped = this.element.classList.contains('flipped');
+    const coords = squareToCoords(square).map((c) => Number(c));
+    const {left, top, width} = this.element.getBoundingClientRect();
+    const squareWidth = width / 8;
+    const correction = squareWidth / 2;
+
+    if (!isFlipped) {
+      return {
+        x: (fromDoc ? left : 0) + squareWidth * coords[0] - correction,
+        y: (fromDoc ? top : 0) + width - squareWidth * coords[1] + correction,
+      };
+    } else {
+      return {
+        x: (fromDoc ? left : 0) + width - squareWidth * coords[0] + correction,
+        y: (fromDoc ? top : 0) + squareWidth * coords[1] - correction,
+      };
     }
   }
 }

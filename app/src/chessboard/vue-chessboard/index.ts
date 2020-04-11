@@ -3,9 +3,11 @@ import get from 'lodash/get';
 import {
   squareToCoords,
   coordsToSquare,
-  dispatchMouseEvent,
   RED_SQUARE_COLOR,
 } from '../../utils';
+import {
+  dispatchMouseEvent,
+} from '../../dom-events';
 import {
   AnyFunction,
   IChessboard,

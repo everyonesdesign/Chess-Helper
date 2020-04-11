@@ -72,7 +72,7 @@ export interface IMove {
   animate?: boolean
   userGenerated?: boolean
   userGeneratedDrop?: boolean
-  promotion?: any
+  promotion?: string
 }
 
 export type TEventType =

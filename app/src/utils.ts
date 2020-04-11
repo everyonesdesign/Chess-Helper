@@ -184,33 +184,6 @@ export function coordsToSquare(coords: string) : TArea {
   return numbers[Number(coords.slice(1, 2))] + coords.slice(3, 4);
 }
 
-export const MOUSE_BUTTON = {
-  left: 0,
-  right: 2,
-};
-
-/**
- * Simulate mouse event
- */
-export function dispatchMouseEvent(
-  element: Element,
-  name: string,
-  {
-    button = MOUSE_BUTTON.left,
-    x = 0,
-    y = 0,
-  } : { button?: number, x: number, y: number },
-) {
-  element.dispatchEvent(new MouseEvent(name, {
-    bubbles: true,
-    cancelable: true,
-    view: window,
-    button,
-    clientX: x,
-    clientY: y,
-  }));
-}
-
 export function getConfig() : IConfig {
   return (<any>window).chessHelper__environment;
 }
