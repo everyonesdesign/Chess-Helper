@@ -4,6 +4,7 @@ const envScript = document.createElement('script');
 envScript.innerHTML = `
   window.chessHelper__environment = {
     version: "${manifest.version}",
+    defaultLocale: "${manifest.default_locale}",
   };
 `;
 document.body.appendChild(envScript);

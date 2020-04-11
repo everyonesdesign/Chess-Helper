@@ -13,6 +13,7 @@ import {
   IChessboard,
   TArea,
   Nullable,
+  IConfig,
 } from './types';
 
 // value is stored inside of chessboard.rightClickMarkColors
@@ -226,4 +227,8 @@ export function dispatchMouseEvent(
     clientX: x,
     clientY: y,
   }));
+}
+
+export function getConfig() : IConfig {
+  return (<any>window).chessHelper__environment;
 }
