@@ -61,15 +61,6 @@ export interface IMarking {
   data?: any[]
 }
 
-export interface ILegalMove {
-  color: number
-  to: TArea
-  flags: number
-  from: TArea
-  piece: number
-  san: TArea
-}
-
 export interface IMove {
   from: TArea
   to: TArea
@@ -81,6 +72,7 @@ export interface IMove {
   animate?: boolean
   userGenerated?: boolean
   userGeneratedDrop?: boolean
+  promotion?: any
 }
 
 export type TEventType =
@@ -153,14 +145,14 @@ export interface IGame {
   getHistoryFENs: AnyFunction
   getHistorySANs: AnyFunction
   getLastMove: AnyFunction
-  getLegalMoves: () => ILegalMove[]
-  getLegalMovesForSquare: (square: TArea) => ILegalMove[]
+  getLegalMoves: () => IMove[]
+  getLegalMovesForSquare: (square: TArea) => IMove[]
   getLegalPremovesForSquare: AnyFunction
   getLine: AnyFunction
   getMarkings: () => IMarkingsData
   getMaterial: AnyFunction
   getMode: AnyFunction
-  getMove: AnyFunction
+  getMove: (move: Partial<IMove>) => IMove
   getNodeByIds: AnyFunction
   getNodeDiffData: AnyFunction
   getNodeIds: AnyFunction

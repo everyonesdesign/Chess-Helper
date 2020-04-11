@@ -35,11 +35,23 @@ export class ComponentChessboard implements IChessboard {
   }
 
   makeMove(fromSq: TArea, toSq: TArea, promotionPiece?: string) {
-    this.game.move({
+    const move = {
       from: fromSq,
       to: toSq,
-    })
-    // @TODO: promotion
+    };
+    const moveDetails = this.game.getMove(move);
+    const isPromotion = Boolean(moveDetails.promotion);
+
+    if (!isPromotion) {
+      this.game.move(move)
+    } else {
+      /**
+       * It seems very tricky to open premove window,
+       * so assume queen in case of promotion
+       * without specifying the piece type
+       */
+      this.game.move({ ...move, promotion: promotionPiece || 'q' })
+    }
   }
 
   isLegalMove(fromSq: TArea, toSq: TArea) {
