@@ -1,10 +1,8 @@
 {
   "appName": {
-    "message": "Chess Helper",
-    "description": "The name of the application"
+    "message": "Chess Helper"
   },
   "appDescription": {
-    "message": "Extension adding some nice features to chess.com website",
-    "description": "The description of the application"
+    "message": "Extension adding some nice features to chess.com website"
   }
 }
