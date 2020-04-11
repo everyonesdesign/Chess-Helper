@@ -21,6 +21,7 @@ import {
   commands,
 } from './commands';
 import autocomplete from './lib/autocomplete';
+import { i18n } from './i18n';
 
 
 /**
@@ -108,9 +109,9 @@ function updatePlaceholder(unfocusedLabel: HTMLElement) {
   const active = document.activeElement;
 
   if (isEditable(active)) {
-    unfocusedLabel.textContent = 'Press Esc + C to focus move field...';
+    unfocusedLabel.textContent = i18n('focusHintFromOther');
   } else {
-    unfocusedLabel.textContent = 'Press C to focus move field...';
+    unfocusedLabel.textContent = i18n('focusHint');
   }
 }
 
