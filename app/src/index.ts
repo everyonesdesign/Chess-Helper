@@ -35,7 +35,8 @@ function init() {
     #live-app .main-board-component,
     #chess_com_tactics_board,
     #board-layout-main,
-    [id^=chess_com_chessmentor_board_]
+    [id^=chess_com_chessmentor_board_],
+    chess-board
   `;
   const boardElement = document.querySelector(selector);
   if (boardElement) {
@@ -113,4 +114,4 @@ function updatePlaceholder(unfocusedLabel: HTMLElement) {
   }
 }
 
-init();
+setTimeout(init, 500);

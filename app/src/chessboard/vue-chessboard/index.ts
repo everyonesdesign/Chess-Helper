@@ -102,7 +102,7 @@ export class VueChessboard implements IChessboard {
 
   getPiecesSetup() {
     const piecesElements = Array.from(this.element.querySelectorAll('.piece'));
-    const pieces: Record<string, { color: number, type: string, area: string }> = {};
+    const pieces: Record<string, { color: number, type: string, area: TArea }> = {};
 
     piecesElements.forEach((el, index) => {
       const background = el.getAttribute('style');

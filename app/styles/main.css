@@ -4,6 +4,12 @@
     margin-top: 10px;
 }
 
+chess-board .ccHelper-wrapper {
+    position: absolute;
+    top: 100%;
+    margin-top: 60px;
+}
+
 /*
  * Full selector is provided to deal with
  * specificity issues
