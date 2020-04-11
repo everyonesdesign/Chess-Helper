@@ -24,6 +24,39 @@ Other move formats may be implemented in future.
 This way of moving pieces may enhance your board vision skills; it can also be used to improve chess.com interface accessibility.
 
 
+## Command line instructions
+
+Install dependencies
+
+```
+npm i
+```
+
+Build the project
+
+```
+npm run build
+```
+
+Build the and watch file changes
+
+```
+npm run watch
+```
+
+Run tests
+
+```
+npm run test
+```
+
+Pack the extension (before release to extension stores)
+
+```
+npm run pack
+```
+
+
 ## Disclaimers
 
 The extension code may contain bugs and errors.
