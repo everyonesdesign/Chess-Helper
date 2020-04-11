@@ -23,12 +23,22 @@ export function i18n(
   });
 }
 
+export function getShortLocale(input: string) : string {
+  return input.slice(0, 2)
+}
+
 export function getLocale() : string {
+  const chessComLocale = document.documentElement.getAttribute('lang');
+  if (chessComLocale) {
+    const shortLocale = getShortLocale(chessComLocale);
+    const matchedLocaleSet = (<any>LOCALES)[getShortLocale(shortLocale)];
+    if (matchedLocaleSet) {
+      return shortLocale;
+    }
+  }
+
   const userLocale = window.navigator.languages
-    .map((locale) => {
-      return locale.slice(0, 2);
-    })
-    .find((locale) => (<any>LOCALES)[locale]);
+    .find((locale) => (<any>LOCALES)[getShortLocale(locale)]);
 
   if (userLocale) {
     return userLocale;
