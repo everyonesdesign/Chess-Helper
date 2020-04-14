@@ -76,6 +76,7 @@ li {
 
 .install-buttonLogo {
     width: 36px;
+    max-height: 36px;
     vertical-align: middle;
     margin-right: 5px;
 }
