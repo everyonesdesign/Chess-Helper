@@ -17,30 +17,74 @@ li {
     text-align: center;
 }
 
-.installButton {
-    display: inline-block;
-    min-width: 180px;
-    margin: 10px auto;
-    padding: 11px 32px 10px 46px;
-    font-weight: bold;
+.install {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+@media (min-width: 720px) {
+    .install {
+        display: flex;
+        flex-wrap: wrap;
+        -webkit-justify-content: center;
+                justify-content: center;
+    }
+}
+
+.install-item {
+    max-width: 300px;
+    margin: 20px auto;
+}
+
+@media (min-width: 720px) {
+    .install-item {
+        margin: 10px;
+        flex: 1 0 50%;
+    }
+}
+
+.install-button {
+    display: block;
+    padding: 10px;
     font-size: 18px;
-    text-align: left;
     color: #fff;
     background: #00AEEF;
     box-shadow: 0 6px 0 0 #0076A2;
     border-radius: 12px;
     text-decoration: none !important;
+    text-align: left;
 }
 
-.installButton-small {
-    display: block;
-    font-size: 14px;
+.install-button:not([disabled]):hover {
+    background: #35c1f5;
 }
 
-.installButton svg {
-    float: left;
-    margin-left: -38px;
-    width: 32px;
+.install-button:not([disabled]):active {
+    background: #0076A2;
+}
+
+.install-button:not([disabled]):focus {
+    border: 4px solid #f7ac03;
+    padding: 6px;
+    outline: none;
+}
+
+.install-button[disabled] {
+    background: #bbb;
+    box-shadow: 0 6px 0 0 #a1a1a1;
+    cursor: not-allowed;
+}
+
+.install-button[disabled] img {
+    filter: grayscale(100%);
+}
+
+.install-buttonLogo {
+    width: 36px;
+    max-height: 36px;
+    vertical-align: middle;
+    margin-right: 5px;
 }
 
 .logo {
