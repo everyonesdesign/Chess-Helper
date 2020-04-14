@@ -17,6 +17,12 @@ li {
     text-align: center;
 }
 
+.install {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
 @media (min-width: 720px) {
     .install {
         display: flex;
@@ -26,10 +32,20 @@ li {
     }
 }
 
-.install-button {
-    display: block;
+.install-item {
     max-width: 300px;
     margin: 20px auto;
+}
+
+@media (min-width: 720px) {
+    .install-item {
+        margin: 10px;
+        flex: 1 0 50%;
+    }
+}
+
+.install-button {
+    display: block;
     padding: 10px;
     font-size: 18px;
     color: #fff;
@@ -40,19 +56,22 @@ li {
     text-align: left;
 }
 
-@media (min-width: 720px) {
-    .install-button {
-        margin: 10px;
-        flex: 1 0 50%;
-    }
-}
-
-.install-button:hover {
+.install-button:not([disabled]):hover {
     background: #35c1f5;
 }
 
-.install-button:active {
+.install-button:note([disabled]):active {
     background: #0076A2;
+}
+
+.install-button[disabled] {
+    background: #bbb;
+    box-shadow: 0 6px 0 0 #a1a1a1;
+    cursor: not-allowed;
+}
+
+.install-button[disabled] img {
+    filter: grayscale(100%);
 }
 
 .install-buttonLogo {
