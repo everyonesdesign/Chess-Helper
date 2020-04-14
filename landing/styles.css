@@ -65,7 +65,7 @@ li {
 }
 
 .install-button:not([disabled]):focus {
-    border: 4px solid gold;
+    border: 4px solid #f7ac03;
     padding: 6px;
     outline: none;
 }
