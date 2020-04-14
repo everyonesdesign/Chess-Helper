@@ -17,30 +17,48 @@ li {
     text-align: center;
 }
 
-.installButton {
-    display: inline-block;
-    min-width: 180px;
-    margin: 10px auto;
-    padding: 11px 32px 10px 46px;
-    font-weight: bold;
+@media (min-width: 720px) {
+    .install {
+        display: flex;
+        flex-wrap: wrap;
+        -webkit-justify-content: center;
+                justify-content: center;
+    }
+}
+
+.install-button {
+    display: block;
+    max-width: 300px;
+    margin: 20px auto;
+    padding: 10px;
     font-size: 18px;
-    text-align: left;
     color: #fff;
     background: #00AEEF;
     box-shadow: 0 6px 0 0 #0076A2;
     border-radius: 12px;
     text-decoration: none !important;
+    text-align: left;
 }
 
-.installButton-small {
-    display: block;
-    font-size: 14px;
+@media (min-width: 720px) {
+    .install-button {
+        margin: 10px;
+        flex: 1 0 50%;
+    }
 }
 
-.installButton svg {
-    float: left;
-    margin-left: -38px;
-    width: 32px;
+.install-button:hover {
+    background: #35c1f5;
+}
+
+.install-button:active {
+    background: #0076A2;
+}
+
+.install-buttonLogo {
+    width: 36px;
+    vertical-align: middle;
+    margin-right: 5px;
 }
 
 .logo {
