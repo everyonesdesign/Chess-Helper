@@ -19,10 +19,11 @@ li {
 
 .installButton {
     display: inline-block;
+    min-width: 180px;
     margin: 10px auto;
-    padding: 11px 32px 10px 92px;
+    padding: 11px 32px 10px 46px;
     font-weight: bold;
-    font-size: 24px;
+    font-size: 18px;
     text-align: left;
     color: #fff;
     background: #00AEEF;
@@ -33,14 +34,13 @@ li {
 
 .installButton-small {
     display: block;
-    font-size: 18px;
+    font-size: 14px;
 }
 
 .installButton svg {
     float: left;
-    margin-top: -3px;
-    margin-left: -74px;
-    width: 56px;
+    margin-left: -38px;
+    width: 32px;
 }
 
 .logo {
