@@ -1,14 +1,24 @@
 # Chess Helper Extension
 
-[Demo Video](https://www.youtube.com/watch?v=C99DwXs6JNU)
-|
-[Trello Board](https://trello.com/b/xaiPLyB0)
-|
+[![Build Status](https://travis-ci.com/everyonesdesign/Chess-Helper.svg?branch=master)](https://travis-ci.com/everyonesdesign/Chess-Helper)
+
+## Download extension
+
 [Chrome Web Store](https://chrome.google.com/webstore/detail/bghaancnengidpcefpkbbppinjmfnlhh/)
 |
 [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/chess-com-keyboard/)
+|
+[Opera addons](https://addons.opera.com/en/extensions/details/chesscom-keyboard/)
 
-[![Build Status](https://travis-ci.com/everyonesdesign/Chess-Helper.svg?branch=master)](https://travis-ci.com/everyonesdesign/Chess-Helper)
+## Other links
+
+[Website](http://everyonesdesign.ru/apps/chesscom-keyboard/)
+|
+[Demo Video](https://www.youtube.com/watch?v=C99DwXs6JNU)
+|
+[Trello Board](https://trello.com/b/xaiPLyB0)
+
+## About
 
 A small Google Chrome extension adding keyboard navigation to [chess.com](https://www.chess.com/) website.
 
