@@ -1,0 +1,74 @@
+body {
+    font: 16px/1.2 "PT Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+a {
+    color: #00AEEF;
+}
+
+li {
+    margin: 1em 0;
+}
+
+.container {
+    padding: 40px 20px;
+    margin: auto;
+    max-width: 800px;
+    text-align: center;
+}
+
+.installButton {
+    display: inline-block;
+    margin: 10px auto;
+    padding: 11px 32px 10px 92px;
+    font-weight: bold;
+    font-size: 24px;
+    text-align: left;
+    color: #fff;
+    background: #00AEEF;
+    box-shadow: 0 6px 0 0 #0076A2;
+    border-radius: 12px;
+    text-decoration: none !important;
+}
+
+.installButton-small {
+    display: block;
+    font-size: 18px;
+}
+
+.installButton svg {
+    float: left;
+    margin-top: -3px;
+    margin-left: -74px;
+    width: 56px;
+}
+
+.logo {
+    width: 64px;
+}
+
+.intro {
+    font-size: 18px;
+    margin: 32px 0;
+    color: #777;
+}
+
+.contentImage {
+    border: 2px solid #ccc;
+    border-radius: 3px;
+    max-width: 100%;
+}
+
+.footerLink {
+    color: #777;
+    font-size: 14px;
+    margin: 0 15px;
+}
+
+.u-secondary {
+    background: #f4f4f4;
+}
+
+.u-left {
+    text-align: left;
+}
