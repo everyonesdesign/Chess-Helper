@@ -9,6 +9,8 @@
 [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/chess-com-keyboard/)
 |
 [Opera addons](https://addons.opera.com/en/extensions/details/chesscom-keyboard/)
+|
+[Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/illcfglagdbmhknamgjfcpkkpdfddnno)
 
 ## Other links
 
