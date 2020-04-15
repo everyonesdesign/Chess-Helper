@@ -6,9 +6,7 @@ import {
 
 export const DEFAULT_PREFERENCES: IPreferences = {
   locale: detectLocale(),
-  movesToSpeech: {
-    enabled: false,
-  }
+  speechEnabled: false,
 };
 
 function restorePreferences() {
@@ -25,9 +23,9 @@ const modalRoot = domify(`
       role="modal"
       tabindex="-1"
     >
-      <div class="ccHelper-preferencesModalTitle">
+      <h2 class="ccHelper-preferencesModalTitle">
         @TR: Chess.com Keyboard preferences
-      </div>
+      </h2>
 
       <button
         class="ccHelper-preferencesModalClose"
@@ -35,15 +33,24 @@ const modalRoot = domify(`
       >✕</button>
 
       <div class="ccHelper-preferencesSection">
-        <label for="ccHelper-preferencesLanguageSelect">
+        <label
+            class="ccHelper-preferencesLabel"
+            for="ccHelper-preferencesLanguageSelect"
+            id="ccHelper-preferencesLanguageLabel"
+        >
           @TR: Chess.com Keyboard language
         </label>
-        <select id="ccHelper-preferencesLanguageSelect">
+        <select
+            for="ccHelper-preferencesLanguageSelect"
+            id="ccHelper-preferencesLanguageSelect"
+            name="ccHelper-preferencesLanguageSelect"
+            aria-labelledby="ccHelper-preferencesLanguageLabel"
+        >
           <option value="auto" ${ PREFERENCES.locale === 'auto' ? 'selected': '' }>
             @TR: Auto
           </option>
           <option value="en" ${ PREFERENCES.locale === 'en' ? 'selected': '' }>
-            @TR: Englisn
+            @TR: English
           </option>
           <option value="ru" ${ PREFERENCES.locale === 'ru' ? 'selected': '' }>
             @TR: Russian
@@ -52,19 +59,24 @@ const modalRoot = domify(`
       </label>
 
       <div class="ccHelper-preferencesSection">
-        <label for="ccHelper-preferencesEnableSpeech">
-          @TR: Enable speech
-        </label>
+        <div class="ccHelper-preferencesLabel">
+          @TR: Speech
+        </div>
         <input
           type="checkbox"
-          ${ PREFERENCES.movesToSpeech.enabled ? 'checked' : '' }
+          ${ PREFERENCES.speechEnabled ? 'checked' : '' }
           role="switch"
+          name="ccHelper-preferencesEnableSpeech"
           id="ccHelper-preferencesEnableSpeech"
-          aria-describedby=""
+          aria-labelledby="ccHelper-preferencesEnableSpeechNote"
         >
-        <div class="ccHelper-preferencesNote">
+        <label
+            class="ccHelper-preferencesNote"
+            for="ccHelper-preferencesEnableSpeech"
+            id="ccHelper-preferencesEnableSpeechNote"
+        >
           @TR: Each move will be announced with voice
-        </div>
+        </label>
       </div>
     </div>
   </div>
@@ -79,8 +91,19 @@ const elements = {
   enableSpeechSwitch: <HTMLInputElement>modalRoot.querySelector('#ccHelper-preferencesEnableSpeech'),
 };
 
-export function updatePreferences() {}
+export function updatePreferences(patch: Partial<IPreferences>) {
+    Object.assign(PREFERENCES, patch);
+}
 
-export function showPreferences() {}
+export function showPreferences() {
+    document.body.appendChild(elements.root);
+    elements.body.focus();
+}
 
-export function hidePreferences() {}
+export function hidePreferences() {
+    document.body.removeChild(elements.root);
+    const button = document.querySelector('.ccHelper-preferencesButton');
+    if (button) {
+        (<HTMLButtonElement>button).focus();
+    }
+}

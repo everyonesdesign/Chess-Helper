@@ -25,7 +25,9 @@ import {
 } from './speech';
 import autocomplete from './lib/autocomplete';
 import { i18n } from './i18n';
+import { showPreferences } from './preferences';
 
+showPreferences();
 
 /**
  * Prepare the extension code and run

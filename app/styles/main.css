@@ -79,7 +79,7 @@ input[type="text"].ccHelper-input::placeholder {
 
 .ccHelper-preferencesButton:focus {
     outline: none;
-    border-color: #ffa800;
+    border-color: #f7ac03;
     border-radius: 3px;
 }
 
@@ -288,6 +288,81 @@ input[type="text"].ccHelper-input::placeholder {
 
 .ccHelper-board--inited .promotion-menu {
     z-index: 5;
+}
+
+/*
+    Preferences modal styles
+ */
+
+.ccHelper-preferencesModal {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1099;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0,0,0,.4);
+    overflow-y: auto;
+}
+
+.ccHelper-preferencesModalOverlay {
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0,0,0,.4);
+}
+
+.ccHelper-preferencesModalBody {
+    position: relative;
+    width: 500px;
+    max-width: 100%;
+    background: white;
+    border-radius: 3px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.ccHelper-preferencesModalTitle {
+    padding-right: 20px;
+}
+
+.ccHelper-preferencesSection {
+    margin-top: 20px;
+}
+
+.ccHelper-preferencesLabel {
+    display: block;
+    margin: 10px 0 5px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.ccHelper-preferencesNote {
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.ccHelper-preferencesModalClose {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    position: absolute;
+    top: 14px;
+    right: 20px;
+    border: 2px solid transparent;
+    background: none;
+    padding: 5px;
+}
+
+.ccHelper-preferencesModalClose:focus {
+    border-color: #f7ac03;
 }
 
 /*

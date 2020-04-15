@@ -55,10 +55,8 @@ export type TLocale = 'en' | 'ru';
 
 export interface IPreferences {
   locale: 'auto' | TLocale
-  movesToSpeech: {
-    enabled: boolean
-    voice?: string
-  }
+  speechEnabled: boolean
+  speechVoice?: string
 }
 
 export type TTranslationId =
