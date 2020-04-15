@@ -91,6 +91,49 @@ export type TEventType =
   'Undo' |
   'UpdateOptions';
 
+export interface IMoveEvent {
+  data: {
+    plyDiff: number
+    lineDiff: number
+    animate: boolean
+    move: {
+      move: number
+      epSquare: number
+      halfMoves: number
+      castlingW: number
+      castlingB: number
+      color: number
+      hash: number[]
+      captured: number
+      san: string
+      fen: string
+      beforeFen: string
+      moveNumber: number
+      previous: {
+        move: number
+        line: number
+      }
+      flags: number
+      to: string
+      from: string
+      drop: any
+      capturedStr?: string
+      promotion?: string
+      piece: string
+      ids: {
+        move: number
+        line: number
+      }
+      lines: any
+      animate: boolean
+      EPCapturedSquare: any
+      userGenerated: boolean
+      userGeneratedDrop: boolean
+    }
+  }
+  type: "Move"
+}
+
 export interface IMarkingsData {
   arrow: Record<TAreaFromTo, {
     type: "arrow"

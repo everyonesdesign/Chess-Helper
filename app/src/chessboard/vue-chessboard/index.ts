@@ -12,9 +12,12 @@ import {
   AnyFunction,
   IChessboard,
   TArea,
+  IMoveDetails,
 } from '../../types';
 import {
-  TElementWithVueChessboard
+  TElementWithVueChessboard,
+  IVueChessboardStore,
+  IPiece,
 } from './types';
 
 /**
@@ -23,6 +26,7 @@ import {
  */
 export class VueChessboard implements IChessboard {
   element: TElementWithVueChessboard
+  store: IVueChessboardStore
   viewSize: number
   arrowEnd: any
   drawArrows: Library["Doc"]
@@ -30,6 +34,7 @@ export class VueChessboard implements IChessboard {
 
   constructor(element: Element) {
     this.element = <TElementWithVueChessboard>element;
+    this.store = this.element.__vue__;
 
     this.element.classList.add('ccHelper-board--inited');
 
@@ -51,6 +56,13 @@ export class VueChessboard implements IChessboard {
       const event = new Event('ccHelper-draw');
       document.dispatchEvent(event);
     }, 200);
+
+    const obj = this.store;
+    const original = obj.chessboard.on;
+    obj.chessboard.on = function (...args) {
+      console.log(arguments);
+      return original.apply(this, args);
+    };
   }
 
   getElement() {
@@ -78,18 +90,18 @@ export class VueChessboard implements IChessboard {
       });
 
       if (promotionPiece) {
-        this._getInternalVue().dispatch('selectPromotionPiece', promotionPiece);
+        this.store.dispatch('selectPromotionPiece', promotionPiece);
       }
     }
   }
 
   isLegalMove(fromSq: TArea, toSq: TArea) {
-    const {legalMoves} = this._getInternalVue().chessboard.state;
+    const {legalMoves} = this.store.chessboard.state;
     return legalMoves.some((m) => m.from === fromSq && m.to === toSq);
   }
 
   isPlayersMove() {
-    const {playingAs, sideToMove, gameSettings} = this._getInternalVue().chessboard.state;
+    const {playingAs, sideToMove, gameSettings} = this.store.chessboard.state;
 
     if (gameSettings.analysis === true) {
       return true;
@@ -247,10 +259,45 @@ export class VueChessboard implements IChessboard {
     }
   }
 
-  /**
-   * Get access to Vue state object
-   */
-  _getInternalVue() {
-    return this.element.__vue__;
+  onMove(fn: (move: IMoveDetails) => void) : void {
+    this.store._events['chessboard-makeMove'].push((event) => {
+      setTimeout(() => {
+        if (event.isIllegal) return;
+        if (typeof event.from !== 'string') return;
+        if (typeof event.to !== 'string') return;
+
+        const [toFile, toRank] = squareToCoords(event.to).map(i => Number(i));
+        const findPieceByCoords = (p: IPiece) => p.file === toFile && p.rank === toRank;
+        const cb = this.store.chessboard;
+        const piece = cb.state.pieces.find(findPieceByCoords);
+
+        if (piece) {
+          let moveType = 'move';
+          if (cb.state.previousPieces.find(findPieceByCoords)) {
+            moveType = 'capture';
+          } else if (
+            (piece.type === 'k' && event.from === 'e1' && event.to === 'g1') ||
+            (piece.type === 'k' && event.from === 'e8' && event.to === 'g8')
+          ) {
+            moveType = 'short-castling';
+          } else if (
+            (piece.type === 'k' && event.from === 'e1' && event.to === 'c1') ||
+            (piece.type === 'k' && event.from === 'e8' && event.to === 'c8')
+          ) {
+            moveType = 'long-castling';
+          }
+
+          fn({
+            piece: piece.type,
+            from: event.from,
+            to: event.to,
+            promotionPiece: event.promotion ? event.promotion : undefined,
+            moveType,
+            check: this.store.game.setup.check,
+            checkmate: this.store.game.setup.checkmate,
+          });
+        }
+      });
+    });
   }
 }

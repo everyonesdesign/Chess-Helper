@@ -201,6 +201,7 @@ describe('getLegalMoves', function() {
       clearMarkedArrows: () => {},
       markArea: (square: TArea) => {},
       unmarkArea: (square: TArea) => {},
+      onMove: () => {},
     };
   };
 

@@ -154,6 +154,83 @@ export interface IGame {
   startingMoveNumber: number
 }
 
+export interface IEventMove {
+  from: string | {}
+  to: string | {}
+  isIllegal: boolean
+  promotion: string | null
+}
+
+export type TEvent =
+  'chessboard-busyFlag' |
+  'chessboard-makeMove' |
+  'chessboard-markSquare' |
+  'chessboard-clearSquare' |
+  'chessboard-clearBlinkingSquare' |
+  'chessboard-markArrow' |
+  'chessboard-clearArrow' |
+  'chessboard-clearMarkings' |
+  'chessboard-moveBackward' |
+  'chessboard-moveForward' |
+  'chessboard-moveToEnd' |
+  'chessboard-moveToStart' |
+  'chessboard-cancelPremoves' |
+  'chessboard-cancelGuessTheMove' |
+  'chessboard-moveInfo' |
+  'chessboard-boardInitialized';
+
+export type TChessboardEvent =
+  'LOADED' |
+  'PIECE_SELECTED' |
+  'MOVE_MADE' |
+  'ADD_LEGAL_MOVES' |
+  'ADD_PIECES' |
+  'ADD_SQUARES' |
+  'BLINK_SQUARE' |
+  'CLOSE_PROMOTION_MENU' |
+  'DRAG_PIECE' |
+  'DROP_PIECE' |
+  'FADE_PIECES' |
+  'FLIP_BOARD' |
+  'MOVE_PIECES' |
+  'OPEN_PROMOTION_MENU' |
+  'PICK_UP_PIECE' |
+  'REMOVE_LEGAL_MOVES' |
+  'REMOVE_SQUARES' |
+  'REMOVE_PIECES' |
+  'SET_PIECE' |
+  'SET_PIECES' |
+  'SET_SQUARES' |
+  'SHOW_HOVER_SQUARE' |
+  'HIDE_HOVER_SQUARE' |
+  'UPDATE_BOARD_CLASSES' |
+  'UPDATE_BOARD_IMAGE' |
+  'UPDATE_BOARD_SIZE' |
+  'UPDATE_PIECE_IMAGES' |
+  'UPDATE_PROMOTION_MENU_SIZE' |
+  'CLICKED' |
+  'ARROW_CLEARED' |
+  'ARROW_MARKED' |
+  'BOARD_DIMENSIONS_SET' |
+  'BUSY_FLAG' |
+  'CANCEL_PREMOVES' |
+  'CANCEL_GTM' |
+  'EFFECT_CLEARED' |
+  'EFFECT_MARKED' |
+  'MARKINGS_CLEARED' |
+  'SET_ARROWS' |
+  'SET_EFFECTS' |
+  'SET_CUSTOM_ITEMS' |
+  'SQUARE_CLEARED' |
+  'SQUARE_MARKED' |
+  'MOVE_BACKWARD' |
+  'MOVE_FORWARD' |
+  'MOVE_TO_END' |
+  'MOVE_TO_START' |
+  'KEY_PRESS' |
+  'OPTIONS_CHANGED' |
+  'PLAY_SOUND';
+
 export interface IVueChessboardStore {
   actionsQueue: any[]
   moveList: { lines: any[] }
@@ -195,6 +272,7 @@ export interface IVueChessboardStore {
     }
     actionsQueue: any[]
   }
+  _events: Record<TEvent, Array<(move: IEventMove) => void>>
   _computedWatchers: any
   $el: HTMLElement
   chessboard: {
@@ -202,7 +280,7 @@ export interface IVueChessboardStore {
     emit: AnyFunction
     extensions: Record<string, any>
     off: AnyFunction
-    on: AnyFunction
+    on: (event: TChessboardEvent, fn: AnyFunction) => void
     state: {
       arrows: any[]
       squares: any[]
