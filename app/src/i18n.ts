@@ -27,11 +27,15 @@ export function i18n(
   });
 }
 
-export function getShortLocale(input: string) : string {
-  return input.slice(0, 2)
+export function getShortLocale(input: string) : TLocale {
+  return <TLocale>input.slice(0, 2)
 }
 
-export function getLocale() : string {
+export function getLocale() : TLocale {
+  return detectLocale();
+}
+
+export function detectLocale() : TLocale {
   const chessComLocale = document.documentElement.getAttribute('lang');
   if (chessComLocale) {
     const shortLocale = getShortLocale(chessComLocale);
@@ -46,9 +50,9 @@ export function getLocale() : string {
     .find((locale) => (<any>LOCALES)[locale]);
 
   if (userLocale) {
-    return userLocale;
+    return <TLocale>userLocale;
   }
 
   const config = getConfig();
-  return config.defaultLocale;
+  return <TLocale>config.defaultLocale;
 }
