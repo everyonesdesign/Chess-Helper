@@ -51,6 +51,17 @@ export interface IConfig {
   defaultLocale: string,
 }
 
+export type TLocale = 'en' | 'ru';
+
+export interface IPreferences {
+  locale: 'auto' | TLocale
+  notation: 'au'
+  movesToSpeech: {
+    enabled: boolean
+    voice?: string
+  }
+}
+
 export type TTranslationId =
   'ambiguousMove' |
   'incorrectMove' |

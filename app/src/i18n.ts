@@ -2,13 +2,14 @@ import {
   getConfig,
 } from './utils';
 import {
+  TLocale,
   TLocaleSet,
   TTranslationId,
 } from './types';
 
 import en from '../_locales/en';
 import ru from '../_locales/ru';
-export const LOCALES = {
+export const LOCALES: Record<TLocale, TLocaleSet> = {
   en,
   ru,
 };
