@@ -64,6 +64,25 @@ input[type="text"].ccHelper-input::placeholder {
     display: block;
 }
 
+.ccHelper-preferencesButton {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    padding: 4px 8px;
+    border: 2px solid transparent;
+    background: none;
+    font-size: 16px;
+}
+
+.ccHelper-preferencesButton:focus {
+    outline: none;
+    border-color: #ffa800;
+    border-radius: 3px;
+}
+
 .ccHelper-messages {
     position: fixed;
     z-index: 99;

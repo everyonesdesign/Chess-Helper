@@ -90,6 +90,11 @@ export function createInitialElements() {
         id="ccHelper-input"
         placeholder="${i18n('inputHint')}"
       >
+      <button
+        class="ccHelper-preferencesButton"
+        title="${i18n('preferencesButton')}"
+        aria-label="${i18n('preferencesButton')}"
+      >•••</button>
       <div class="ccHelper-label" aria-hidden="true"></div>
     </div>
   `);
