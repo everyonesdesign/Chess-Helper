@@ -2,10 +2,12 @@ import find from 'lodash/find';
 import {
   IChessboard,
   TArea,
+  IMoveDetails,
 } from '../../types';
 import {
   IGame,
   TElementWithGame,
+  IMoveEvent,
 } from './types';
 import {
   squareToCoords,
@@ -121,6 +123,32 @@ export class ComponentChessboard implements IChessboard {
     if (markings.square[square]) {
       this.game.toggleMarking({ key: square, type: 'square' });
     }
+  }
+
+  onMove(fn: (move: IMoveDetails) => void) : void {
+    this.game.on('Move', (event) => fn(this._getMoveData(event)));
+  }
+
+  _getMoveData(event: IMoveEvent): IMoveDetails {
+    const data = event.data.move;
+    let moveType = 'move';
+    if (data.san.startsWith('O-O-O')) {
+      moveType = 'long-castling';
+    } else if (data.san.startsWith('O-O')) {
+      moveType = 'short-castling';
+    } else if (data.capturedStr) {
+      moveType = 'capture';
+    }
+
+    return {
+      piece: data.piece,
+      moveType,
+      from: data.from,
+      to: data.to,
+      promotionPiece: data.promotion,
+      check: /\+$/.test(data.san),
+      checkmate: /\#$/.test(data.san),
+    };
   }
 
   _getSquarePosition(square: TArea, fromDoc: boolean = true) {

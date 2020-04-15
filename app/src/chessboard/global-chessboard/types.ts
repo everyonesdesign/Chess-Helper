@@ -2,6 +2,25 @@ import {
   AnyFunction,
 } from '../../types';
 
+export interface IOnMoveEvent {
+  fromId: string
+  areaId: string
+  additionalInfo: string | null
+  moveText: string
+  customEventName: "onMove"
+  returnValue: boolean
+}
+
+export interface IOnRefreshEvent {
+  fromAreaId?: string
+  toAreaId?: string
+  additionalInfo?: string | null
+  moveText?: string
+  fen?: string
+  customEventName: "onRefresh"
+  returnValue?: boolean
+}
+
 export interface IOptions {
   moveOutputField: string
   submitButton: string

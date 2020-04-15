@@ -1,5 +1,3 @@
-import { VueChessboard, GlobalChessboard } from './chessboard';
-
 export type Nullable<T> = T | null;
 
 export type AnyFunction = (...args: any[]) => any;
@@ -20,6 +18,7 @@ export interface IChessboard {
   clearMarkedArrows: () => void
   markArea: (square: TArea) => void
   unmarkArea: (square: TArea) => void
+  onMove: (fn: (move: IMoveDetails) => void) => void
 }
 
 export type TArea = string;
@@ -42,6 +41,11 @@ export interface IMove extends IMoveTemplate {
   from: TArea
 }
 
+export interface IMoveDetails extends IMove {
+  check: boolean
+  checkmate: boolean
+}
+
 export interface IConfig {
   version: string,
   defaultLocale: string,
@@ -58,6 +62,29 @@ export type TTranslationId =
   'blindFoldPeekHint' |
   'blindFoldOn' |
   'blindfoldToggleHint' |
+  'speechPieceMoveMade' |
+  'speechPawnMoveMade' |
+  'speechPieceCaptureMade' |
+  'speechPawnCaptureMade' |
+  'speechShortCastling' |
+  'speechLongCastling' |
+  'speechPromotion' |
+  'speechCheck' |
+  'speechCheckmate' |
+  'speechPieceKing' |
+  'speechPieceQueen' |
+  'speechPieceRook' |
+  'speechPieceBishop' |
+  'speechPieceKnight' |
+  'speechPiecePawn' |
+  'speechFileA' |
+  'speechFileB' |
+  'speechFileC' |
+  'speechFileD' |
+  'speechFileE' |
+  'speechFileF' |
+  'speechFileG' |
+  'speechFileH' |
   '_test' |
   '_test_1_placeholder' |
   '_test_2_placeholders';
