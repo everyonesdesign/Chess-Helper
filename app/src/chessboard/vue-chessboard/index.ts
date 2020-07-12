@@ -6,9 +6,6 @@ import {
   RED_SQUARE_COLOR,
 } from '../../utils';
 import {
-  dispatchMouseEvent,
-} from '../../dom-events';
-import {
   AnyFunction,
   IChessboard,
   TArea,
