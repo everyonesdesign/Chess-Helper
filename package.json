@@ -14,6 +14,7 @@
     "@types/lodash": "^4.14.144",
     "@types/mocha": "^7.0.2",
     "browserify": "^16.2.2",
+    "clean-terminal-webpack-plugin": "^3.0.0",
     "jsdom": "11.12.0",
     "jsdom-global": "3.0.2",
     "mocha": "^7.1.1",

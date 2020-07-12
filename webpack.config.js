@@ -1,4 +1,5 @@
 const path = require('path');
+const CleanTerminalPlugin = require('clean-terminal-webpack-plugin');
 
 module.exports = {
   entry: './app/src/index.ts',
@@ -19,4 +20,7 @@ module.exports = {
     filename: 'build.js',
     path: path.resolve(__dirname, 'app'),
   },
+  plugins: [
+    new CleanTerminalPlugin(),
+  ],
 };
