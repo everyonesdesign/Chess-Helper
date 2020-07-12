@@ -68,6 +68,12 @@ Pack the extension (before release to extension stores)
 npm run pack
 ```
 
+## Memo for the extension publishing
+
+- [Chrome Web Store](https://chrome.google.com/webstore/developer/dashboard)
+- [Firefox Add-ons](https://addons.mozilla.org/en-US/developers/)
+- [Opera addons](https://addons.opera.com/developer/)
+- [Edge Add-ons](https://partner.microsoft.com/en-us/dashboard/microsoftedge/overview)
 
 ## Disclaimers
 
