@@ -15,6 +15,7 @@ import {
   Nullable,
   IConfig,
 } from './types';
+import { showPreferences } from './preferences';
 import { i18n } from './i18n';
 
 // value is stored inside of chessboard.rightClickMarkColors
@@ -100,6 +101,9 @@ export function createInitialElements() {
   `);
   const input = <HTMLInputElement>wrapper.querySelector('#ccHelper-input');
   const unfocusedLabel = <HTMLElement>wrapper.querySelector('.ccHelper-label');
+  const preferencesButton = <HTMLElement>wrapper.querySelector('.ccHelper-preferencesButton');
+
+  preferencesButton.addEventListener('click', showPreferences);
 
   return {
     wrapper,

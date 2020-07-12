@@ -91,6 +91,8 @@ const elements = {
   enableSpeechSwitch: <HTMLInputElement>modalRoot.querySelector('#ccHelper-preferencesEnableSpeech'),
 };
 
+elements.close.addEventListener('click', hidePreferences);
+
 export function updatePreferences(patch: Partial<IPreferences>) {
     Object.assign(PREFERENCES, patch);
 }
