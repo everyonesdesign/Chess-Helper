@@ -277,7 +277,7 @@ export interface IVueChessboardStore {
   $el: HTMLElement
   chessboard: {
     dispatch: AnyFunction
-    emit: AnyFunction
+    emit: (event: TChessboardEvent, data?: any) => void
     extensions: Record<string, any>
     off: AnyFunction
     on: (event: TChessboardEvent, fn: AnyFunction) => void
