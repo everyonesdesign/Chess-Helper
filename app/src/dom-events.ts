@@ -19,22 +19,3 @@ export function dispatchPointerEvent(
     clientY: y,
   }));
 }
-
-export function dispatchMouseEvent(
-  element: Element,
-  name: string,
-  {
-    button = MOUSE_BUTTON.left,
-    x = 0,
-    y = 0,
-  } : { button?: number, x: number, y: number },
-) {
-  element.dispatchEvent(new MouseEvent(name, {
-    bubbles: true,
-    cancelable: true,
-    view: window,
-    button,
-    clientX: x,
-    clientY: y,
-  }));
-}

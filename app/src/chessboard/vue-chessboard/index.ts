@@ -6,9 +6,6 @@ import {
   RED_SQUARE_COLOR,
 } from '../../utils';
 import {
-  dispatchMouseEvent,
-} from '../../dom-events';
-import {
   AnyFunction,
   IChessboard,
   TArea,
@@ -74,25 +71,22 @@ export class VueChessboard implements IChessboard {
   }
 
   makeMove(fromSq: TArea, toSq: TArea, promotionPiece?: string) {
-    const fromCoords = squareToCoords(fromSq);
-    const pieceElement = this.element.querySelector(`.piece.square-${fromCoords.join('')}`);
-    if (pieceElement) {
-      const fromPosition = this._getSquarePosition(fromSq);
-      dispatchMouseEvent(pieceElement, 'mousedown', {
-        x: fromPosition.x,
-        y: fromPosition.y,
-      });
-
-      const toPosition = this._getSquarePosition(toSq);
-      dispatchMouseEvent(pieceElement, 'mouseup', {
-        x: toPosition.x,
-        y: toPosition.y,
-      });
-
-      if (promotionPiece) {
-        this.store.dispatch('selectPromotionPiece', promotionPiece);
-      }
-    }
+    const [fromFile, fromRank] = squareToCoords(fromSq).map(i => Number(i));
+    const [toFile, toRank] = squareToCoords(toSq).map(i => Number(i));
+    this.store.chessboard.emit('MOVE_MADE', {
+      from: {
+        file: fromFile,
+        rank: fromRank,
+      },
+      to: {
+        file: toFile,
+        rank: toRank,
+        altKey: false,
+        isRightClick: false
+      },
+      isIllegal: false,
+      promotion: promotionPiece ? promotionPiece : undefined
+    });
   }
 
   isLegalMove(fromSq: TArea, toSq: TArea) {
