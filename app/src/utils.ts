@@ -170,9 +170,9 @@ export function initBlindFoldOverlay(board: IChessboard) {
 /**
  * Translate square string to coords
  */
-export function squareToCoords(square: TArea) : string[] {
-  const hor = '0' + ('abcdefgh'.indexOf(square[0]) + 1);
-  const ver = '0' + square[1];
+export function squareToCoords(square: TArea) : number[] {
+  const hor = 'abcdefgh'.indexOf(square[0]) + 1;
+  const ver = Number(square[1]);
   return [hor, ver];
 }
 

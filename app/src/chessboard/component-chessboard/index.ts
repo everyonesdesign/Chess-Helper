@@ -48,7 +48,7 @@ export class ComponentChessboard implements IChessboard {
     const isPromotion = Boolean(moveDetails.promotion);
 
     if (!isPromotion || !promotionPiece) {
-      const fromCoords = squareToCoords(fromSq).map(i => Number(i)).join('');
+      const fromCoords = squareToCoords(fromSq).join('');
       const pieceElement = this.element.querySelector(`.piece.square-${fromCoords}`);
       if (pieceElement) {
         const fromPosition = this._getSquarePosition(fromSq);
@@ -153,7 +153,7 @@ export class ComponentChessboard implements IChessboard {
 
   _getSquarePosition(square: TArea, fromDoc: boolean = true) {
     const isFlipped = this.element.classList.contains('flipped');
-    const coords = squareToCoords(square).map((c) => Number(c));
+    const coords = squareToCoords(square);
     const {left, top, width} = this.element.getBoundingClientRect();
     const squareWidth = width / 8;
     const correction = squareWidth / 2;

@@ -71,8 +71,8 @@ export class VueChessboard implements IChessboard {
   }
 
   makeMove(fromSq: TArea, toSq: TArea, promotionPiece?: string) {
-    const [fromFile, fromRank] = squareToCoords(fromSq).map(i => Number(i));
-    const [toFile, toRank] = squareToCoords(toSq).map(i => Number(i));
+    const [fromFile, fromRank] = squareToCoords(fromSq);
+    const [toFile, toRank] = squareToCoords(toSq);
     this.store.chessboard.emit('MOVE_MADE', {
       from: {
         file: fromFile,
@@ -235,7 +235,7 @@ export class VueChessboard implements IChessboard {
 
   _getSquarePosition(square: TArea, fromDoc: boolean = true) {
     const isFlipped = this.element.classList.contains('flipped');
-    const coords = squareToCoords(square).map((c) => Number(c));
+    const coords = squareToCoords(square);
     const {left, top, width} = this.element.getBoundingClientRect();
     const squareWidth = width / 8;
     const correction = squareWidth / 2;
@@ -260,7 +260,7 @@ export class VueChessboard implements IChessboard {
         if (typeof event.from !== 'string') return;
         if (typeof event.to !== 'string') return;
 
-        const [toFile, toRank] = squareToCoords(event.to).map(i => Number(i));
+        const [toFile, toRank] = squareToCoords(event.to);
         const findPieceByCoords = (p: IPiece) => p.file === toFile && p.rank === toRank;
         const cb = this.store.chessboard;
         const piece = cb.state.pieces.find(findPieceByCoords);
