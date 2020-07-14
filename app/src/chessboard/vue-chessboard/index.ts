@@ -53,13 +53,6 @@ export class VueChessboard implements IChessboard {
       const event = new Event('ccHelper-draw');
       document.dispatchEvent(event);
     }, 200);
-
-    const obj = this.store;
-    const original = obj.chessboard.on;
-    obj.chessboard.on = function (...args) {
-      console.log(arguments);
-      return original.apply(this, args);
-    };
   }
 
   getElement() {
