@@ -41,7 +41,8 @@ export function getLocale() : string {
   }
 
   const userLocale = window.navigator.languages
-    .find((locale) => (<any>LOCALES)[getShortLocale(locale)]);
+    .map((browserLocale) => getShortLocale(browserLocale))
+    .find((locale) => (<any>LOCALES)[locale]);
 
   if (userLocale) {
     return userLocale;
