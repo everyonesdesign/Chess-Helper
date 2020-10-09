@@ -19,6 +19,8 @@
 [Demo Video](https://www.youtube.com/watch?v=C99DwXs6JNU)
 |
 [Trello Board](https://trello.com/b/xaiPLyB0)
+|
+[ [☕ Buy me a coffee](https://buymeacoff.ee/everyonesdesign) ]
 
 ## About
 
