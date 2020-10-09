@@ -203,7 +203,7 @@ export interface IGame {
   getPGN: AnyFunction
   getPiece: (square: TArea) => IPiece
   getPieces: () => IPiecesManager
-  getPlayingAs: () => number
+  getPlayingAs?: () => number
   getPointerPosition: AnyFunction
   getPosition: AnyFunction
   getPositionDetails: AnyFunction

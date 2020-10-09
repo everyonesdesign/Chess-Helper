@@ -78,6 +78,10 @@ export class ComponentChessboard implements IChessboard {
   }
 
   isPlayersMove() {
+    if (!this.game.getPlayingAs) {
+      return false;
+    }
+
     return this.game.getTurn() === this.game.getPlayingAs();
   }
 
