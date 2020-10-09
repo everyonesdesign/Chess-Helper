@@ -99,16 +99,36 @@ export class ComponentChessboard implements IChessboard {
     const arrowCoords = `${fromSq}${toSq}`;
     const markings = this.game.getMarkings();
     if (!markings.arrow[arrowCoords]) {
-      this.game.toggleMarking({ key: arrowCoords, type: 'arrow' });
+      this.game.toggleMarking({ arrow: { color: 'd', from: fromSq, to: toSq }});
     }
+
+    // legacy call, probably can be removed in the future
+    setTimeout(() => {
+      const markings = this.game.getMarkings();
+      if (!markings.arrow[arrowCoords]) {
+        try {
+          this.game.toggleMarking({ key: arrowCoords, type: 'arrow' });
+        } catch(e) {}
+      }
+    });
   }
 
   unmarkArrow(fromSq: TArea, toSq: TArea) {
     const arrowCoords = `${fromSq}${toSq}`;
     const markings = this.game.getMarkings();
     if (markings.arrow[arrowCoords]) {
-      this.game.toggleMarking({ key: arrowCoords, type: 'arrow' });
+      this.game.toggleMarking({ arrow: { color: 'd', from: fromSq, to: toSq }});
     }
+
+    // legacy call, probably can be removed in the future
+    setTimeout(() => {
+      const markings = this.game.getMarkings();
+      if (markings.arrow[arrowCoords]) {
+        try {
+          this.game.toggleMarking({ key: arrowCoords, type: 'arrow' });
+        } catch(e) {}
+      }
+    });
   }
 
   clearMarkedArrows() {
@@ -118,15 +138,35 @@ export class ComponentChessboard implements IChessboard {
   markArea(square: TArea) {
     const markings = this.game.getMarkings();
     if (!markings.square[square]) {
-      this.game.toggleMarking({ key: square, type: 'square' });
+      this.game.toggleMarking({ square: { color: 'd', square }});
     }
+
+    // legacy call, probably can be removed in the future
+    setTimeout(() => {
+      const markings = this.game.getMarkings();
+      if (!markings.square[square]) {
+        try {
+          this.game.toggleMarking({ key: square, type: 'square' });
+        } catch(e) {}
+      }
+    });
   }
 
   unmarkArea(square: TArea) {
     const markings = this.game.getMarkings();
     if (markings.square[square]) {
-      this.game.toggleMarking({ key: square, type: 'square' });
+      this.game.toggleMarking({ square: { color: 'd', square }});
     }
+
+    // legacy call, probably can be removed in the future
+    setTimeout(() => {
+      const markings = this.game.getMarkings();
+      if (markings.square[square]) {
+        try {
+          this.game.toggleMarking({ key: square, type: 'square' });
+        } catch(e) {}
+      }
+    });
   }
 
   onMove(fn: (move: IMoveDetails) => void) : void {

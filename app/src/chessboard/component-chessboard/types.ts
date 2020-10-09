@@ -61,6 +61,12 @@ export interface IMarking {
   data?: any[]
 }
 
+// Seems to appear in later versions?
+export interface IMarking2 {
+  square?: { color: 'd', square: TArea },
+  arrow?:  { color: 'd', from: TArea, to: TArea },
+}
+
 export interface IMove {
   from: TArea
   to: TArea
@@ -254,7 +260,7 @@ export interface IGame {
   setPlayingAs: (player: number) => number
   setTimestamps: AnyFunction
   setTurn: AnyFunction
-  toggleMarking: (marking: IMarking, someBoolean?: boolean) => any
+  toggleMarking: (marking: IMarking | IMarking2, someBoolean?: boolean) => any
   undo: AnyFunction
   unmark: AnyFunction
   updateLineComment: AnyFunction
