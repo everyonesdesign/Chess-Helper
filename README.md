@@ -20,7 +20,7 @@
 |
 [Trello Board](https://trello.com/b/xaiPLyB0)
 |
-[ [☕ Buy me a coffee](https://buymeacoff.ee/everyonesdesign) ]
+[☕ Buy me a coffee](https://buymeacoff.ee/everyonesdesign)
 
 ## About
 
