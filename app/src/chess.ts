@@ -202,24 +202,31 @@ function getLegalCastlingMoves(board: IChessboard, move: IMoveTemplate) : IMove[
  * Parse message input by user
  */
 export function parseMoveInput(input: string) : Nullable<IMoveTemplate> {
-  return parseAlgebraic(input) || parseFromTo(input);
+  return parseAlgebraic(input) || parseUCI(input);
 }
 
 /**
  * Parse simplest move format: 'e2e4'
  */
-export function parseFromTo(input: string) : Nullable<IMoveTemplate> {
+export function parseUCI(input: string) : Nullable<IMoveTemplate> {
   const filteredSymbols = input.replace(/( |-)+/g, '');
   const fromSquare = <TArea>filteredSymbols.slice(0, 2);
   const toSquare = <TArea>filteredSymbols.slice(2, 4);
+  const promotion = <TPiece>filteredSymbols.slice(4, 5);
 
   if (validateSquareName(fromSquare) && validateSquareName(toSquare)) {
-    return {
+    const result: IMoveTemplate = {
       piece: '.',
       from: fromSquare,
       to: toSquare,
       moveType: 'move',
     };
+
+    if (promotion) {
+      result.promotionPiece = promotion;
+    }
+
+    return result;
   }
 
   return null;
@@ -229,8 +236,8 @@ export function parseFromTo(input: string) : Nullable<IMoveTemplate> {
  * Extract all possible information from algebraic notation
  */
 export function parseAlgebraic(input: string) : Nullable<IMoveTemplate> {
-  // ignore from-to notation
-  if (/^\s*[a-h][1-8][a-h][1-8]\s*$/.test(input)) {
+  // ignore UCI notation
+  if (/^\s*[a-h][1-8][a-h][1-8][rqknb]?\s*$/.test(input)) {
     return null;
   }
 

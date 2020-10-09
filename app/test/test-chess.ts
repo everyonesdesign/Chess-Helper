@@ -5,7 +5,7 @@ jsDomGlobal();
 
 import {
   parseAlgebraic,
-  parseFromTo,
+  parseUCI,
   getLegalMoves,
 } from '../src/chess';
 import {
@@ -158,11 +158,19 @@ describe('parseAlgebraic', function() {
       moveType: 'move',
     });
   });
+
+  it('returns null for UCI', function() {
+    assert.strictEqual(parseAlgebraic('e2e4'), null);
+  });
+
+  it('returns null for UCI with promotion', function() {
+    assert.strictEqual(parseAlgebraic('e7e8n'), null);
+  });
 });
 
-describe('parseFromTo', function() {
+describe('parseUCI', function() {
   it('parses short algebraic moves', function() {
-    assert.deepEqual(parseFromTo('e2e4'), {
+    assert.deepEqual(parseUCI('e2e4'), {
       piece: '.',
       from: 'e2',
       to: 'e4',
@@ -170,12 +178,22 @@ describe('parseFromTo', function() {
     });
   });
 
+  it('parses promotion', function() {
+    assert.deepEqual(parseUCI('e7e8n'), {
+      piece: '.',
+      from: 'e7',
+      moveType: 'move',
+      promotionPiece: 'n',
+      to: 'e8',
+    });
+  });
+
   it('ignores non-existing squares', function() {
-    assert.strictEqual(parseFromTo('x2e4'), null);
+    assert.strictEqual(parseUCI('x2e4'), null);
   });
 
   it('ignores other formats', function() {
-    assert.strictEqual(parseFromTo('♞f3'), null);
+    assert.strictEqual(parseUCI('♞f3'), null);
   });
 });
 
