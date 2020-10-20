@@ -78,6 +78,10 @@ export class ComponentChessboard implements IChessboard {
   }
 
   isPlayersMove() {
+    if (this.game.getOptions().analysis) {
+      return true;
+    }
+
     if (!this.game.getPlayingAs) {
       return false;
     }

@@ -173,6 +173,58 @@ export interface IPiecesManager {
   set: AnyFunction
 }
 
+export interface IOptions {
+  allowMarkings: boolean
+  analysis: boolean
+  analysisHighlightColors: {alt: string, ctrl: string, default: string, shift: string}
+  analysisHighlightOpacity: number
+  animationType: string
+  arrowColors: {alt: string, ctrl: string, default: string, shift: string}
+  aspectRatio: number
+  autoClaimDraw: boolean
+  autoPromote: boolean
+  autoResize: boolean
+  boardSize: string
+  boardStyle: string
+  captureKeyStrokes: boolean
+  checkBlinkingSquareColor: string
+  coordinates: string
+  darkMode: boolean
+  diagramStyle: boolean
+  enabled: boolean
+  fadeSetup: number
+  fetched: boolean
+  flipBoard: boolean
+  flipped: boolean
+  highlightColor: any
+  highlightLegalMoves: boolean
+  highlightMoves: boolean
+  highlightMovesUI: boolean
+  highlightOpacity: number
+  hoverSquareOutline: boolean
+  id: string
+  isWhiteOnBottom: boolean
+  legalPositionCheck: string
+  mainLineIsImmutable: boolean
+  maxWidth: number
+  moveListContextMenuEnabled: boolean
+  moveListDisplayType: string
+  moveMethod: string
+  overlayInAnalysisMode: boolean
+  pieceStyle: string
+  playSounds: boolean
+  premoveDelay: number
+  premoveHighlightColor: string
+  premoveHighlightOpacity: number
+  real3D: boolean
+  rounded: boolean
+  rules: boolean
+  soundTheme: string
+  threatSquareColor: string
+  threatSquareOpacity: number
+  variations: boolean
+}
+
 export interface IGame {
   agreeDraw: AnyFunction
   before: AnyFunction
@@ -205,7 +257,7 @@ export interface IGame {
   getNodeByIds: AnyFunction
   getNodeDiffData: AnyFunction
   getNodeIds: AnyFunction
-  getOptions: AnyFunction
+  getOptions: () => IOptions,
   getPGN: AnyFunction
   getPiece: (square: TArea) => IPiece
   getPieces: () => IPiecesManager
