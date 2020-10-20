@@ -1,0 +1,14 @@
+{
+    "tal-spassky": {
+        "url": "https://www.chessgames.com/perl/chessgame?gid=1128313",
+        "positions": {
+            "end": "8/3b3p/3P2pk/8/3R4/1P3rPP/8/6K1 w - - 3 46"
+        }
+    },
+    "opera-night": {
+        "url": "https://www.chessgames.com/perl/chessgame?gid=1233404",
+        "positions": {
+            "end": "1n1Rkb1r/p4ppp/4q3/4p1B1/4P3/8/PPP2PPP/2K5 b k - 1 17"
+        }
+    }
+}
