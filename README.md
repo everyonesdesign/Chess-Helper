@@ -58,10 +58,16 @@ Build the and watch file changes
 npm run watch
 ```
 
-Run tests
+Run unit tests
 
 ```
 npm run test
+```
+
+Run e2e tests (Cypress)
+
+```
+npm run e2e
 ```
 
 Pack the extension (before release to extension stores)
