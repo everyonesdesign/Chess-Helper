@@ -86,7 +86,7 @@ or the problems with game process, caused the by the software usage.
 
 The application is NOT designed to violate chess.com terms of usage in any way.
 In case if chess.com contacts extension author about the viloations
-the software may be modified or removed from Chrome Web Store.
+the software may be modified or removed from the extensions stores.
 
 
 ## License
