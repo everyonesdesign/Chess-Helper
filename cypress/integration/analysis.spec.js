@@ -2,7 +2,7 @@
 
 /**
  * ANALYSIS VIEW
- * This view relies on component keyboard implementation
+ * This view relies on component chessboard implementation
  * (component-chessboard module)
  */
 

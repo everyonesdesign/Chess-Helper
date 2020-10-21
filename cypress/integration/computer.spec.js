@@ -2,8 +2,8 @@
 
 /**
  * PLAY WITH COMPUTER VIEW
- * This view relies on old keyboard implementation
- * (global-chessboard module)
+ * This view relies on vue chessboard implementation
+ * (vue-chessboard module)
  */
 
 const { INPUT_SELECTOR } = require('../constants');
