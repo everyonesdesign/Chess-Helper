@@ -47,29 +47,11 @@ export class ComponentChessboard implements IChessboard {
     const moveDetails = this.game.getMove(move);
     const isPromotion = Boolean(moveDetails.promotion);
 
-    if (!isPromotion || !promotionPiece) {
-      const fromCoords = squareToCoords(fromSq).join('');
-      const pieceElement = this.element.querySelector(`.piece.square-${fromCoords}`);
-      if (pieceElement) {
-        const fromPosition = this._getSquarePosition(fromSq);
-        dispatchPointerEvent(pieceElement, 'pointerdown', {
-          x: fromPosition.x,
-          y: fromPosition.y,
-        });
-
-        const toPosition = this._getSquarePosition(toSq);
-        dispatchPointerEvent(pieceElement, 'pointerup', {
-          x: toPosition.x,
-          y: toPosition.y,
-        });
-      }
-    } else {
-      this.game.move({
-        ...move,
-        promotion: promotionPiece,
-        animate: false
-      });
-    }
+    this.game.move({
+      ...move,
+      promotion: promotionPiece,
+      animate: false
+    });
   }
 
   isLegalMove(fromSq: TArea, toSq: TArea) {
