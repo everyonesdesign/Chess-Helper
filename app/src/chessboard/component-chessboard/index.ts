@@ -46,6 +46,11 @@ export class ComponentChessboard implements IChessboard {
     const move = { from: fromSq, to: toSq };
     const moveDetails = this.game.getMove(move);
     const isPromotion = Boolean(moveDetails.promotion);
+    
+    const fromPosition = this._getSquarePosition(fromSq);
+    const toPosition = this._getSquarePosition(toSq);
+    dispatchPointerEvent(this.element, 'pointerdown', { x: fromPosition.x, y: fromPosition.y });
+    dispatchPointerEvent(this.element, 'pointerup', { x: toPosition.x, y: toPosition.y });
 
     this.game.move({
       ...move,
@@ -182,7 +187,7 @@ export class ComponentChessboard implements IChessboard {
   }
 
   _getSquarePosition(square: TArea, fromDoc: boolean = true) {
-    const isFlipped = this.element.classList.contains('flipped');
+    const isFlipped = this.element.game.getOptions().flipped;
     const coords = squareToCoords(square);
     const {left, top, width} = this.element.getBoundingClientRect();
     const squareWidth = width / 8;
