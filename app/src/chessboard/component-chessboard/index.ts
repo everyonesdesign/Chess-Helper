@@ -47,29 +47,35 @@ export class ComponentChessboard implements IChessboard {
     const moveDetails = this.game.getMove(move);
     const isPromotion = Boolean(moveDetails.promotion);
 
-    if (!isPromotion || !promotionPiece) {
-      const fromCoords = squareToCoords(fromSq).join('');
-      const pieceElement = this.element.querySelector(`.piece.square-${fromCoords}`);
-      if (pieceElement) {
-        const fromPosition = this._getSquarePosition(fromSq);
-        dispatchPointerEvent(pieceElement, 'pointerdown', {
-          x: fromPosition.x,
-          y: fromPosition.y,
-        });
+    // simulating user board mouse interaction
+    const fromSqPos = this._getSquarePosition(fromSq);
+    const toSqPos = this._getSquarePosition(toSq);
+    dispatchPointerEvent(this.element, 'pointerdown', { x: fromSqPos.x, y: fromSqPos.y });
+    dispatchPointerEvent(this.element, 'pointerup', { x: toSqPos.x, y: toSqPos.y });
 
-        const toPosition = this._getSquarePosition(toSq);
-        dispatchPointerEvent(pieceElement, 'pointerup', {
-          x: toPosition.x,
-          y: toPosition.y,
-        });
-      }
-    } else {
-      this.game.move({
-        ...move,
-        promotion: promotionPiece,
-        animate: false
-      });
-    }
+    // if (!isPromotion || !promotionPiece) {
+    //   const fromCoords = squareToCoords(fromSq).join('');
+    //   const pieceElement = this.element.querySelector(`.piece.square-${fromCoords}`);
+    //   if (pieceElement) {
+    //     const fromPosition = this._getSquarePosition(fromSq);
+    //     dispatchPointerEvent(pieceElement, 'pointerdown', {
+    //       x: fromPosition.x,
+    //       y: fromPosition.y,
+    //     });
+
+    //     const toPosition = this._getSquarePosition(toSq);
+    //     dispatchPointerEvent(pieceElement, 'pointerup', {
+    //       x: toPosition.x,
+    //       y: toPosition.y,
+    //     });
+    //   }
+    // } else {
+    this.game.move({
+      ...move,
+      promotion: promotionPiece,
+      animate: false
+    });
+    // }
   }
 
   isLegalMove(fromSq: TArea, toSq: TArea) {
@@ -103,7 +109,7 @@ export class ComponentChessboard implements IChessboard {
     const arrowCoords = `${fromSq}${toSq}`;
     const markings = this.game.getMarkings();
     if (!markings.arrow[arrowCoords]) {
-      this.game.toggleMarking({ arrow: { color: 'd', from: fromSq, to: toSq }});
+      this.game.toggleMarking({ arrow: { color: 'd', from: fromSq, to: toSq } });
     }
 
     // legacy call, probably can be removed in the future
@@ -112,7 +118,7 @@ export class ComponentChessboard implements IChessboard {
       if (!markings.arrow[arrowCoords]) {
         try {
           this.game.toggleMarking({ key: arrowCoords, type: 'arrow' });
-        } catch(e) {}
+        } catch (e) { }
       }
     });
   }
@@ -121,7 +127,7 @@ export class ComponentChessboard implements IChessboard {
     const arrowCoords = `${fromSq}${toSq}`;
     const markings = this.game.getMarkings();
     if (markings.arrow[arrowCoords]) {
-      this.game.toggleMarking({ arrow: { color: 'd', from: fromSq, to: toSq }});
+      this.game.toggleMarking({ arrow: { color: 'd', from: fromSq, to: toSq } });
     }
 
     // legacy call, probably can be removed in the future
@@ -130,7 +136,7 @@ export class ComponentChessboard implements IChessboard {
       if (markings.arrow[arrowCoords]) {
         try {
           this.game.toggleMarking({ key: arrowCoords, type: 'arrow' });
-        } catch(e) {}
+        } catch (e) { }
       }
     });
   }
@@ -142,7 +148,7 @@ export class ComponentChessboard implements IChessboard {
   markArea(square: TArea) {
     const markings = this.game.getMarkings();
     if (!markings.square[square]) {
-      this.game.toggleMarking({ square: { color: 'd', square }});
+      this.game.toggleMarking({ square: { color: 'd', square } });
     }
 
     // legacy call, probably can be removed in the future
@@ -151,7 +157,7 @@ export class ComponentChessboard implements IChessboard {
       if (!markings.square[square]) {
         try {
           this.game.toggleMarking({ key: square, type: 'square' });
-        } catch(e) {}
+        } catch (e) { }
       }
     });
   }
@@ -159,7 +165,7 @@ export class ComponentChessboard implements IChessboard {
   unmarkArea(square: TArea) {
     const markings = this.game.getMarkings();
     if (markings.square[square]) {
-      this.game.toggleMarking({ square: { color: 'd', square }});
+      this.game.toggleMarking({ square: { color: 'd', square } });
     }
 
     // legacy call, probably can be removed in the future
@@ -168,12 +174,12 @@ export class ComponentChessboard implements IChessboard {
       if (markings.square[square]) {
         try {
           this.game.toggleMarking({ key: square, type: 'square' });
-        } catch(e) {}
+        } catch (e) { }
       }
     });
   }
 
-  onMove(fn: (move: IMoveDetails) => void) : void {
+  onMove(fn: (move: IMoveDetails) => void): void {
     this.game.on('Move', (event) => fn(this._getMoveData(event)));
   }
 
@@ -202,7 +208,7 @@ export class ComponentChessboard implements IChessboard {
   _getSquarePosition(square: TArea, fromDoc: boolean = true) {
     const isFlipped = this.element.classList.contains('flipped');
     const coords = squareToCoords(square);
-    const {left, top, width} = this.element.getBoundingClientRect();
+    const { left, top, width } = this.element.getBoundingClientRect();
     const squareWidth = width / 8;
     const correction = squareWidth / 2;
 
