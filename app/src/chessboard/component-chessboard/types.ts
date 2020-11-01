@@ -145,6 +145,8 @@ export interface IMarkingsData {
     type: "arrow"
     key: TAreaFromTo
     color: 'default' | string
+    from: string
+    to: string
     data: any
   }>
   customItem: any
