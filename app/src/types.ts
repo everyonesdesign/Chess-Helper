@@ -19,6 +19,7 @@ export interface IChessboard {
   markArea: (square: TArea) => void
   unmarkArea: (square: TArea) => void
   onMove: (fn: (move: IMoveDetails) => void) => void
+  submitDailyMove: () => void
 }
 
 export type TArea = string;

@@ -201,4 +201,8 @@ export class GlobalChessboard implements IChessboard {
       }
     }, 50);
   }
+
+  submitDailyMove() {
+    // noop
+  }
 }
