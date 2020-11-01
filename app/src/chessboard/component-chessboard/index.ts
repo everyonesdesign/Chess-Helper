@@ -11,6 +11,7 @@ import {
 } from './types';
 import {
   squareToCoords,
+  ALL_AREAS,
 } from '../../utils';
 import {
   dispatchPointerEvent,
@@ -160,6 +161,17 @@ export class ComponentChessboard implements IChessboard {
         } catch(e) {}
       }
     });
+  }
+
+  clearMarkedAreas() {
+    ALL_AREAS.forEach((area: TArea) => {
+      this.unmarkArea(area);
+    });
+  }
+
+  clearAllMarkings() {
+    this.clearMarkedAreas();
+    this.clearMarkedArrows();
   }
 
   onMove(fn: (move: IMoveDetails) => void) : void {

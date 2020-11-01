@@ -18,6 +18,8 @@ export interface IChessboard {
   clearMarkedArrows: () => void
   markArea: (square: TArea) => void
   unmarkArea: (square: TArea) => void
+  clearMarkedAreas: () => void
+  clearAllMarkings: () => void
   onMove: (fn: (move: IMoveDetails) => void) => void
   submitDailyMove: () => void
 }

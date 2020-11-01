@@ -88,7 +88,7 @@ export function bindInputKeyDown(input: HTMLInputElement) {
       input.value = '';
 
       const board = getBoard();
-      board && board.clearMarkedArrows();
+      board && board.clearAllMarkings();
       e.preventDefault();
     } else if (holdingCtrlOrCmd(e)) {
       if (e.keyCode === KEY_CODES.leftArrow) {
