@@ -220,6 +220,7 @@ describe('getLegalMoves', function() {
       markArea: (square: TArea) => {},
       unmarkArea: (square: TArea) => {},
       onMove: () => {},
+      submitDailyMove: () => {},
     };
   };
 

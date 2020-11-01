@@ -124,6 +124,11 @@ export function makeMove(
 ) {
   if (board.isLegalMove(fromField, toField)) {
       board.makeMove(fromField, toField, promotionPiece);
+      try {
+        board.submitDailyMove();
+      } catch(e) {
+        console.log(e);
+      }
   } else {
     const move = fromField + '-' + toField;
     postMessage(i18n('illegalMove', { move }));

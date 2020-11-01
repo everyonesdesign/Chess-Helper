@@ -287,4 +287,8 @@ export class VueChessboard implements IChessboard {
       });
     });
   }
+
+  submitDailyMove() {
+    // noop
+  }
 }

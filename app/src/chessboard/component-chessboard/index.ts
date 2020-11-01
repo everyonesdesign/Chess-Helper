@@ -159,6 +159,13 @@ export class ComponentChessboard implements IChessboard {
     this.game.on('Move', (event) => fn(this._getMoveData(event)));
   }
 
+  submitDailyMove() {
+    const dailyComponent = document.querySelector('.daily-game-footer-component');
+    if (dailyComponent) {
+        (<any>dailyComponent).__vue__.$emit('save-move');
+    }
+  }
+
   _getMoveData(event: IMoveEvent): IMoveDetails {
     const data = event.data.move;
     let moveType = 'move';
