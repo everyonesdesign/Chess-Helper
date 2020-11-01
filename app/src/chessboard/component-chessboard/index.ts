@@ -44,9 +44,6 @@ export class ComponentChessboard implements IChessboard {
 
   makeMove(fromSq: TArea, toSq: TArea, promotionPiece?: string) {
     const move = { from: fromSq, to: toSq };
-    const moveDetails = this.game.getMove(move);
-    const isPromotion = Boolean(moveDetails.promotion);
-    
     const fromPosition = this._getSquarePosition(fromSq);
     const toPosition = this._getSquarePosition(toSq);
     dispatchPointerEvent(this.element, 'pointerdown', { x: fromPosition.x, y: fromPosition.y });
