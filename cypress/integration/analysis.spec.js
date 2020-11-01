@@ -77,4 +77,17 @@ context('Analysis page', () => {
       .get(SQUARE_SELECTOR)
       .should('not.exist')
   });
+
+  it('works with flipped board', function() {
+    cy
+      .makeMove('e4')
+      .flipBoard()
+      .makeMove('e5')
+      .makeMove('Nc3')
+      .flipBoard()
+      .makeMove('Nc6')
+      .flipBoard()
+      .makeMove('Nge2')
+      .fenEquals('r1bqkbnr/pppp1ppp/2n5/4p3/4P3/2N5/PPPPNPPP/R1BQKB1R b KQkq - 3 3')
+  });
 });
