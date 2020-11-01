@@ -1,6 +1,7 @@
 import get from 'lodash/get';
 import {
   RED_SQUARE_COLOR,
+  ALL_AREAS,
 } from '../../utils';
 import {
   Nullable,
@@ -103,6 +104,17 @@ export class GlobalChessboard implements IChessboard {
 
   unmarkArea(square: TArea) {
     this.board.unmarkArea(square, true);
+  }
+
+  clearMarkedAreas() {
+    ALL_AREAS.forEach((area: TArea) => {
+      this.unmarkArea(area);
+    });
+  }
+
+  clearAllMarkings() {
+    this.clearMarkedAreas();
+    this.clearMarkedArrows();
   }
 
   onMove(fn: (move: IMoveDetails) => void) : void {

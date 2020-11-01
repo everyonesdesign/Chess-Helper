@@ -149,7 +149,11 @@ export default function Autocomplete(options){
                 return false;
             }
             // esc
-            else if (key == 27) { that.value = that.last_val; that.sc.style.display = 'none'; }
+            else if (key == 27) {
+                if (that.sc.style.display !== 'none') {
+                    that.value = that.last_val; that.sc.style.display = 'none';
+                }
+            }
             // enter
             else if (key == 13 || key == 9) {
                 var sel = that.sc.querySelector('.ccHelper-autocompleteSuggestion--selected');

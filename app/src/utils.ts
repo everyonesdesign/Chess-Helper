@@ -20,6 +20,22 @@ import { i18n } from './i18n';
 // value is stored inside of chessboard.rightClickMarkColors
 export const RED_SQUARE_COLOR = '#f42a32';
 
+export function combineStringArrays(a: string[], b: string[]) : string[] {
+  const combinations = [];
+
+  for(var i = 0; i < a.length; i++) {
+       for(var j = 0; j < b.length; j++) {
+          combinations.push(`${a[i]}${b[j]}`)
+       }
+  }
+
+  return combinations;
+}
+
+export const ALL_FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+export const ALL_RANKS = ['1', '2', '3', '4', '5', '6', '7', '8'];
+export const ALL_AREAS: TArea[] = combineStringArrays(ALL_FILES, ALL_RANKS);
+
 /**
  * Is user holding Ctrl (on PC) or Cmd (on Mac)
  */
