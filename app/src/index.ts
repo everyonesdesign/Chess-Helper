@@ -99,8 +99,7 @@ function init() {
 
     const board = getBoard();
     if (board) {
-      // Uncomment when "annoounce move" preference will be shipped
-      // board.onMove((move) => announceMove(move));
+      board.onMove((move) => announceMove(move));
     }
   }
 }
