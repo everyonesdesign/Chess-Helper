@@ -72,13 +72,41 @@ export interface IMove {
   to: TArea
   color?: number
   flags?: number
-  piece?: TPiece
+  piece: TPiece
+  capturedStr?: string
   san?: string
   lines?: any
   animate?: boolean
   userGenerated?: boolean
   userGeneratedDrop?: boolean
   promotion?: string
+}
+
+export interface IFullMove {
+  beforeFen: string
+  capturedStr?: string
+  castlingB: number
+  castlingW: number
+  color: number
+  drop: undefined
+  epSquare: number
+  fen: string
+  flags: number
+  from: string
+  halfMoves: number
+  hash: number[]
+  ids: {move: number, line: number}
+  move: number
+  moveNumber: number
+  piece: string
+  ply: number
+  previous: {move: number, line: number}
+  promotion: undefined
+  san: string
+  time: number
+  timestamp: number
+  to: string
+  wholeMoveNumber: number
 }
 
 export type TEventType =
@@ -247,7 +275,7 @@ export interface IGame {
   getHeaders: AnyFunction
   getHistoryFENs: AnyFunction
   getHistorySANs: AnyFunction
-  getLastMove: AnyFunction
+  getLastMove: () => IFullMove | undefined
   getLegalMoves: () => IMove[]
   getLegalMovesForSquare: (square: TArea) => IMove[]
   getLegalPremovesForSquare: AnyFunction

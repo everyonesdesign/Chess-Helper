@@ -7,7 +7,8 @@ import {
 import {
   IGame,
   TElementWithGame,
-  IMoveEvent,
+  IMove,
+  IFullMove,
 } from './types';
 import {
   squareToCoords,
@@ -24,15 +25,15 @@ import {
 export class ComponentChessboard implements IChessboard {
   element: TElementWithGame
   game: IGame
+  moveListeners: Array<(move: IMoveDetails) => void>
 
   constructor(element: Element) {
     this.element = <TElementWithGame>element;
     this.game = this.element.game;
+    this.moveListeners = [];
 
-    this.game.on('Move', () => {
-      const event = new Event('ccHelper-draw');
-      document.dispatchEvent(event);
-    });
+    this._initGameObject();
+    this._watchBoardChange();
   }
 
   getElement() {
@@ -50,7 +51,7 @@ export class ComponentChessboard implements IChessboard {
     dispatchPointerEvent(this.element, 'pointerdown', { x: fromPosition.x, y: fromPosition.y });
     dispatchPointerEvent(this.element, 'pointerup', { x: toPosition.x, y: toPosition.y });
 
-    this.game.move({
+    this.game.move(<IMove>{
       ...move,
       promotion: promotionPiece,
       animate: false
@@ -175,7 +176,7 @@ export class ComponentChessboard implements IChessboard {
   }
 
   onMove(fn: (move: IMoveDetails) => void) : void {
-    this.game.on('Move', (event) => fn(this._getMoveData(event)));
+    this.moveListeners.push(fn);
   }
 
   submitDailyMove() {
@@ -185,25 +186,25 @@ export class ComponentChessboard implements IChessboard {
     }
   }
 
-  _getMoveData(event: IMoveEvent): IMoveDetails {
-    const data = event.data.move;
+  _getMoveData(move: IMove | IFullMove): IMoveDetails {
     let moveType = 'move';
-    if (data.san.startsWith('O-O-O')) {
+    const san = move.san || '';
+    if (san.startsWith('O-O-O')) {
       moveType = 'long-castling';
-    } else if (data.san.startsWith('O-O')) {
+    } else if (san.startsWith('O-O')) {
       moveType = 'short-castling';
-    } else if (data.capturedStr) {
+    } else if (move.capturedStr) {
       moveType = 'capture';
     }
 
     return {
-      piece: data.piece,
+      piece: move.piece,
       moveType,
-      from: data.from,
-      to: data.to,
-      promotionPiece: data.promotion,
-      check: /\+$/.test(data.san),
-      checkmate: /\#$/.test(data.san),
+      from: move.from,
+      to: move.to,
+      promotionPiece: move.promotion,
+      check: /\+$/.test(san),
+      checkmate: /\#$/.test(san),
     };
   }
 
@@ -225,5 +226,40 @@ export class ComponentChessboard implements IChessboard {
         y: (fromDoc ? top : 0) + squareWidth * coords[1] - correction,
       };
     }
+  }
+
+  _watchBoardChange() {
+    setInterval(() => {
+      const newBoard = document.querySelector('chess-board');
+      if (newBoard && newBoard !== this.element) {
+        this.element = <TElementWithGame>newBoard;
+        this.game = this.element.game;
+        this._initGameObject();
+      }
+    }, 500);
+  }
+
+  _initGameObject() : void {
+    const self = this;
+    const originalMove = this.game.move;
+    this.game.move = function(move: IMove) {
+      try {
+        setTimeout(() => {
+          const event = new Event('ccHelper-draw');
+          document.dispatchEvent(event);
+
+          const fullMove = self.game.getLastMove();
+            // filter out premoves
+          if (fullMove && fullMove.from === move.from && fullMove.to === move.to) {
+            self.moveListeners.forEach(listener => listener(self._getMoveData(fullMove)));
+          }
+        });
+      } catch(e) {
+        console.error(e);
+      }
+
+      // @ts-ignore
+      return originalMove.apply(this, arguments);
+    };
   }
 }
