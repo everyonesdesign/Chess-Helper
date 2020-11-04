@@ -88,6 +88,8 @@ export type TTranslationId =
   'speechFileF' |
   'speechFileG' |
   'speechFileH' |
+  'speechEnabled' |
+  'speechDisabled' |
   '_test' |
   '_test_1_placeholder' |
   '_test_2_placeholders';

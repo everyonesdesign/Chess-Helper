@@ -5,6 +5,10 @@ import {
   Nullable,
 } from './types';
 import { i18n } from './i18n';
+import {
+  toggleSpeech,
+  isSpeechEnabled,
+} from './speech';
 
 export const commands : Record<string, () => void> = {
   blindfold: () => {
@@ -17,6 +21,15 @@ export const commands : Record<string, () => void> = {
   draw: () => {
     const drawButton = <Nullable<HTMLButtonElement>>document.querySelector('.draw-button-component');
     drawButton && drawButton.click();
+  },
+  speech: () => {
+    toggleSpeech();
+
+    if (isSpeechEnabled()) {
+      postMessage(i18n('speechEnabled'));
+    } else {
+      postMessage(i18n('speechDisabled'));
+    }
   },
 };
 

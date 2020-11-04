@@ -3,6 +3,8 @@ import {
 } from './types';
 import { i18n, getLocale } from './i18n';
 
+const SPEECH_STORAGE_KEY = 'ccHelper-announceMoves';
+
 const piecesMapping: Record<string, string> = {
   k: i18n('speechPieceKing'),
   q: i18n('speechPieceQueen'),
@@ -23,10 +25,22 @@ const fileMapping: Record<string, string> = {
   h: i18n('speechFileH'),
 };
 
+export function isSpeechEnabled() : boolean {
+  const savedValue  = localStorage.getItem(SPEECH_STORAGE_KEY);
+  return savedValue === '1';
+}
+
+export function toggleSpeech(isEnabled : boolean = !isSpeechEnabled()) : void {
+  localStorage.setItem(SPEECH_STORAGE_KEY, isEnabled ? '1' : '0');
+  const savedValue  = localStorage.getItem(SPEECH_STORAGE_KEY);
+}
+
 export function speak(text: string) : void {
-  var speech = new SpeechSynthesisUtterance(text);
-  speech.lang = getLocale();
-  window.speechSynthesis.speak(speech);
+  if (isSpeechEnabled()) {
+    var speech = new SpeechSynthesisUtterance(text);
+    speech.lang = getLocale();
+    window.speechSynthesis.speak(speech);
+  }
 }
 
 export function announceMove(move: IMoveDetails) {
