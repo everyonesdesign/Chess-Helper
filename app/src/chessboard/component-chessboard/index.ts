@@ -8,6 +8,7 @@ import {
   IGame,
   TElementWithGame,
   IMove,
+  IMoveEvent,
   IFullMove,
 } from './types';
 import {
@@ -186,25 +187,25 @@ export class ComponentChessboard implements IChessboard {
     }
   }
 
-  _getMoveData(move: IMove | IFullMove): IMoveDetails {
+  _getMoveData(event: IMoveEvent): IMoveDetails {
+    const data = event.data.move;
     let moveType = 'move';
-    const san = move.san || '';
-    if (san.startsWith('O-O-O')) {
+    if (data.san.startsWith('O-O-O')) {
       moveType = 'long-castling';
-    } else if (san.startsWith('O-O')) {
+    } else if (data.san.startsWith('O-O')) {
       moveType = 'short-castling';
-    } else if (move.capturedStr) {
+    } else if (data.capturedStr) {
       moveType = 'capture';
     }
 
     return {
-      piece: move.piece,
+      piece: data.piece,
       moveType,
-      from: move.from,
-      to: move.to,
-      promotionPiece: move.promotion,
-      check: /\+$/.test(san),
-      checkmate: /\#$/.test(san),
+      from: data.from,
+      to: data.to,
+      promotionPiece: data.promotion,
+      check: /\+$/.test(data.san),
+      checkmate: /\#$/.test(data.san),
     };
   }
 
@@ -241,25 +242,11 @@ export class ComponentChessboard implements IChessboard {
 
   _initGameObject() : void {
     const self = this;
-    const originalMove = this.game.move;
-    this.game.move = function(move: IMove) {
-      try {
-        setTimeout(() => {
-          const event = new Event('ccHelper-draw');
-          document.dispatchEvent(event);
 
-          const fullMove = self.game.getLastMove();
-            // filter out premoves
-          if (fullMove && fullMove.from === move.from && fullMove.to === move.to) {
-            self.moveListeners.forEach(listener => listener(self._getMoveData(fullMove)));
-          }
-        });
-      } catch(e) {
-        console.error(e);
-      }
-
-      // @ts-ignore
-      return originalMove.apply(this, arguments);
-    };
+    this.game.on('Move', (moveEvent : IMoveEvent) => {
+      const ev = new Event('ccHelper-draw');
+      document.dispatchEvent(ev);
+      self.moveListeners.forEach(listener => listener(self._getMoveData(moveEvent)));
+    });
   }
 }
