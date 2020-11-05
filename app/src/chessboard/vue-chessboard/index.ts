@@ -259,7 +259,12 @@ export class VueChessboard implements IChessboard {
   }
 
   onMove(fn: (move: IMoveDetails) => void) : void {
-    this.store._events['chessboard-makeMove'].push((event) => {
+    // this.store._events['chessboard-makeMove'].push((event) => {
+    this.store.chessboard.on('MOVE_PIECES', (event) => {
+      // ugly log just to show you that the event argument is of a different form
+      // hence the setTimeout immediately return from the condition
+      console.log(event);
+      
       setTimeout(() => {
         if (event.isIllegal) return;
         if (typeof event.from !== 'string') return;
