@@ -9,11 +9,40 @@ export interface IMarkings {
   squares: any[]
 }
 
+export interface IGameTreeNode {
+  beforeFen: string
+  capturedStr: string | undefined
+  castlingB: number
+  castlingW: number
+  color: number
+  drop: undefined
+  epSquare: number
+  fen: string
+  flags: 0
+  from: string
+  halfMoves: number
+  hash: number
+  ids: {
+    line: number
+    move: number
+  }
+  move: number
+  moveNumber: 63
+  piece: string
+  previous: {
+    line: number
+    move: number
+  }
+  promotion: undefined
+  san: string
+  to: string
+}
+
 export interface IGameTree {
   initialMarkings: IMarkings
   selected: any
   lines: any[]
-  selectedNode: any
+  selectedNode?: IGameTreeNode
   history: any[]
   markings: IMarkings
   premoves: any[]
