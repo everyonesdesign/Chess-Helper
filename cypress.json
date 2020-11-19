@@ -1,4 +1,8 @@
 {
   "projectId": "bwgmu7",
-  "videoUploadOnPasses": false
+  "videoUploadOnPasses": false,
+  "retries": {
+    "runMode": 2,
+    "openMode": 0
+  }
 }
