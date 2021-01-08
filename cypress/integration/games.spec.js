@@ -16,10 +16,6 @@ context('Chess games', () => {
   beforeEach(() => {
     cy.visit('https://www.chess.com/analysis')
     cy.wait(10000)
-    cy
-      .get('.ui_outside-close-component')
-      .click();
-
     cy.fixture('positions').as('positions')
   });
 
