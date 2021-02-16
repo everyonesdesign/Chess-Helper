@@ -20,9 +20,6 @@ import {
 import {
   commands,
 } from './commands';
-import {
-  announceMove,
-} from './speech';
 import autocomplete from './lib/autocomplete';
 import { i18n } from './i18n';
 
@@ -96,12 +93,6 @@ function init() {
     });
 
     buildMessagesMarkup();
-
-    const board = getBoard();
-    if (board) {
-      // Uncomment when "annoounce move" preference will be shipped
-      // board.onMove((move) => announceMove(move));
-    }
   }
 }
 

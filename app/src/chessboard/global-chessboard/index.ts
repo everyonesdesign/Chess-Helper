@@ -10,7 +10,6 @@ import {
   IMoveDetails,
 } from '../../types';
 import {
-  IOnMoveEvent,
   IOnRefreshEvent,
   IChessBoard,
   TElementWithChessboard,
@@ -115,71 +114,6 @@ export class GlobalChessboard implements IChessboard {
   clearAllMarkings() {
     this.clearMarkedAreas();
     this.clearMarkedArrows();
-  }
-
-  onMove(fn: (move: IMoveDetails) => void) : void {
-    let announcementLocked = false;
-
-    function eventHandler(event: IOnMoveEvent | IOnRefreshEvent) {
-      let from;
-      let to;
-
-      if (announcementLocked) return;
-      if (!event.moveText) return;
-
-      if (event.customEventName === 'onMove') {
-        from = event.fromId;
-        to = event.areaId;
-      } else if (event.customEventName === 'onRefresh') {
-        from = event.fromAreaId;
-        to = event.toAreaId;
-      }
-
-      let piece = 'p';
-      const pieceMatch = event.moveText.match(/^[KQRBN]/);
-      if (pieceMatch) {
-        piece = pieceMatch[0].toLowerCase();
-      }
-
-      let promotionPiece = undefined;
-      const promotionMatch = event.moveText.match(/=([QRBN])/);
-      if (promotionMatch) {
-        promotionPiece = promotionMatch[1].toLowerCase();
-      }
-
-      let moveType = 'move';
-      if (promotionPiece) {
-        moveType = 'promotion';
-      } else if (event.moveText.startsWith('O-O-O')) {
-        moveType = 'long-castling';
-      } else if (event.moveText.startsWith('O-O')) {
-        moveType = 'short-castling';
-      } else if (event.moveText.includes('x')) {
-        moveType = 'capture';
-      }
-
-      fn({
-        piece,
-        moveType,
-        from: <string> from,
-        to: <string> to,
-        promotionPiece,
-        check: /\+$/.test(event.moveText),
-        checkmate: /\#$/.test(event.moveText),
-      });
-    }
-
-    // user's moves
-    this.board.attachEvent('onMove', eventHandler);
-
-    // computer's moves
-    this.board.attachEvent('onRefresh', eventHandler);
-
-    // prevent triggering of refreshes made via game history navigation
-    this.board.attachEvent('onMoveForwardBackward', () => {
-      announcementLocked = true;
-      setTimeout(() => announcementLocked = false, 500);
-    });
   }
 
   implementPromotion(pieceType: string) {

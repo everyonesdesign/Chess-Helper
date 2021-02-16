@@ -20,7 +20,6 @@ export interface IChessboard {
   unmarkArea: (square: TArea) => void
   clearMarkedAreas: () => void
   clearAllMarkings: () => void
-  onMove: (fn: (move: IMoveDetails) => void) => void
   submitDailyMove: () => void
 }
 
@@ -65,29 +64,6 @@ export type TTranslationId =
   'blindFoldPeekHint' |
   'blindFoldOn' |
   'blindfoldToggleHint' |
-  'speechPieceMoveMade' |
-  'speechPawnMoveMade' |
-  'speechPieceCaptureMade' |
-  'speechPawnCaptureMade' |
-  'speechShortCastling' |
-  'speechLongCastling' |
-  'speechPromotion' |
-  'speechCheck' |
-  'speechCheckmate' |
-  'speechPieceKing' |
-  'speechPieceQueen' |
-  'speechPieceRook' |
-  'speechPieceBishop' |
-  'speechPieceKnight' |
-  'speechPiecePawn' |
-  'speechFileA' |
-  'speechFileB' |
-  'speechFileC' |
-  'speechFileD' |
-  'speechFileE' |
-  'speechFileF' |
-  'speechFileG' |
-  'speechFileH' |
   '_test' |
   '_test_1_placeholder' |
   '_test_2_placeholders';

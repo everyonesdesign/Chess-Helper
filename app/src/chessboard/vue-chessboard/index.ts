@@ -258,48 +258,6 @@ export class VueChessboard implements IChessboard {
     }
   }
 
-  onMove(fn: (move: IMoveDetails) => void) : void {
-    this.store._events['chessboard-makeMove'].push((event) => {
-      setTimeout(() => {
-        if (event.isIllegal) return;
-        if (typeof event.from !== 'string') return;
-        if (typeof event.to !== 'string') return;
-
-        const [toFile, toRank] = squareToCoords(event.to);
-        const findPieceByCoords = (p: IPiece) => p.file === toFile && p.rank === toRank;
-        const cb = this.store.chessboard;
-        const piece = cb.state.pieces.find(findPieceByCoords);
-
-        if (piece) {
-          let moveType = 'move';
-          if (cb.state.previousPieces.find(findPieceByCoords)) {
-            moveType = 'capture';
-          } else if (
-            (piece.type === 'k' && event.from === 'e1' && event.to === 'g1') ||
-            (piece.type === 'k' && event.from === 'e8' && event.to === 'g8')
-          ) {
-            moveType = 'short-castling';
-          } else if (
-            (piece.type === 'k' && event.from === 'e1' && event.to === 'c1') ||
-            (piece.type === 'k' && event.from === 'e8' && event.to === 'c8')
-          ) {
-            moveType = 'long-castling';
-          }
-
-          fn({
-            piece: piece.type,
-            from: event.from,
-            to: event.to,
-            promotionPiece: event.promotion ? event.promotion : undefined,
-            moveType,
-            check: this.store.game.setup.check,
-            checkmate: this.store.game.setup.checkmate,
-          });
-        }
-      });
-    });
-  }
-
   submitDailyMove() {
     // noop
   }

@@ -221,7 +221,6 @@ describe('getLegalMoves', function() {
       unmarkArea: (square: TArea) => {},
       clearMarkedAreas: () => {},
       clearAllMarkings: () => {},
-      onMove: () => {},
       submitDailyMove: () => {},
     };
   };

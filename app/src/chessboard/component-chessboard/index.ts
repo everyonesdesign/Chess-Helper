@@ -174,10 +174,6 @@ export class ComponentChessboard implements IChessboard {
     this.clearMarkedArrows();
   }
 
-  onMove(fn: (move: IMoveDetails) => void) : void {
-    this.game.on('Move', (event) => fn(this._getMoveData(event)));
-  }
-
   submitDailyMove() {
     const dailyComponent = document.querySelector('.daily-game-footer-component');
     if (dailyComponent) {
