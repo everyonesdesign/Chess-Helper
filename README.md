@@ -1,6 +1,6 @@
 # Chess Helper Extension
 
-[![Build Status](https://travis-ci.com/everyonesdesign/Chess-Helper.svg?branch=master)](https://travis-ci.com/everyonesdesign/Chess-Helper)
+![Build Status](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
 
 ## Download extension
 
