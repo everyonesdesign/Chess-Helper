@@ -98,22 +98,7 @@ export function go(board: IChessboard, input: string) : boolean {
   }
 
   const parseResult = parseMoveInput(input);
-  const moves = getLegalMoves(board, parseResult)
-    .filter(move => {
-      const vertical = squareToCoords(move.to)[1];
-
-      // Treat promotion moves without "promotionPiece" as illegal
-      if (
-        move.piece === 'p' &&
-        [1, 8].includes(vertical) &&
-        !move.promotionPiece
-      ) {
-        return false;
-      }
-
-      return true;
-    });
-
+  const moves = getLegalMoves(board, parseResult);
   if (moves.length === 1) {
     const move = moves[0];
     makeMove(board, move.from, move.to, move.promotionPiece);
@@ -156,6 +141,16 @@ export function makeMove(
  */
 export function getLegalMoves(board: IChessboard, move: Nullable<IMoveTemplate>) : IMove[] {
   if (!board || !move || !board.isPlayersMove()) {
+    return [];
+  }
+
+  // Treat promotion moves without "promotionPiece" as invalid
+  const horizontal = squareToCoords(move.to)[1];
+  if (
+    move.piece === 'p' &&
+    [1, 8].includes(horizontal) &&
+    !move.promotionPiece
+  ) {
     return [];
   }
 
