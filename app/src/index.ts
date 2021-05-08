@@ -95,10 +95,10 @@ function init() {
     });
 
     buildMessagesMarkup();
-    renderBlindfold();
   }
 
   markExtentionInit();
+  renderBlindfold();
 }
 
 /**
@@ -120,6 +120,6 @@ function updatePlaceholder(unfocusedLabel: HTMLElement) {
 }
 
 onDocumentReady(() => {
-  renderBlindfold();
   setTimeout(init, 500);
+  renderBlindfold();
 });

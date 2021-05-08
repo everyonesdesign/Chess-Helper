@@ -12,6 +12,9 @@ import {
 import {
   getBoard,
 } from './chessboard';
+import {
+  EXTENTION_INITED_HEAD_CLASSNAME,
+} from './utils';
 import { i18n } from './i18n';
 
 const BLINDFOLD_STORAGE_KEY = 'ccHelper-blindfold';
@@ -50,8 +53,12 @@ export function renderBlindfold() : void {
   }
 
   if (isEnabled) {
-    const board = getBoard();
-    board && initBlindFoldOverlay(board);
+    const inited = document.head.classList.contains(EXTENTION_INITED_HEAD_CLASSNAME);
+
+    if (inited) {
+      const board = getBoard();
+      board && initBlindFoldOverlay(board);
+    }
   }
 }
 
