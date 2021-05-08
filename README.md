@@ -1,6 +1,6 @@
 # Chess Helper Extension
 
-![Build Status](https://github.com/everyonesdesign/Chess-Helper/actions/workflows/test/badge.svg)
+![Build Status](https://github.com/everyonesdesign/Chess-Helper/actions/workflows/test.yml/badge.svg)
 
 ## Download extension
 
