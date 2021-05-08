@@ -22,7 +22,6 @@ import {
   commands,
 } from './commands';
 import {
-  initBlindFoldOverlay,
   renderBlindfold,
 } from './blindfold';
 import autocomplete from './lib/autocomplete';
