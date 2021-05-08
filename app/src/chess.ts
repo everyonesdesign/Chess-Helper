@@ -150,6 +150,8 @@ export function getLegalMoves(board: IChessboard, move: Nullable<IMoveTemplate>)
 
     const matchingPieces = filter(pieces, (p) => {
       return (
+        // RegExp is required, because move.piece/move.from aren't always there
+        // It might be just ".", meaning "any piece" (imagine move like "e2e4")
         new RegExp(`^${move.piece}$`).test(p.type) &&
         new RegExp(`^${move.from}$`).test(p.area) &&
         board.isLegalMove(p.area, move.to)
