@@ -7,8 +7,8 @@ envScript.innerHTML = `
     defaultLocale: "${manifest.default_locale}",
   };
 `;
-document.body.appendChild(envScript);
 
+(document.head||document.documentElement).prepend(envScript);
 
 /**
  * injectScript - Inject internal script to available access to the `window`
@@ -16,12 +16,11 @@ document.body.appendChild(envScript);
  * @param  {type} filePath Local path of the internal script.
  * @param  {type} tag The tag as string, where the script will be append (default: 'body').
  */
-function injectScript(filePath, tag) {
-    const node = document.getElementsByTagName(tag)[0];
-    const script = document.createElement('script');
-    script.setAttribute('type', 'text/javascript');
-    script.setAttribute('src', filePath);
-    node.appendChild(script);
+function injectScript(filePath) {
+  const script = document.createElement('script');
+  script.setAttribute('type', 'text/javascript');
+  script.setAttribute('src', filePath);
+  (document.head||document.documentElement).prepend(script);
 }
 
-injectScript(chrome.extension.getURL('build.js'), 'body');
+injectScript(chrome.extension.getURL('build.js'));

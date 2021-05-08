@@ -2,14 +2,15 @@ import {
   postMessage,
 } from './utils';
 import {
+  toggleBlindfoldMode,
+} from './blindfold';
+import {
   Nullable,
 } from './types';
 import { i18n } from './i18n';
 
 export const commands : Record<string, () => void> = {
-  blindfold: () => {
-    document.body.classList.toggle('ccHelper-docBody--blindfolded');
-  },
+  blindfold: toggleBlindfoldMode,
   resign: () => {
     const resignButton = <Nullable<HTMLButtonElement>>document.querySelector('.resign-button-component');
     resignButton && resignButton.click();

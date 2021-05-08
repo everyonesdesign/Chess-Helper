@@ -11,18 +11,22 @@ import {
   bindBlindFoldPeek,
 } from './keyboard';
 import {
+  onDocumentReady,
   isEditable,
   buildMessagesMarkup,
   createInitialElements,
   startUpdatingAriaHiddenElements,
-  initBlindFoldOverlay,
+  markExtentionInit,
 } from './utils';
 import {
   commands,
 } from './commands';
+import {
+  initBlindFoldOverlay,
+  renderBlindfold,
+} from './blindfold';
 import autocomplete from './lib/autocomplete';
 import { i18n } from './i18n';
-
 
 /**
  * Prepare the extension code and run
@@ -77,7 +81,6 @@ function init() {
 
         if (board) {
           drawMovesOnBoard(board, input.value);
-          initBlindFoldOverlay(board);
         }
       } catch (e) {
         console.error(e);
@@ -93,7 +96,10 @@ function init() {
     });
 
     buildMessagesMarkup();
+    renderBlindfold();
   }
+
+  markExtentionInit();
 }
 
 /**
@@ -114,4 +120,7 @@ function updatePlaceholder(unfocusedLabel: HTMLElement) {
   }
 }
 
-setTimeout(init, 500);
+onDocumentReady(() => {
+  renderBlindfold();
+  setTimeout(init, 500);
+});
