@@ -144,15 +144,7 @@ export function getLegalMoves(board: IChessboard, move: Nullable<IMoveTemplate>)
     return [];
   }
 
-  // Treat promotion moves without "promotionPiece" as invalid
-  const horizontal = squareToCoords(move.to)[1];
-  if (
-    move.piece === 'p' &&
-    [1, 8].includes(horizontal) &&
-    !move.promotionPiece
-  ) {
-    return [];
-  }
+  const toYCoord = squareToCoords(move.to)[1];
 
   if (['short-castling', 'long-castling'].includes(move.moveType)) {
     return getLegalCastlingMoves(board, move);
@@ -160,6 +152,16 @@ export function getLegalMoves(board: IChessboard, move: Nullable<IMoveTemplate>)
     const pieces = board.getPiecesSetup();
 
     const matchingPieces = filter(pieces, (p) => {
+
+      // Treat promotion moves without "promotionPiece" as invalid
+      if (
+        p.type === 'p' &&
+        [1, 8].includes(toYCoord) &&
+        !move.promotionPiece
+      ) {
+        return false;
+      }
+
       return (
         // RegExp is required, because move.piece/move.from aren't always there
         // It might be just ".", meaning "any piece" (imagine move like "e2e4")
