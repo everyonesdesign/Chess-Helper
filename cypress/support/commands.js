@@ -8,6 +8,7 @@ addExtensionCommands(Cypress)
 const DEFAULT_MOVE_OPTIONS = {
   delay: 100,
 }
+
 Cypress.Commands.add('makeMove', (move, options = {}) => {
   const opts = Object.assign({}, options, DEFAULT_MOVE_OPTIONS)
   return cy
@@ -27,4 +28,33 @@ Cypress.Commands.add('fenEquals', (expectedFen) => {
 
 Cypress.Commands.add('flipBoard', () => {
   cy.get('body').type('x');
+})
+
+Cypress.Commands.add('acceptCookies', () => {
+  return cy.window().then((win) => {
+    try {
+      const SELECTOR = '.accept-button';
+      const buttons = win.document.querySelectorAll(SELECTOR);
+      buttons.forEach(b => b.click());
+    } catch(e) {}
+  })
+})
+
+Cypress.Commands.add('enablePuzzleBoard', () => {
+  return cy.window().then((win) => {
+    const element = win.document.querySelector('chess-board');
+
+    element.game.setOptions({ enabled: true })
+
+    const mode = element.game.getMode();
+    mode.isAllowedToMove = () => true;
+    const options = mode.getOptions();
+
+    options.canModifyExistingMovesOnMainLine = true;
+    options.canInteractWithPieces = true;
+    options.canAddMovesToMainLine = true;
+
+    element.game.canMoveForward = () => true;
+    element.game.getTurn = () => element.game.getPlayingAs();
+  })
 })

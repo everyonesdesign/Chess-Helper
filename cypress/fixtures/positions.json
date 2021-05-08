@@ -10,5 +10,11 @@
         "positions": {
             "end": "1n1Rkb1r/p4ppp/4q3/4p1B1/4P3/8/PPP2PPP/2K5 b k - 1 17"
         }
+    },
+    "puzzles-promotion": {
+        "url": "https://www.chess.com/puzzles/problem/1007830",
+        "positions": {
+            "end": "1Q6/5kp1/4p3/4p1p1/P3P1P1/2p5/5PK1/1R6 b - - 0 36"
+        }
     }
 }
