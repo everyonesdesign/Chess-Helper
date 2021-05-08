@@ -3,6 +3,7 @@ import isEqual from 'lodash/isEqual';
 import find from 'lodash/find';
 import {
   postMessage,
+  squareToCoords,
 } from './utils';
 import {
   drawCache,
@@ -97,7 +98,22 @@ export function go(board: IChessboard, input: string) : boolean {
   }
 
   const parseResult = parseMoveInput(input);
-  const moves = getLegalMoves(board, parseResult);
+  const moves = getLegalMoves(board, parseResult)
+    .filter(move => {
+      const vertical = squareToCoords(move.to)[1];
+
+      // Treat promotion moves without "promotionPiece" as illegal
+      if (
+        move.piece === 'p' &&
+        [1, 8].includes(vertical) &&
+        !move.promotionPiece
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+
   if (moves.length === 1) {
     const move = moves[0];
     makeMove(board, move.from, move.to, move.promotionPiece);
