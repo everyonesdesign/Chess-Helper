@@ -82,6 +82,19 @@ input[type="text"].ccHelper-input::placeholder {
     overflow: hidden;
 }
 
+/*
+ * Hide the pieces position if the blindfold is on
+ * and the extension is not yet enabled
+ */
+.ccHelper-docHead--blindfolded:not(.ccHelper-docHead--inited) .chessboard,
+.ccHelper-docHead--blindfolded:not(.ccHelper-docHead--inited) .board:not(chess-board),
+.ccHelper-docHead--blindfolded:not(.ccHelper-docHead--inited) chess-board,
+.ccHelper-docHead--blindfolded:not(.ccHelper-docHead--inited) + body .chessboard,
+.ccHelper-docHead--blindfolded:not(.ccHelper-docHead--inited) + body .board:not(chess-board),
+.ccHelper-docHead--blindfolded:not(.ccHelper-docHead--inited) + body chess-board {
+    opacity: .01;
+}
+
 .ccHelper-blindfold {
     position: absolute;
     display: flex;

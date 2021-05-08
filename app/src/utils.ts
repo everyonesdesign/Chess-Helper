@@ -1,16 +1,11 @@
 import domify from 'domify';
 import {
   ariaHiddenElements,
-  blindfoldOverlays,
 } from './globals';
-import {
-  blindFoldIcon,
-} from './icons';
 import {
   commands,
 } from './commands';
 import {
-  IChessboard,
   TArea,
   Nullable,
   IConfig,
@@ -63,6 +58,30 @@ export function postMessage(text: string) {
       messagesContainer.removeChild(message);
     }, 3000);
   }
+}
+
+
+/**
+ * Run callback on document ready
+ * See https://stackoverflow.com/a/989970
+ */
+export function onDocumentReady(fn: () => void) : void {
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+        setTimeout(fn, 1);
+    } else {
+        document.addEventListener("DOMContentLoaded", fn);
+    }
+}
+
+/**
+ * Mark finishing of extension init
+ * Can be used for styles tweaks
+ */
+export const EXTENTION_INITED_BODY_CLASSNAME = 'ccHelper-docBody--inited';
+export const EXTENTION_INITED_HEAD_CLASSNAME = 'ccHelper-docHead--inited';
+export function markExtentionInit() : void {
+  document.head.classList.add(EXTENTION_INITED_HEAD_CLASSNAME);
+  document.body.classList.add(EXTENTION_INITED_BODY_CLASSNAME);
 }
 
 /**
@@ -136,51 +155,6 @@ export function startUpdatingAriaHiddenElements() {
 
   update();
   setInterval(update, 1000);
-}
-
-/**
- * Create a blindfold overlay for a board element
- */
-export function initBlindFoldOverlay(board: IChessboard) {
-  const existingOverlay = blindfoldOverlays.get(board);
-  if (!existingOverlay) {
-    const container = board.getRelativeContainer();
-    if (container) {
-      if (container) {
-        const overlay = domify(`
-          <div class="ccHelper-blindfold">
-            <div class="ccHelper-blindfoldPeek">
-              <div class="ccHelper-blindfoldPeekContents">
-                ${i18n('blindFoldPeekHint', {
-                  key: '<span class="ccHelper-blindfoldKey">Ctrl</span>'
-                })}
-              </div>
-            </div>
-            <div class="ccHelper-blindfoldBackground"></div>
-            <div class="ccHelper-blindfoldTitle">
-              ${i18n('blindFoldOn')}
-            </div>
-            ${blindFoldIcon}
-            <button class="ccHelper-blindfoldButton">
-              ${i18n('blindfoldToggleHint')}
-            </button>
-          </div>
-        `);
-
-        // toggle blindfold mode on button click...
-        const button = overlay.querySelector('.ccHelper-blindfoldButton');
-        if (button) {
-          button.addEventListener('click', () => commands.blindfold());
-        }
-
-        blindfoldOverlays.set(board, overlay);
-        container.appendChild(overlay);
-      } else {
-        // maybe set some dummy value to `blindfoldOverlays` set
-        // to optimise this function?
-      }
-    }
-  }
 }
 
 /**
