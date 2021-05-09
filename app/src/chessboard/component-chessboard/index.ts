@@ -57,7 +57,8 @@ export class ComponentChessboard implements IChessboard {
     this.game.move({
       ...move,
       promotion: promotionPiece,
-      animate: false
+      animate: false,
+      userGenerated: true
     });
   }
 
