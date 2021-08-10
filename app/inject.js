@@ -1,7 +1,7 @@
 // set app environment
 const manifest = chrome.runtime.getManifest();
 const envScript = document.createElement('script');
-envScript.innerHTML = `
+envScript.textContent = `
   window.chessHelper__environment = {
     version: "${manifest.version}",
     defaultLocale: "${manifest.default_locale}",
@@ -23,4 +23,4 @@ function injectScript(filePath) {
   (document.head||document.documentElement).prepend(script);
 }
 
-injectScript(chrome.extension.getURL('build.js'));
+injectScript(chrome.runtime.getURL('build.js'));
