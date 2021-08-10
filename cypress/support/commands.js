@@ -2,9 +2,6 @@
 
 const { INPUT_SELECTOR } = require('../constants');
 
-const addExtensionCommands = require('cypress-browser-extension-plugin/commands')
-addExtensionCommands(Cypress)
-
 const DEFAULT_MOVE_OPTIONS = {
   delay: 100,
 }
@@ -33,7 +30,7 @@ Cypress.Commands.add('flipBoard', () => {
 Cypress.Commands.add('acceptCookies', () => {
   return cy.window().then((win) => {
     try {
-      const SELECTOR = '.accept-button';
+      const SELECTOR = '.accept-button, .bottom-banner-close';
       const buttons = win.document.querySelectorAll(SELECTOR);
       buttons.forEach(b => b.click());
     } catch(e) {}

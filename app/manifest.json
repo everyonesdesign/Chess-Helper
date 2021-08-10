@@ -25,7 +25,8 @@
       "run_at": "document_start",
       "css": [
         "styles/main.css"
-      ]
+      ],
+      "all_frames": true
     }
   ],
   "web_accessible_resources": [
