@@ -177,20 +177,36 @@ describe('parseAlgebraic', function() {
       }]);
     });
     it('bc4', function () {
-      assert.deepEqual(parseAlgebraic('bc4'), [{
-        piece: '[pb]',
-        from: '..',
-        to: 'c4',
-        moveType: 'move',
-      }]);
+      assert.deepEqual(parseAlgebraic('bc4'), [
+        {
+          piece: 'p',
+          from: 'b.',
+          to: 'c4',
+          moveType: 'move',
+        },
+        {
+          piece: 'b',
+          from: '..',
+          to: 'c4',
+          moveType: 'move',
+        },
+      ]);
     });
     it('bxb3', function () {
-      assert.deepEqual(parseAlgebraic('bxb3'), [{
-        piece: '[pb]',
-        from: '..',
-        to: 'b3',
-        moveType: 'capture',
-      }]);
+      assert.deepEqual(parseAlgebraic('bxb3'), [
+        {
+          piece: 'p',
+          from: 'b.',
+          to: 'b3',
+          moveType: 'capture',
+        },
+        {
+          piece: 'b',
+          from: '..',
+          to: 'b3',
+          moveType: 'capture',
+        },
+      ]);
     });
     it('b2c3', function () {
       // This looks like a UCI move. Let's parse it as UCI

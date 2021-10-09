@@ -314,9 +314,6 @@ export function parseAlgebraic(input: string): IPotentialMoves {
   ] = result;
 
   let piece = <TPiece>(pieceName || 'p').toLowerCase();
-  if (potentiallyPawnOrBishop) {
-    piece = '[pb]';
-  }
 
   const move : IMoveTemplate = {
     piece,
@@ -327,6 +324,13 @@ export function parseAlgebraic(input: string): IPotentialMoves {
 
   if (promotion && piece === 'p') {
     move.promotionPiece = <TPiece>promotion[1].toLowerCase();
+  }
+
+  if (potentiallyPawnOrBishop) {
+    return [
+      { ...move, piece: 'p', from: 'b.' },
+      { ...move, piece: 'b' },
+    ];
   }
 
   return [move];
