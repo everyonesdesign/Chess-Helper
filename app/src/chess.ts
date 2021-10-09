@@ -224,7 +224,10 @@ function getLegalCastlingMoves(board: IChessboard, move: IMoveTemplate) : IMove[
  * Parse message input by user
  */
 export function parseMoveInput(input: string): IPotentialMoves {
-  return parseAlgebraic(input) || parseUCI(input);
+  return [
+    ...parseUCI(input),
+    ...parseAlgebraic(input),
+  ];
 }
 
 /**

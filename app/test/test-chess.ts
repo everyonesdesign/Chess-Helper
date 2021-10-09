@@ -248,6 +248,26 @@ describe('parseUCI', function() {
   });
 });
 
+describe('parseMoveInput', function() {
+  it('parces algebraic', function() {
+    assert.deepEqual(parseMoveInput('Nf3'), [{
+      piece: 'n',
+      from: '..',
+      to: 'f3',
+      moveType: 'move',
+    }]);
+  });
+
+  it('parces UCI', function() {
+    assert.deepEqual(parseMoveInput('e2e4'), [{
+      piece: '.',
+      from: 'e2',
+      to: 'e4',
+      moveType: 'move',
+    }]);
+  });
+});
+
 describe('getLegalMoves', function() {
   interface IPiece { color: number, type: string, area: string };
 
