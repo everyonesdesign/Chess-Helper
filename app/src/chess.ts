@@ -1,9 +1,11 @@
 import filter from 'lodash/filter';
 import isEqual from 'lodash/isEqual';
+import upperFirst from 'lodash/upperFirst';
 import find from 'lodash/find';
 import {
   postMessage,
   squareToCoords,
+  Features,
 } from './utils';
 import {
   drawCache,
@@ -11,9 +13,6 @@ import {
 import {
   parseCommand,
 } from './commands';
-import {
-  getBoard,
-} from './chessboard';
 import {
   IChessboard,
   TArea,
@@ -261,21 +260,19 @@ export function parseAlgebraic(input: string) : Nullable<IMoveTemplate> {
     return null;
   }
 
-  const trimmedMove = function() {
-    var trimmed = input.replace(/[\s\-\(\)]+/g, '');
-    if (/^[rqknb][a-h]/.test(trimmed)){
-      trimmed = trimmed[0].toUpperCase() + trimmed.slice(1);
-    }
-    return trimmed;
-  }();
+  let moveString = input.replace(/[\s\-\(\)]+/g, '');
 
-  if (/[o0][o0][o0]/i.test(trimmedMove)) {
+  if (Features.LOWER_CASE_ALGEBRAIC && /^[rqknb][a-h]/.test(moveString)) {
+    moveString = upperFirst(moveString);
+  }
+
+  if (/[o0][o0][o0]/i.test(moveString)) {
     return {
       piece: 'k',
       moveType: 'long-castling',
       to: '',
     };
-  } else if (/[o0][o0]/i.test(trimmedMove)) {
+  } else if (/[o0][o0]/i.test(moveString)) {
     return {
       piece: 'k',
       moveType: 'short-castling',
@@ -284,7 +281,7 @@ export function parseAlgebraic(input: string) : Nullable<IMoveTemplate> {
   }
 
   const regex = /^([RQKNB])?([a-h])?([1-8])?(x)?([a-h])([1-8])(e\.?p\.?)?(=[QRNBqrnb])?[+#]?$/;
-  const result = trimmedMove.match(regex);
+  const result = moveString.match(regex);
 
   if (!result) {
     return null;
