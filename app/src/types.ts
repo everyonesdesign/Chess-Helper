@@ -33,7 +33,6 @@ export type TMoveType = string;
 
 export interface IMoveTemplate {
   piece: TPiece
-  moveType: TMoveType
   from?: TArea
   to: TArea
   promotionPiece?: TPiece
@@ -45,7 +44,12 @@ export interface IMove extends IMoveTemplate {
   from: TArea
 }
 
-export interface IMoveDetails extends IMove {
+export interface IMoveDetails {
+  piece: TPiece
+  moveType: TMoveType
+  from: TArea
+  to: TArea
+  promotionPiece?: TPiece
   check: boolean
   checkmate: boolean
 }
