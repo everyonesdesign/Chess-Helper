@@ -19,7 +19,7 @@ context('Chess games', () => {
     cy.fixture('positions').as('positions')
   });
 
-  xit('Tal-Spassky - algebraic', function() {
+  it('Tal-Spassky - algebraic', function() {
     const position = this.positions['tal-spassky'];
     cy
       .playGame(position.movesAlgebraic)
