@@ -18,6 +18,7 @@ import {
   TArea,
   TPiece,
   IMoveTemplate,
+  IPotentialMoves,
   IMove,
   TFromTo,
   TMoveType,
@@ -138,47 +139,51 @@ export function makeMove(
 /**
  * Get exact from and to coords from move data
  */
-export function getLegalMoves(board: IChessboard, move: Nullable<IMoveTemplate>) : IMove[] {
-  if (!board || !move || !board.isPlayersMove()) {
+export function getLegalMoves(board: IChessboard, potentialMoves: IPotentialMoves) : IMove[] {
+  if (!board || !potentialMoves.length || !board.isPlayersMove()) {
     return [];
   }
 
-  const toYCoord = squareToCoords(move.to)[1];
+  let legalMoves: IMove[] = [];
+  potentialMoves.forEach((move) => {
+    const toYCoord = squareToCoords(move.to)[1];
 
-  if (['short-castling', 'long-castling'].includes(move.moveType)) {
-    return getLegalCastlingMoves(board, move);
-  } else if (['move', 'capture'].includes(move.moveType)) {
-    const pieces = board.getPiecesSetup();
+    if (['short-castling', 'long-castling'].includes(move.moveType)) {
+      legalMoves = [...legalMoves, ...getLegalCastlingMoves(board, move)];
+    } else if (['move', 'capture'].includes(move.moveType)) {
+      const pieces = board.getPiecesSetup();
 
-    const matchingPieces = filter(pieces, (p) => {
+      const matchingPieces = filter(pieces, (p) => {
 
-      // Treat promotion moves without "promotionPiece" as invalid
-      if (
-        p.type === 'p' &&
-        [1, 8].includes(toYCoord) &&
-        !move.promotionPiece
-      ) {
-        return false;
-      }
+        // Treat promotion moves without "promotionPiece" as invalid
+        if (
+          p.type === 'p' &&
+          [1, 8].includes(toYCoord) &&
+          !move.promotionPiece
+        ) {
+          return false;
+        }
 
-      return (
-        // RegExp is required, because move.piece/move.from aren't always there
-        // It might be just ".", meaning "any piece" (imagine move like "e2e4")
-        new RegExp(`^${move.piece}$`).test(p.type) &&
-        new RegExp(`^${move.from}$`).test(p.area) &&
-        board.isLegalMove(p.area, move.to)
-      );
-    });
+        return (
+          // RegExp is required, because move.piece/move.from aren't always there
+          // It might be just ".", meaning "any piece" (imagine move like "e2e4")
+          new RegExp(`^${move.piece}$`).test(p.type) &&
+          new RegExp(`^${move.from}$`).test(p.area) &&
+          board.isLegalMove(p.area, move.to)
+        );
+      });
 
-    return matchingPieces.map((piece) => {
-      return {
-        ...move,
-        from: <TArea>piece.area,
-      };
-    });
-  }
+      legalMoves = [
+        ...legalMoves,
+        ...matchingPieces.map((piece) => ({
+          ...move,
+          from: <TArea>piece.area,
+        })),
+      ];
+    }
+  });
 
-  return [];
+  return legalMoves;
 }
 
 /**
@@ -220,14 +225,14 @@ function getLegalCastlingMoves(board: IChessboard, move: IMoveTemplate) : IMove[
 /**
  * Parse message input by user
  */
-export function parseMoveInput(input: string) : Nullable<IMoveTemplate> {
+export function parseMoveInput(input: string): IPotentialMoves {
   return parseAlgebraic(input) || parseUCI(input);
 }
 
 /**
  * Parse simplest move format: 'e2e4'
  */
-export function parseUCI(input: string) : Nullable<IMoveTemplate> {
+export function parseUCI(input: string) : IPotentialMoves {
   const filteredSymbols = input.replace(/( |-)+/g, '');
   const fromSquare = <TArea>filteredSymbols.slice(0, 2);
   const toSquare = <TArea>filteredSymbols.slice(2, 4);
@@ -245,19 +250,19 @@ export function parseUCI(input: string) : Nullable<IMoveTemplate> {
       result.promotionPiece = promotion;
     }
 
-    return result;
+    return [result];
   }
 
-  return null;
+  return [];
 }
 
 /**
  * Extract all possible information from algebraic notation
  */
-export function parseAlgebraic(input: string) : Nullable<IMoveTemplate> {
+export function parseAlgebraic(input: string): IPotentialMoves {
   // ignore UCI notation
   if (/^\s*[a-h][1-8][a-h][1-8][rqknb]?\s*$/.test(input)) {
-    return null;
+    return [];
   }
 
   let moveString = input.replace(/[\s\-\(\)]+/g, '');
@@ -276,24 +281,24 @@ export function parseAlgebraic(input: string) : Nullable<IMoveTemplate> {
   }
 
   if (/[o0][o0][o0]/i.test(moveString)) {
-    return {
+    return [{
       piece: 'k',
       moveType: 'long-castling',
       to: '',
-    };
+    }];
   } else if (/[o0][o0]/i.test(moveString)) {
-    return {
+    return [{
       piece: 'k',
       moveType: 'short-castling',
       to: '',
-    };
+    }];
   }
 
   const regex = /^([RQKNB])?([a-h])?([1-8])?(x)?([a-h])([1-8])(e\.?p\.?)?(=[QRNBqrnb])?[+#]?$/;
   const result = moveString.match(regex);
 
   if (!result) {
-    return null;
+    return [];
   }
 
   const [
@@ -324,5 +329,5 @@ export function parseAlgebraic(input: string) : Nullable<IMoveTemplate> {
     move.promotionPiece = <TPiece>promotion[1].toLowerCase();
   }
 
-  return move;
+  return [move];
 }

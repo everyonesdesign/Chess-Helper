@@ -39,6 +39,8 @@ export interface IMoveTemplate {
   promotionPiece?: TPiece
 }
 
+export type IPotentialMoves = IMoveTemplate[];
+
 export interface IMove extends IMoveTemplate {
   from: TArea
 }
