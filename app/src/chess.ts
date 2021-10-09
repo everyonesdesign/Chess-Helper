@@ -262,7 +262,16 @@ export function parseAlgebraic(input: string) : Nullable<IMoveTemplate> {
 
   let moveString = input.replace(/[\s\-\(\)]+/g, '');
 
-  if (Features.LOWER_CASE_ALGEBRAIC && /^[rqknb][a-h]/.test(moveString)) {
+  let potentiallyPawnOrBishop = false;
+  if (
+    Features.LOWER_CASE_ALGEBRAIC && (
+      /^[rqkn]/.test(moveString) ||
+      // bishops are handled separately as bishops can coincide with UCI
+      // (e.g. b2c3)
+      /^b\D/.test(moveString)
+    )
+  ) {
+    potentiallyPawnOrBishop = moveString[0] === 'b';
     moveString = upperFirst(moveString);
   }
 
@@ -299,7 +308,11 @@ export function parseAlgebraic(input: string) : Nullable<IMoveTemplate> {
     promotion,
   ] = result;
 
-  const piece = <TPiece>(pieceName || 'p').toLowerCase();
+  let piece = <TPiece>(pieceName || 'p').toLowerCase();
+  if (potentiallyPawnOrBishop) {
+    piece = '[pb]';
+  }
+
   const move : IMoveTemplate = {
     piece,
     moveType: <TMoveType>(isCapture ? 'capture' : 'move'),

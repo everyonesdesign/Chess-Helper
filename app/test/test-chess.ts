@@ -159,24 +159,42 @@ describe('parseAlgebraic', function() {
     });
   });
 
-  it('allows lowercase piece letter if unambiguous', function() {
-    assert.deepEqual(parseAlgebraic('b3'), {
-      piece: 'p',
-      from: '..',
-      to: 'b3',
-      moveType: 'move',
+  describe('allows lowercase piece letter if unambiguous', function() {
+    it('b3', function () {
+      assert.deepEqual(parseAlgebraic('b3'), {
+        piece: 'p',
+        from: '..',
+        to: 'b3',
+        moveType: 'move',
+      });
     });
-    assert.deepEqual(parseAlgebraic('Bb3'), {
-      piece: 'b',
-      from: '..',
-      to: 'b3',
-      moveType: 'move',
+    it('Bb3', function () {
+      assert.deepEqual(parseAlgebraic('Bb3'), {
+        piece: 'b',
+        from: '..',
+        to: 'b3',
+        moveType: 'move',
+      });
     });
-    assert.deepEqual(parseAlgebraic('bb3'), {
-      piece: 'b',
-      from: '..',
-      to: 'b3',
-      moveType: 'move',
+    it('bc4', function () {
+      assert.deepEqual(parseAlgebraic('bc4'), {
+        piece: '[pb]',
+        from: '..',
+        to: 'c4',
+        moveType: 'move',
+      });
+    });
+    it('bxb3', function () {
+      assert.deepEqual(parseAlgebraic('bxb3'), {
+        piece: '[pb]',
+        from: '..',
+        to: 'b3',
+        moveType: 'capture',
+      });
+    });
+    it('b2c3', function () {
+      // This looks like a UCI move. Let's parse it as UCI
+      assert.strictEqual(parseAlgebraic('b2c3'), null);
     });
   });
 
