@@ -261,7 +261,13 @@ export function parseAlgebraic(input: string) : Nullable<IMoveTemplate> {
     return null;
   }
 
-  const trimmedMove = input.replace(/[\s\-\(\)]+/g, '');
+  const trimmedMove = function() {
+    var trimmed = input.replace(/[\s\-\(\)]+/g, '');
+    if (/^[rqknb][a-h]/.test(trimmed)){
+      trimmed = trimmed[0].toUpperCase() + trimmed.slice(1);
+    }
+    return trimmed;
+  }();
 
   if (/[o0][o0][o0]/i.test(trimmedMove)) {
     return {

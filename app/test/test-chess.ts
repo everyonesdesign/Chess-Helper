@@ -159,6 +159,27 @@ describe('parseAlgebraic', function() {
     });
   });
 
+  it('allows lowercase piece letter if unambiguous', function() {
+    assert.deepEqual(parseAlgebraic('b3'), {
+      piece: 'p',
+      from: '..',
+      to: 'b3',
+      moveType: 'move',
+    });
+    assert.deepEqual(parseAlgebraic('Bb3'), {
+      piece: 'b',
+      from: '..',
+      to: 'b3',
+      moveType: 'move',
+    });
+    assert.deepEqual(parseAlgebraic('bb3'), {
+      piece: 'b',
+      from: '..',
+      to: 'b3',
+      moveType: 'move',
+    });
+  });
+
   it('returns null for UCI', function() {
     assert.strictEqual(parseAlgebraic('e2e4'), null);
   });
