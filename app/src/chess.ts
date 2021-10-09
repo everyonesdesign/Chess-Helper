@@ -1,11 +1,9 @@
 import filter from 'lodash/filter';
 import isEqual from 'lodash/isEqual';
-import upperFirst from 'lodash/upperFirst';
 import find from 'lodash/find';
 import {
   postMessage,
   squareToCoords,
-  Features,
 } from './utils';
 import {
   drawCache,
@@ -266,19 +264,7 @@ export function parseAlgebraic(input: string): IPotentialMoves {
   }
 
   let moveString = input.replace(/[\s\-\(\)]+/g, '');
-
-  let potentiallyPawnOrBishop = false;
-  if (
-    Features.LOWER_CASE_ALGEBRAIC && (
-      /^[rqkn]/.test(moveString) ||
-      // bishops are handled separately as bishops can coincide with UCI
-      // (e.g. b2c3)
-      /^b\D/.test(moveString)
-    )
-  ) {
-    potentiallyPawnOrBishop = moveString[0] === 'b';
-    moveString = upperFirst(moveString);
-  }
+  const moves: IPotentialMoves = [];
 
   if (/[o0][o0][o0]/i.test(moveString)) {
     return [{
@@ -294,44 +280,54 @@ export function parseAlgebraic(input: string): IPotentialMoves {
     }];
   }
 
-  const regex = /^([RQKNB])?([a-h])?([1-8])?(x)?([a-h])([1-8])(e\.?p\.?)?(=[QRNBqrnb])?[+#]?$/;
-  const result = moveString.match(regex);
 
-  if (!result) {
-    return [];
+  const pawnRegex = /^([a-h])?(x)?([a-h])([1-8])(e\.?p\.?)?(=[qrnbQRNB])?[+#]?$/;
+  const pawnResult = moveString.match(pawnRegex);
+  if (pawnResult) {
+    const [
+      _,
+      fromHor,
+      isCapture,
+      toHor,
+      toVer,
+      enPassant,
+      promotion,
+    ] = pawnResult;
+
+    const move: IMoveTemplate = {
+      piece: 'p',
+      moveType: <TMoveType>(isCapture ? 'capture' : 'move'),
+      from: <TArea>`${fromHor || '.'}.`,
+      to: <TArea>`${toHor || '.'}${toVer || '.'}`,
+    };
+
+    if (promotion) {
+      move.promotionPiece = <TPiece>promotion[1].toLowerCase();
+    }
+
+    moves.push(move);
   }
 
-  const [
-    _,
-    pieceName,
-    fromHor,
-    fromVer,
-    isCapture,
-    toHor,
-    toVer,
-    enPassant,
-    promotion,
-  ] = result;
+  const pieceRegex = /^([RQKNBrqknb])([a-h])?([1-8])?(x)?([a-h])([1-8])?[+#]?$/;
+  const pieceResult = moveString.match(pieceRegex);
+  if (pieceResult) {
+    const [
+      _,
+      pieceName,
+      fromHor,
+      fromVer,
+      isCapture,
+      toHor,
+      toVer,
+    ] = pieceResult;
 
-  let piece = <TPiece>(pieceName || 'p').toLowerCase();
-
-  const move : IMoveTemplate = {
-    piece,
-    moveType: <TMoveType>(isCapture ? 'capture' : 'move'),
-    from: <TArea>`${fromHor || '.'}${fromVer || '.'}`,
-    to: <TArea>`${toHor || '.'}${toVer || '.'}`,
-  };
-
-  if (promotion && piece === 'p') {
-    move.promotionPiece = <TPiece>promotion[1].toLowerCase();
+    moves.push({
+      piece: <TPiece>(pieceName).toLowerCase(),
+      moveType: <TMoveType>(isCapture ? 'capture' : 'move'),
+      from: <TArea>`${fromHor || '.'}${fromVer || '.'}`,
+      to: <TArea>`${toHor || '.'}${toVer || '.'}`,
+    });
   }
 
-  if (potentiallyPawnOrBishop) {
-    return [
-      { ...move, piece: 'p', from: 'b.' },
-      { ...move, piece: 'b' },
-    ];
-  }
-
-  return [move];
+  return moves;
 }

@@ -9,10 +9,6 @@ import {
 } from './types';
 import { i18n } from './i18n';
 
-export const Features = {
-  LOWER_CASE_ALGEBRAIC: true,
-};
-
 // value is stored inside of chessboard.rightClickMarkColors
 export const RED_SQUARE_COLOR = '#f42a32';
 

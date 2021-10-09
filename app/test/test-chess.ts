@@ -7,6 +7,7 @@ import {
   parseAlgebraic,
   parseUCI,
   getLegalMoves,
+  parseMoveInput,
 } from '../src/chess';
 import {
   IChessboard,
@@ -151,12 +152,7 @@ describe('parseAlgebraic', function() {
   });
 
   it('ignores promotion for pieces', function() {
-    assert.deepEqual(parseAlgebraic('Nd8=Q'), [{
-      piece: 'n',
-      from: '..',
-      to: 'd8',
-      moveType: 'move',
-    }]);
+    assert.deepEqual(parseAlgebraic('Nd8=Q'), []);
   });
 
   describe('allows lowercase piece letter if unambiguous', function() {
