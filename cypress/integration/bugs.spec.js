@@ -12,6 +12,7 @@ const PREV_MOVE_SELECTOR = '.prev-next-arrows-icon';
 
 function testPuzzlePromotion(cy, isAlgebraic) {
   const promotionMoveBase = isAlgebraic ? 'b8' : 'a7b8';
+  const promotionSuffix = isAlgebraic ? '=Q' : 'q';
 
   cy.visit(this.positions['puzzles-promotion'].url)
   cy.wait(2000)
@@ -25,14 +26,14 @@ function testPuzzlePromotion(cy, isAlgebraic) {
     .makeMove('c3')
     .makeMove('a7')
     .makeMove('Rb8')
-    .makeMove(`${promotionMoveBase}=Q`)
+    .makeMove(`${promotionMoveBase}${promotionSuffix}`)
     .get(PREV_MOVE_SELECTOR)
       .first()
       .click()
 
   cy
     .makeMove(promotionMoveBase)
-    .makeMove(`${promotionMoveBase}=Q`)
+    .makeMove(`${promotionMoveBase}${promotionSuffix}`)
     .fenEquals(this.positions['puzzles-promotion'].fen.end)
 }
 
