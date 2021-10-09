@@ -39,4 +39,11 @@ context('Chess games', () => {
       .playGame(position.movesAlgebraic.map(i => i.toLowerCase()))
       .fenEquals(position.fen.end)
   });
+
+  it('Opera night - UCI', function() {
+    const position = this.positions['opera-night'];
+    cy
+      .playGame(position.movesUCI)
+      .fenEquals(position.fen.end)
+  });
 });
