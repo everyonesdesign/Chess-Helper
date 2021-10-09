@@ -12,13 +12,11 @@ import {
   parseCommand,
 } from './commands';
 import {
-  getBoard,
-} from './chessboard';
-import {
   IChessboard,
   TArea,
   TPiece,
   IMoveTemplate,
+  IPotentialMoves,
   IMove,
   TFromTo,
   TMoveType,
@@ -139,20 +137,18 @@ export function makeMove(
 /**
  * Get exact from and to coords from move data
  */
-export function getLegalMoves(board: IChessboard, move: Nullable<IMoveTemplate>) : IMove[] {
-  if (!board || !move || !board.isPlayersMove()) {
+export function getLegalMoves(board: IChessboard, potentialMoves: IPotentialMoves) : IMove[] {
+  if (!board || !potentialMoves.length || !board.isPlayersMove()) {
     return [];
   }
 
-  const toYCoord = squareToCoords(move.to)[1];
+  let legalMoves: IMove[] = [];
+  potentialMoves.forEach((move) => {
+    const toYCoord = squareToCoords(move.to)[1];
 
-  if (['short-castling', 'long-castling'].includes(move.moveType)) {
-    return getLegalCastlingMoves(board, move);
-  } else if (['move', 'capture'].includes(move.moveType)) {
     const pieces = board.getPiecesSetup();
 
     const matchingPieces = filter(pieces, (p) => {
-
       // Treat promotion moves without "promotionPiece" as invalid
       if (
         p.type === 'p' &&
@@ -171,64 +167,32 @@ export function getLegalMoves(board: IChessboard, move: Nullable<IMoveTemplate>)
       );
     });
 
-    return matchingPieces.map((piece) => {
-      return {
+    legalMoves = [
+      ...legalMoves,
+      ...matchingPieces.map((piece) => ({
         ...move,
         from: <TArea>piece.area,
-      };
-    });
-  }
-
-  return [];
-}
-
-/**
- * Get coordinates for castling moves (0-0 and 0-0-0)
- */
-function getLegalCastlingMoves(board: IChessboard, move: IMoveTemplate) : IMove[] {
-  let moves;
-  if (move.moveType === 'short-castling') {
-    moves = [
-      { piece: 'k', from: 'e1', to: 'g1', moveType: 'castling' },
-      { piece: 'k', from: 'e8', to: 'g8', moveType: 'castling' },
+      })),
     ];
-  } else if (move.moveType === 'long-castling') {
-    moves = [
-      { piece: 'k', from: 'e1', to: 'c1', moveType: 'castling' },
-      { piece: 'k', from: 'e8', to: 'c8', moveType: 'castling' },
-    ];
-  }
-
-  if (!moves) {
-    return [];
-  }
-
-  const pieces = board.getPiecesSetup();
-  const legalMoves = moves.filter(({ from , to }) => {
-    return (
-      find(pieces, {type: 'k', area: from}) &&
-      board.isLegalMove(from, to)
-    );
   });
 
-  if (legalMoves.length === 1) {
-    return [legalMoves[0]];
-  }
-
-  return [];
+  return legalMoves;
 }
 
 /**
  * Parse message input by user
  */
-export function parseMoveInput(input: string) : Nullable<IMoveTemplate> {
-  return parseAlgebraic(input) || parseUCI(input);
+export function parseMoveInput(input: string): IPotentialMoves {
+  return [
+    ...parseUCI(input),
+    ...parseAlgebraic(input),
+  ];
 }
 
 /**
  * Parse simplest move format: 'e2e4'
  */
-export function parseUCI(input: string) : Nullable<IMoveTemplate> {
+export function parseUCI(input: string) : IPotentialMoves {
   const filteredSymbols = input.replace(/( |-)+/g, '');
   const fromSquare = <TArea>filteredSymbols.slice(0, 2);
   const toSquare = <TArea>filteredSymbols.slice(2, 4);
@@ -239,80 +203,108 @@ export function parseUCI(input: string) : Nullable<IMoveTemplate> {
       piece: '.',
       from: fromSquare,
       to: toSquare,
-      moveType: 'move',
     };
 
     if (promotion) {
       result.promotionPiece = promotion;
     }
 
-    return result;
+    return [result];
   }
 
-  return null;
+  return [];
 }
 
 /**
  * Extract all possible information from algebraic notation
  */
-export function parseAlgebraic(input: string) : Nullable<IMoveTemplate> {
+export function parseAlgebraic(input: string): IPotentialMoves {
   // ignore UCI notation
   if (/^\s*[a-h][1-8][a-h][1-8][rqknb]?\s*$/.test(input)) {
-    return null;
+    return [];
   }
 
-  const trimmedMove = function() {
-    var trimmed = input.replace(/[\s\-\(\)]+/g, '');
-    if (/^[rqknb][a-h]/.test(trimmed)){
-      trimmed = trimmed[0].toUpperCase() + trimmed.slice(1);
+  let moveString = input.replace(/[\s\-\(\)]+/g, '');
+  const moves: IPotentialMoves = [];
+
+  if (/[o0][o0][o0]/i.test(moveString)) {
+    return [
+      // white long castling
+      {
+        piece: 'k',
+        from: 'e1',
+        to: 'c1',
+      },
+      // black long castling
+      {
+        piece: 'k',
+        from: 'e8',
+        to: 'c8',
+      }
+    ];
+  } else if (/[o0][o0]/i.test(moveString)) {
+    return [
+      // white short castling
+      {
+        piece: 'k',
+        from: 'e1',
+        to: 'g1',
+      },
+      // black short castling
+      {
+        piece: 'k',
+        from: 'e8',
+        to: 'g8',
+      }
+    ];
+  }
+
+
+  const pawnRegex = /^([a-h])?(x)?([a-h])([1-8])(e\.?p\.?)?(=[qrnbQRNB])?[+#]?$/;
+  const pawnResult = moveString.match(pawnRegex);
+  if (pawnResult) {
+    const [
+      _,
+      fromHor,
+      isCapture,
+      toHor,
+      toVer,
+      enPassant,
+      promotion,
+    ] = pawnResult;
+
+    const move: IMoveTemplate = {
+      piece: 'p',
+      from: <TArea>`${fromHor || '.'}.`,
+      to: <TArea>`${toHor || '.'}${toVer || '.'}`,
+    };
+
+    if (promotion) {
+      move.promotionPiece = <TPiece>promotion[1].toLowerCase();
     }
-    return trimmed;
-  }();
 
-  if (/[o0][o0][o0]/i.test(trimmedMove)) {
-    return {
-      piece: 'k',
-      moveType: 'long-castling',
-      to: '',
-    };
-  } else if (/[o0][o0]/i.test(trimmedMove)) {
-    return {
-      piece: 'k',
-      moveType: 'short-castling',
-      to: '',
-    };
+    moves.push(move);
   }
 
-  const regex = /^([RQKNB])?([a-h])?([1-8])?(x)?([a-h])([1-8])(e\.?p\.?)?(=[QRNBqrnb])?[+#]?$/;
-  const result = trimmedMove.match(regex);
+  const pieceRegex = /^([RQKNBrqknb])([a-h])?([1-8])?(x)?([a-h])([1-8])?[+#]?$/;
+  const pieceResult = moveString.match(pieceRegex);
+  if (pieceResult) {
+    const [
+      _,
+      pieceName,
+      fromHor,
+      fromVer,
+      isCapture,
+      toHor,
+      toVer,
+    ] = pieceResult;
 
-  if (!result) {
-    return null;
+    moves.push({
+      piece: <TPiece>(pieceName).toLowerCase(),
+      from: <TArea>`${fromHor || '.'}${fromVer || '.'}`,
+      to: <TArea>`${toHor || '.'}${toVer || '.'}`,
+    });
   }
 
-  const [
-    _,
-    pieceName,
-    fromHor,
-    fromVer,
-    isCapture,
-    toHor,
-    toVer,
-    enPassant,
-    promotion,
-  ] = result;
-
-  const piece = <TPiece>(pieceName || 'p').toLowerCase();
-  const move : IMoveTemplate = {
-    piece,
-    moveType: <TMoveType>(isCapture ? 'capture' : 'move'),
-    from: <TArea>`${fromHor || '.'}${fromVer || '.'}`,
-    to: <TArea>`${toHor || '.'}${toVer || '.'}`,
-  };
-
-  if (promotion && piece === 'p') {
-    move.promotionPiece = <TPiece>promotion[1].toLowerCase();
-  }
-
-  return move;
+  return moves;
 }

@@ -3,9 +3,6 @@ import {
   ariaHiddenElements,
 } from './globals';
 import {
-  commands,
-} from './commands';
-import {
   TArea,
   Nullable,
   IConfig,
