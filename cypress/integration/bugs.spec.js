@@ -33,7 +33,7 @@ function testPuzzlePromotion(cy, isAlgebraic) {
   cy
     .makeMove(promotionMoveBase)
     .makeMove(`${promotionMoveBase}=Q`)
-    .fenEquals(this.positions['puzzles-promotion'].positions.end)
+    .fenEquals(this.positions['puzzles-promotion'].fen.end)
 }
 
 context('Bugs', () => {

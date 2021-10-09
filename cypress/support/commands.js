@@ -6,6 +6,12 @@ const DEFAULT_MOVE_OPTIONS = {
   delay: 100,
 }
 
+Cypress.Commands.add('playGame', (moves) => {
+  cy.wrap(moves).each((move) => {
+      cy.makeMove(move)
+  })
+})
+
 Cypress.Commands.add('makeMove', (move, options = {}) => {
   const opts = Object.assign({}, options, DEFAULT_MOVE_OPTIONS)
   return cy
