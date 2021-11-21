@@ -273,17 +273,22 @@ export function parseAlgebraic(input: string): IPotentialMoves {
       promotion,
     ] = pawnResult;
 
-    const move: IMoveTemplate = {
-      piece: 'p',
-      from: <TArea>`${fromFile || '.'}.`,
-      to: <TArea>`${toFile || '.'}${toRank || '.'}`,
-    };
+    if (fromFile === toFile) {
+      // Do nothing
+      // This disables moves like `bb4` for pawns to avoid ambiguity with bishops
+    } else {
+      const move: IMoveTemplate = {
+        piece: 'p',
+        from: <TArea>`${fromFile || '.'}.`,
+        to: <TArea>`${toFile || '.'}${toRank || '.'}`,
+      };
 
-    if (promotion) {
-      move.promotionPiece = <TPiece>promotion[1].toLowerCase();
+      if (promotion) {
+        move.promotionPiece = <TPiece>promotion[1].toLowerCase();
+      }
+
+      moves.push(move);
     }
-
-    moves.push(move);
   }
 
   const pieceRegex = /^([RQKNBrqknb])([a-h])?([1-8])?(x)?([a-h])([1-8])?[+#]?$/;

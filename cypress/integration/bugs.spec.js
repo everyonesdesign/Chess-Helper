@@ -37,18 +37,94 @@ function testPuzzlePromotion(cy, isAlgebraic) {
     .fenEquals(this.positions['puzzles-promotion'].fen.end)
 }
 
+function testFenToFen({
+  cy,
+  initialFen,
+  expectedFen,
+  move,
+}) {
+  cy.visit('https://www.chess.com/analysis')
+  cy.wait(2000)
+  cy.acceptCookies(2000)
+
+  cy
+    .setAnalysisFen(initialFen)
+    .makeMove(move)
+    .fenEquals(expectedFen)
+}
+
+
 context('Bugs', () => {
   beforeEach(() => {
     cy.fixture('positions').as('positions')
   });
 
-  it('Puzzles promotion (algebraic)', function() {
+  context('Promotion in puzzles', () => {
     // See https://github.com/everyonesdesign/Chess-Helper/issues/34
-    testPuzzlePromotion.call(this, cy, true);
+    it('Puzzles promotion (algebraic)', function () {
+      testPuzzlePromotion.call(this, cy, true);
+    });
+
+    it('Puzzles promotion (UCI)', function () {
+      testPuzzlePromotion.call(this, cy, false);
+    });
   });
 
-  it('Puzzles promotion (UCI)', function() {
-    // See https://github.com/everyonesdesign/Chess-Helper/issues/34
-    testPuzzlePromotion.call(this, cy, false);
+  context('Pawn vs bishop algebraic notation', () => {
+    // https://www.chess.com/forum/view/general/keyboard-controls-for-chess-com-chess-com-keyboard-browser-extension?newCommentCount=1&page=2#comment-64840439
+
+    it("Moves like `bb3` are condidered bishop-only moves", function () {
+      testFenToFen({
+        cy,
+        initialFen: 'rnbqk1nr/pppp1ppp/4p3/2b5/2B5/4P3/PPPP1PPP/RNBQK1NR w KQkq - 2 3',
+        move: 'bb3',
+        expectedFen: 'rnbqk1nr/pppp1ppp/4p3/2b5/8/1B2P3/PPPP1PPP/RNBQK1NR b KQkq - 3 3',
+      });
+    });
+
+    it("Moves like `b3` should be used for non-capture pawn moves", function () {
+      testFenToFen({
+        cy,
+        initialFen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+        move: 'b3',
+        expectedFen: 'rnbqkbnr/pppppppp/8/8/8/1P6/P1PPPPPP/RNBQKBNR b KQkq - 0 1',
+      });
+    });
+
+    it("Moves like `bc4` are ambiguous if there's a pawn and a bishop that can execute the capture", function () {
+      testFenToFen({
+        cy,
+        initialFen: 'rnbqkbnr/pp1ppppp/8/8/2p1P3/1P6/P1PP1PPP/RNBQKBNR w KQkq - 0 3',
+        move: 'bc4',
+        expectedFen: 'rnbqkbnr/pp1ppppp/8/8/2p1P3/1P6/P1PP1PPP/RNBQKBNR w KQkq - 0 3',
+      });
+    });
+
+    it("Moves like `cc3` are illegal moves", function () {
+      testFenToFen({
+        cy,
+        initialFen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+        move: 'cc3',
+        expectedFen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+      });
+    });
+
+    it("`bc4` is executed if not ambiguous (pawn)", function () {
+      testFenToFen({
+        cy,
+        initialFen: 'rnbqkbnr/pp1ppppp/8/8/2p4P/1P6/P1PPPPP1/RNBQKBNR w KQkq - 0 3',
+        move: 'bc4',
+        expectedFen: 'rnbqkbnr/pp1ppppp/8/8/2P4P/8/P1PPPPP1/RNBQKBNR b KQkq - 0 3',
+      });
+    });
+
+    it("`bc4` is executed if not ambiguous (bishop)", function () {
+      testFenToFen({
+        cy,
+        initialFen: 'rnbqkbnr/pp1ppppp/8/4P3/2p5/8/PPPP1PPP/RNBQKBNR w KQkq - 0 3',
+        move: 'bc4',
+        expectedFen: 'rnbqkbnr/pp1ppppp/8/4P3/2B5/8/PPPP1PPP/RNBQK1NR b KQkq - 0 3',
+      });
+    });
   });
 });

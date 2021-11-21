@@ -29,6 +29,19 @@ Cypress.Commands.add('fenEquals', (expectedFen) => {
     .should('eq', expectedFen)
 })
 
+Cypress.Commands.add('setAnalysisFen', (fen) => {
+  const SHORT_DELAY = 50;
+  return cy
+    .contains('Load FEN')
+    .click()
+    .wait(SHORT_DELAY)
+    .get('[aria-label="Paste FEN"]')
+    .type(`${fen}{enter}`)
+    .get('.load-from-fen-button')
+    .click()
+    .wait(SHORT_DELAY)
+})
+
 Cypress.Commands.add('flipBoard', () => {
   cy.get('body').type('x');
 })
