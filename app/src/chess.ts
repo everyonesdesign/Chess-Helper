@@ -265,18 +265,18 @@ export function parseAlgebraic(input: string): IPotentialMoves {
   if (pawnResult) {
     const [
       _,
-      fromHor,
+      fromFile,
       isCapture,
-      toHor,
-      toVer,
+      toFile,
+      toRank,
       enPassant,
       promotion,
     ] = pawnResult;
 
     const move: IMoveTemplate = {
       piece: 'p',
-      from: <TArea>`${fromHor || '.'}.`,
-      to: <TArea>`${toHor || '.'}${toVer || '.'}`,
+      from: <TArea>`${fromFile || '.'}.`,
+      to: <TArea>`${toFile || '.'}${toRank || '.'}`,
     };
 
     if (promotion) {
@@ -292,17 +292,17 @@ export function parseAlgebraic(input: string): IPotentialMoves {
     const [
       _,
       pieceName,
-      fromHor,
+      fromFile,
       fromVer,
       isCapture,
-      toHor,
-      toVer,
+      toFile,
+      toRank,
     ] = pieceResult;
 
     moves.push({
       piece: <TPiece>(pieceName).toLowerCase(),
-      from: <TArea>`${fromHor || '.'}${fromVer || '.'}`,
-      to: <TArea>`${toHor || '.'}${toVer || '.'}`,
+      from: <TArea>`${fromFile || '.'}${fromVer || '.'}`,
+      to: <TArea>`${toFile || '.'}${toRank || '.'}`,
     });
   }
 
