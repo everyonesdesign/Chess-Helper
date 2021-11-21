@@ -201,12 +201,9 @@ describe('parseAlgebraic', function() {
       ]);
     });
     it('bxb3', function () {
+      // "From file" coordinate is redundant in case of a pawn move
+      // Thus moves like that are interpreted as bishop moves
       assert.deepEqual(parseAlgebraic('bxb3'), [
-        {
-          piece: 'p',
-          from: 'b.',
-          to: 'b3',
-        },
         {
           piece: 'b',
           from: '..',
