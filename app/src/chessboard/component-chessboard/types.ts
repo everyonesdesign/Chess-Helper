@@ -63,8 +63,8 @@ export interface IMarking {
 
 // Seems to appear in later versions?
 export interface IMarking2 {
-  square?: { color: 'd', square: TArea },
-  arrow?:  { color: 'd', from: TArea, to: TArea },
+  square?: { color: string, square: TArea },
+  arrow?:  { color: string, from: TArea, to: TArea },
 }
 
 export interface IMove {

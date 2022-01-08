@@ -17,6 +17,8 @@ import {
   dispatchPointerEvent,
 } from '../../dom-events';
 
+const ERROR_AREA_COLOR = '#ff4444';
+
 /**
  * Chessboard implemented with some kinds of web components
  * Beta in April 2020
@@ -137,7 +139,7 @@ export class ComponentChessboard implements IChessboard {
   markArea(square: TArea) {
     const markings = this.game.getMarkings();
     if (!markings.square[square]) {
-      this.game.toggleMarking({ square: { color: 'd', square }});
+      this.game.toggleMarking({ square: { color: ERROR_AREA_COLOR, square }});
     }
 
     // legacy call, probably can be removed in the future
@@ -154,7 +156,7 @@ export class ComponentChessboard implements IChessboard {
   unmarkArea(square: TArea) {
     const markings = this.game.getMarkings();
     if (markings.square[square]) {
-      this.game.toggleMarking({ square: { color: 'd', square }});
+      this.game.toggleMarking({ square: { color: ERROR_AREA_COLOR, square }});
     }
 
     // legacy call, probably can be removed in the future
