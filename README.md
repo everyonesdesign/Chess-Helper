@@ -84,6 +84,8 @@ npm run pack
 - [Opera addons](https://addons.opera.com/developer/)
 - [Edge Add-ons](https://partner.microsoft.com/en-us/dashboard/microsoftedge/overview)
 
+Support of manifest v3: Chrome, Edge
+
 ## Disclaimers
 
 The extension code may contain bugs and errors.
