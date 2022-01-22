@@ -89,14 +89,14 @@ context('Bugs', () => {
         move: 'b3',
         expectedFen: 'rnbqkbnr/pppppppp/8/8/8/1P6/P1PPPPPP/RNBQKBNR b KQkq - 0 1',
       });
-    });
+      });
 
-    it("Moves like `bc4` are ambiguous if there's a pawn and a bishop that can execute the capture", function () {
+    it("Moves like `bc4` are resolved in favour of pawn if bishop and pawn can capture", function () {
       testFenToFen({
         cy,
         initialFen: 'rnbqkbnr/pp1ppppp/8/8/2p1P3/1P6/P1PP1PPP/RNBQKBNR w KQkq - 0 3',
         move: 'bc4',
-        expectedFen: 'rnbqkbnr/pp1ppppp/8/8/2p1P3/1P6/P1PP1PPP/RNBQKBNR w KQkq - 0 3',
+        expectedFen: 'rnbqkbnr/pp1ppppp/8/8/2P1P3/8/P1PP1PPP/RNBQKBNR b KQkq - 0 3',
       });
     });
 
@@ -124,6 +124,44 @@ context('Bugs', () => {
         initialFen: 'rnbqkbnr/pp1ppppp/8/4P3/2p5/8/PPPP1PPP/RNBQKBNR w KQkq - 0 3',
         move: 'bc4',
         expectedFen: 'rnbqkbnr/pp1ppppp/8/4P3/2B5/8/PPPP1PPP/RNBQK1NR b KQkq - 0 3',
+      });
+    });
+
+    // Test case: r3r3/p1k2pBp/Qpp3b1/6P1/8/2b2P1B/PP1P2KP/R7 w - - 0 1
+    // @see https://github.com/everyonesdesign/Chess-Helper/issues/51
+    it("`bc3` moves pawn", function () {
+      testFenToFen({
+        cy,
+        initialFen: 'r3r3/p1k2pBp/Qpp3b1/6P1/8/2b2P1B/PP1P2KP/R7 w - - 0 1',
+        move: 'bc3',
+        expectedFen: 'r3r3/p1k2pBp/Qpp3b1/6P1/8/2P2P1B/P2P2KP/R7 b - - 0 1',
+      });
+    });
+
+    it("`Bc3` moves bishop", function () {
+      testFenToFen({
+        cy,
+        initialFen: 'r3r3/p1k2pBp/Qpp3b1/6P1/8/2b2P1B/PP1P2KP/R7 w - - 0 1',
+        move: 'Bc3',
+        expectedFen: 'r3r3/p1k2p1p/Qpp3b1/6P1/8/2B2P1B/PP1P2KP/R7 b - - 0 1',
+      });
+    });
+
+    it("c3 is ambigious", function () {
+      testFenToFen({
+        cy,
+        initialFen: 'r3r3/p1k2pBp/Qpp3b1/6P1/8/2b2P1B/PP1P2KP/R7 w - - 0 1',
+        move: 'c3',
+        expectedFen: 'r3r3/p1k2pBp/Qpp3b1/6P1/8/2b2P1B/PP1P2KP/R7 w - - 0 1',
+      });
+    });
+
+    it("dc3 moves d pawn", function () {
+      testFenToFen({
+        cy,
+        initialFen: 'r3r3/p1k2pBp/Qpp3b1/6P1/8/2b2P1B/PP1P2KP/R7 w - - 0 1',
+        move: 'dc3',
+        expectedFen: 'r3r3/p1k2pBp/Qpp3b1/6P1/8/2P2P1B/PP4KP/R7 b - - 0 1',
       });
     });
   });
