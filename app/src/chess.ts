@@ -176,7 +176,25 @@ export function getLegalMoves(board: IChessboard, potentialMoves: IPotentialMove
     ];
   });
 
-  return legalMoves;
+  return excludeConflictingMoves(legalMoves);
+}
+
+/**
+ * Exclude moves conflicting between each other for whatever reasons
+ * (some exceptions)
+ */
+export function excludeConflictingMoves(moves: IMove[]) : IMove[] {
+  const piecesString = moves.map(m => m.piece).sort().join('');
+  debugger;
+  if (piecesString === 'bp') {
+    // Bishop and pawn conflict
+    // Pawn is preferred in this case
+    // @see https://github.com/everyonesdesign/Chess-Helper/issues/51
+    const pawnMove = moves.find(m => m.piece === 'p') as IMove;
+    return [pawnMove];
+  }
+
+  return moves;
 }
 
 /**
