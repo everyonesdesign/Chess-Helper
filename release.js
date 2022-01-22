@@ -41,7 +41,7 @@ console.log(`git add .; git commit -m "v. ${newVersion}"`);
 
 console.log('');
 console.log('Use the following command to create a for the release:');
-console.log(`git add tag ${newVersion} -a`);
+console.log(`git tag ${newVersion} -a`);
 
 console.log('');
 console.log('Use the following command to push the changes:');
