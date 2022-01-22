@@ -81,9 +81,9 @@ npm run pack
 
 ```
 # use either of the following
-node ./release.js --patch
-node ./release.js --minor
-node ./release.js --major
+npm run release -- --patch
+npm run release -- --minor
+npm run release -- --major
 ```
 
 ## Memo for the extension publishing

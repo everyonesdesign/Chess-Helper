@@ -8,7 +8,8 @@
     "test": "ts-mocha -p tsconfig.json  app/test/**.ts",
     "e2e": "cypress run --browser chrome --record --headed",
     "e2e-dev": "cypress open",
-    "pack": "rm app.zip; npm run build-prod; cd app && zip -r ../app.zip *"
+    "pack": "rm app.zip; npm run build-prod; cd app && zip -r ../app.zip *",
+    "release": "node ./release.js"
   },
   "devDependencies": {
     "@types/assert": "^1.5.5",
