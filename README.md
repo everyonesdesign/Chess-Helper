@@ -77,6 +77,15 @@ Pack the extension (before release to extension stores)
 npm run pack
 ```
 
+## Memo for the extension release
+
+```
+# use either of the following
+node ./release.js --patch
+node ./release.js --minor
+node ./release.js --major
+```
+
 ## Memo for the extension publishing
 
 - [Chrome Web Store](https://chrome.google.com/webstore/developer/dashboard)
