@@ -8,7 +8,7 @@
 const { INPUT_SELECTOR } = require('../constants');
 
 const ARROW_SELECTOR = 'img.chessBoardArrow';
-const PREV_MOVE_SELECTOR = '.prev-next-arrows-icon';
+const PREV_MOVE_SELECTOR = '.icon-font-chess.chevron-left';
 
 function testPuzzlePromotion(cy, isAlgebraic) {
   const promotionMoveBase = isAlgebraic ? 'b8' : 'a7b8';
