@@ -55,7 +55,6 @@ export interface IMoveDetails {
 }
 
 export interface IConfig {
-  version: string,
   defaultLocale: string,
 }
 

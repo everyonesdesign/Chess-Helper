@@ -172,5 +172,7 @@ export function coordsToSquare(coords: string) : TArea {
 }
 
 export function getConfig() : IConfig {
-  return (<any>window).chessHelper__environment;
+  return {
+    defaultLocale: 'en',
+  };
 }
