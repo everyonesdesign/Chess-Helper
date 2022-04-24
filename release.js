@@ -36,6 +36,10 @@ fs.writeFileSync(MANIFEST_LOCATION, newContents, 'utf8');
 console.log('Success!');
 
 console.log('');
+console.log('Use the following command to get the list of changes');
+console.log(`git log HEAD...${oldVersion} --pretty=format:"%s"`);
+
+console.log('');
 console.log('Use the following command to commit the new release:');
 console.log(`git add .; git commit -m "v. ${newVersion}"`);
 
