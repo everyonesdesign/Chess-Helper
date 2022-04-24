@@ -32,12 +32,12 @@ Cypress.Commands.add('fenEquals', (expectedFen) => {
 Cypress.Commands.add('setAnalysisFen', (fen) => {
   const SHORT_DELAY = 50;
   return cy
-    .contains('Load FEN')
+    .contains('Paste FEN/PGN(s)')
     .click()
     .wait(SHORT_DELAY)
-    .get('[aria-label="Paste FEN"]')
+    .get('[aria-label^="Paste a FEN or one or more PGNs"]')
     .type(`${fen}{enter}`)
-    .get('.load-from-fen-button')
+    .get('.setup-pgn-button')
     .click()
     .wait(SHORT_DELAY)
 })
