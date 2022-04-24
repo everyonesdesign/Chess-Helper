@@ -70,7 +70,7 @@ export class ComponentChessboard implements IChessboard {
   }
 
   isPlayersMove() {
-    if (this.game.getOptions().analysis) {
+    if (this.game.getMode().name === 'analysis') {
       return true;
     }
 

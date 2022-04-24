@@ -166,6 +166,15 @@ export interface IPiece {
   square: TArea
 }
 
+export interface IMode {
+  extendMode: AnyFunction,
+  getOptions: AnyFunction,
+  isAllowedToMove: AnyFunction,
+  name: 'analysis',
+  plugins: unknown[],
+  setOption: AnyFunction,
+}
+
 export interface IPiecesManager {
   deleteItem: AnyFunction
   get: AnyFunction
@@ -254,7 +263,7 @@ export interface IGame {
   getLine: AnyFunction
   getMarkings: () => IMarkingsData
   getMaterial: AnyFunction
-  getMode: AnyFunction
+  getMode: () => IMode,
   getMove: (move: Partial<IMove>) => IMove
   getNodeByIds: AnyFunction
   getNodeDiffData: AnyFunction
