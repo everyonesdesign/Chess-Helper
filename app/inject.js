@@ -1,15 +1,3 @@
-// set app environment
-const manifest = chrome.runtime.getManifest();
-const envScript = document.createElement('script');
-envScript.textContent = `
-  window.chessHelper__environment = {
-    version: "${manifest.version}",
-    defaultLocale: "${manifest.default_locale}",
-  };
-`;
-
-(document.head||document.documentElement).prepend(envScript);
-
 /**
  * injectScript - Inject internal script to available access to the `window`
  *
