@@ -93,9 +93,8 @@ npm run release -- --major
 - [Opera addons](https://addons.opera.com/developer/)
 - [Edge Add-ons](https://partner.microsoft.com/en-us/dashboard/microsoftedge/overview)
 
-Support of manifest v3: Chrome, Edge
+Support of manifest v3: Chrome, Edge, Opera
 
-Opera's support of manifest v3 can be seen [here](https://forums.opera.com/post/277751)
 Firefox's support of manifest v3 can be seen [here](https://blog.mozilla.org/addons/2021/05/27/manifest-v3-update/)
 
 ## Disclaimers
