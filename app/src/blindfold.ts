@@ -76,7 +76,8 @@ export function initBlindFoldOverlay(board: IChessboard) {
             <div class="ccHelper-blindfoldPeek">
               <div class="ccHelper-blindfoldPeekContents">
                 ${i18n('blindFoldPeekHint', {
-                  key: '<span class="ccHelper-blindfoldKey">Ctrl</span>'
+                  key: '<span class="ccHelper-blindfoldKey">Ctrl</span>',
+                  toggleKey: '<span class="ccHelper-blindfoldKey">Ctrl+b</span>'
                 })}
               </div>
             </div>

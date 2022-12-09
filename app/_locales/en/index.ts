@@ -10,7 +10,7 @@ const translations : TLocaleSet = {
   incorrectMove: 'Incorrect move: $move',
   illegalMove: 'Move $move is illegal',
   commandNotFound: "Can't find command $command",
-  blindFoldPeekHint: 'Hover here or hold $key to peek',
+  blindFoldPeekHint: 'Hover here or hold $key to peek, use $toggleKey to toggle on/off.',
   blindFoldOn: 'Blindfold mode is on',
   blindfoldToggleHint: 'Click here or type /blindfold to toggle',
   _test: 'Test content',
