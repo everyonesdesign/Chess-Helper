@@ -185,7 +185,6 @@ export function getLegalMoves(board: IChessboard, potentialMoves: IPotentialMove
  */
 export function excludeConflictingMoves(moves: IMove[]) : IMove[] {
   const piecesString = moves.map(m => m.piece).sort().join('');
-  debugger;
   if (piecesString === 'bp') {
     // Bishop and pawn conflict
     // Pawn is preferred in this case
