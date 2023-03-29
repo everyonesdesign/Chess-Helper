@@ -56,12 +56,18 @@ export class ComponentChessboard implements IChessboard {
       dispatchPointerEvent(this.element, 'pointerup', { x: toPosition.x, y: toPosition.y });
     }
 
-    this.game.move({
-      ...move,
-      promotion: promotionPiece,
-      animate: false,
-      userGenerated: true
-    });
+    try {
+      this.game.move({
+        ...move,
+        promotion: promotionPiece,
+        animate: false,
+        userGenerated: true
+      });
+    } catch(e) {
+      // this.game.move throws an error on such a call
+      // not catching the error causes the field not to be cleaned up
+      // @TODO understand why the error is thrown
+    }
   }
 
   isLegalMove(fromSq: TArea, toSq: TArea) {
