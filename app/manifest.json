@@ -38,5 +38,11 @@
         "https://www.chess.com/*"
       ]
     }
-  ]
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{d4ad10df-2c4a-4d87-a75b-bd2daefd1027}",
+      "strict_min_version": "109.0"
+    }
+  }
 }

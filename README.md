@@ -94,10 +94,6 @@ Stores links:
 - https://addons.opera.com/developer/
 - https://partner.microsoft.com/en-us/dashboard/microsoftedge/overview
 
-Support of manifest v3: Chrome, Edge, Opera
-
-Firefox's support of manifest v3 can be seen [here](https://blog.mozilla.org/addons/2021/05/27/manifest-v3-update/)
-
 ## Disclaimers
 
 The extension code may contain bugs and errors.
