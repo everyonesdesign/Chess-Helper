@@ -88,10 +88,11 @@ npm run release -- --major
 
 ## Memo for the extension publishing
 
-- [Chrome Web Store](https://chrome.google.com/webstore/developer/dashboard)
-- [Firefox Add-ons](https://addons.mozilla.org/en-US/developers/)
-- [Opera addons](https://addons.opera.com/developer/)
-- [Edge Add-ons](https://partner.microsoft.com/en-us/dashboard/microsoftedge/overview)
+Stores links:
+- https://chrome.google.com/webstore/developer/dashboard
+- https://addons.mozilla.org/en-US/developers/
+- https://addons.opera.com/developer/
+- https://partner.microsoft.com/en-us/dashboard/microsoftedge/overview
 
 Support of manifest v3: Chrome, Edge, Opera
 
