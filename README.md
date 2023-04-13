@@ -90,9 +90,12 @@ npm run release -- --major
 
 Stores links:
 - https://chrome.google.com/webstore/developer/dashboard
-- https://addons.mozilla.org/en-US/developers/
 - https://addons.opera.com/developer/
 - https://partner.microsoft.com/en-us/dashboard/microsoftedge/overview
+- https://addons.mozilla.org/en-US/developers/
+
+Download source code (Mozilla will require unminified code as file):
+https://github.com/everyonesdesign/Chess-Helper/archive/refs/heads/master.zip
 
 ## Disclaimers
 
