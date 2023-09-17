@@ -25,8 +25,8 @@ export function getBoard() : Nullable<IChessboard> {
 
     const boardSelectorMappings = {
       '.chessboard': GlobalChessboard,
-      '.board:not(chess-board)': VueChessboard,
-      'chess-board': ComponentChessboard,
+      '.board:not(chess-board):not(wc-chess-board)': VueChessboard,
+      'chess-board, wc-chess-board': ComponentChessboard,
     };
 
     let board = null;
