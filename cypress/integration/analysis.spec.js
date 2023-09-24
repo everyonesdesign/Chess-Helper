@@ -9,8 +9,8 @@
 const { INPUT_SELECTOR } = require('../constants');
 
 const ARROW_SELECTOR = 'img.chessBoardArrow';
-const E2E4_ARROW_SELECTOR = 'chess-board .arrows [data-arrow="e2e4"]';
-const SQUARE_SELECTOR = 'chess-board [class^="highlight square-"][style="background-color: rgb(255, 68, 68); opacity: 0.8;"]';
+const E2E4_ARROW_SELECTOR = 'chess-board .arrows [data-arrow="e2e4"], wc-chess-board [id="arrow-e2e4"]';
+const SQUARE_SELECTOR = 'chess-board [class^="highlight square-"][style="background-color: rgb(255, 68, 68); opacity: 0.8;"], wc-chess-board [class^="highlight square-"][style="background-color: rgb(255, 68, 68); opacity: 0.8;"]';
 const BLINDFOLD_SELECTOR = '.ccHelper-blindfold';
 const BLINDFOLD_BODY_CLASS = 'ccHelper-docBody--blindfolded';
 const BLINDFOLD_HEAD_CLASS = 'ccHelper-docHead--blindfolded';

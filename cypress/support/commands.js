@@ -24,7 +24,7 @@ Cypress.Commands.add('makeMove', (move, options = {}) => {
 
 Cypress.Commands.add('fenEquals', (expectedFen) => {
   return cy
-    .get('chess-board')
+    .get('chess-board, wc-chess-board')
     .then($chessboard => $chessboard[0].game.getPosition().fen)
     .should('eq', expectedFen)
 })
@@ -49,7 +49,7 @@ Cypress.Commands.add('flipBoard', () => {
 Cypress.Commands.add('acceptCookies', () => {
   return cy.window().then((win) => {
     try {
-      const SELECTOR = '.accept-button, .bottom-banner-close';
+      const SELECTOR = '.accept-button, .bottom-banner-close, .osano-cm-save';
       const buttons = win.document.querySelectorAll(SELECTOR);
       buttons.forEach(b => b.click());
     } catch(e) {}
@@ -58,7 +58,7 @@ Cypress.Commands.add('acceptCookies', () => {
 
 Cypress.Commands.add('enablePuzzleBoard', () => {
   return cy.window().then((win) => {
-    const element = win.document.querySelector('chess-board');
+    const element = win.document.querySelector('chess-board, wc-chess-board');
 
     element.game.setOptions({ enabled: true })
 
