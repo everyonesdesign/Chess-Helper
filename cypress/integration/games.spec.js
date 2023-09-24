@@ -6,11 +6,6 @@
  * (run on analysis board)
  */
 
-const { INPUT_SELECTOR } = require('../constants');
-
-const ARROW_SELECTOR = 'img.chessBoardArrow';
-const E2E4_ARROW_SELECTOR = 'chess-board .arrows [data-arrow="e2e4"]';
-const SQUARE_SELECTOR = 'chess-board [class^="highlight square-"][style*="background-color: rgb(235, 97, 80)"]';
 
 context('Chess games', () => {
   beforeEach(() => {
