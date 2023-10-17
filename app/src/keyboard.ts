@@ -12,6 +12,7 @@ import {
 import {
   Nullable,
 } from './types';
+import { toggleBlindfoldMode } from './blindfold';
 
 const KEY_CODES = {
   enter: 13,
@@ -133,4 +134,11 @@ export function bindBlindFoldPeek(input: HTMLInputElement) {
   // we want to duplicate these listeners
   input.addEventListener('keydown', updatePeekClass);
   input.addEventListener('keyup', updatePeekClass);
+
+  // Ctrl+b to toggle the blindfold
+  document.body.addEventListener('keypress', function (e) {
+    if (e.ctrlKey && e.code == 'KeyB') {
+      toggleBlindfoldMode()
+    }
+  })
 }

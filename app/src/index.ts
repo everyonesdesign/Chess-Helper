@@ -30,7 +30,9 @@ import { i18n } from './i18n';
 /**
  * Prepare the extension code and run
  */
-function init() {
+async function init() {
+  await new Promise(r => setTimeout(r, 1000))
+
   const selector = `
     .analysis-diagram .chess_viewer,
     .main-board .board,
