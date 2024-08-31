@@ -5,38 +5,6 @@
  * Checking specific issues encountered before
  */
 
-const { INPUT_SELECTOR } = require('../constants');
-
-const ARROW_SELECTOR = 'img.chessBoardArrow';
-const PREV_MOVE_SELECTOR = '.icon-font-chess.chevron-left';
-
-function testPuzzlePromotion(cy, isAlgebraic) {
-  const promotionMoveBase = isAlgebraic ? 'b8' : 'a7b8';
-  const promotionSuffix = isAlgebraic ? '=Q' : 'q';
-
-  cy.visit(this.positions['puzzles-promotion'].url)
-  cy.wait(2000)
-  cy.acceptCookies(2000)
-  cy.enablePuzzleBoard();
-  cy.wait(2000)
-
-  cy
-    .makeMove('c4')
-    .makeMove('b6')
-    .makeMove('c3')
-    .makeMove('a7')
-    .makeMove('Rb8')
-    .makeMove(`${promotionMoveBase}${promotionSuffix}`)
-    .get(PREV_MOVE_SELECTOR)
-      .first()
-      .click()
-
-  cy
-    .makeMove(promotionMoveBase)
-    .makeMove(`${promotionMoveBase}${promotionSuffix}`)
-    .fenEquals(this.positions['puzzles-promotion'].fen.end)
-}
-
 function testFenToFen({
   cy,
   initialFen,
@@ -61,19 +29,47 @@ context('Bugs', () => {
 
   context('Promotion in puzzles', () => {
     // See https://github.com/everyonesdesign/Chess-Helper/issues/34
-    it('Puzzles promotion (algebraic)', function () {
-      testPuzzlePromotion.call(this, cy, true);
+    it('Puzzles promotion (algebraic - queen)', function () {
+      testFenToFen({
+        cy,
+        initialFen: '1r6/P4kp1/4p3/2p1p1p1/P3P1P1/8/5PK1/8 w - - 1 36',
+        move: 'b8=Q',
+        expectedFen: '1Q6/5kp1/4p3/2p1p1p1/P3P1P1/8/5PK1/8 b - - 0 36',
+      });
     });
 
-    it('Puzzles promotion (UCI)', function () {
-      testPuzzlePromotion.call(this, cy, false);
+    it('Puzzles promotion (UCI - queen)', function () {
+      testFenToFen({
+        cy,
+        initialFen: '1r6/P4kp1/4p3/2p1p1p1/P3P1P1/8/5PK1/8 w - - 1 36',
+        move: 'a7b8q',
+        expectedFen: '1Q6/5kp1/4p3/2p1p1p1/P3P1P1/8/5PK1/8 b - - 0 36',
+      });
+    });
+
+    it('Puzzles promotion (algebraic - knight)', function () {
+      testFenToFen({
+        cy,
+        initialFen: '1r6/P4kp1/4p3/2p1p1p1/P3P1P1/8/5PK1/8 w - - 1 36',
+        move: 'b8=N',
+        expectedFen: '1N6/5kp1/4p3/2p1p1p1/P3P1P1/8/5PK1/8 b - - 0 36',
+      });
+    });
+
+    it('Puzzles promotion (UCI - knight)', function () {
+      testFenToFen({
+        cy,
+        initialFen: '1r6/P4kp1/4p3/2p1p1p1/P3P1P1/8/5PK1/8 w - - 1 36',
+        move: 'a7b8n',
+        expectedFen: '1N6/5kp1/4p3/2p1p1p1/P3P1P1/8/5PK1/8 b - - 0 36',
+      });
     });
   });
 
   context('Pawn vs bishop algebraic notation', () => {
     // https://www.chess.com/forum/view/general/keyboard-controls-for-chess-com-chess-com-keyboard-browser-extension?newCommentCount=1&page=2#comment-64840439
 
-    it("Moves like `bb3` are condidered bishop-only moves", function () {
+    it("Moves like `bb3` are condidered bishop-only move", function () {
       testFenToFen({
         cy,
         initialFen: 'rnbqk1nr/pppp1ppp/4p3/2b5/2B5/4P3/PPPP1PPP/RNBQK1NR w KQkq - 2 3',
