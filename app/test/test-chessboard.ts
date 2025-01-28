@@ -3,9 +3,7 @@ import assert from 'assert';
 
 jsDomGlobal();
 
-const {
-  GlobalChessboard,
-} = require('../src/chessboard');
+import { GlobalChessboard } from '../src/chessboard'
 
 describe('GlobalChessboard', function() {
   describe('isPlayersMove', function() {
