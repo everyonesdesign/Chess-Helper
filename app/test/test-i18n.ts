@@ -3,9 +3,7 @@ import assert from 'assert';
 
 jsDomGlobal();
 
-const {
-  i18n,
-} = require('../src/i18n');
+import { i18n } from '../src/i18n';
 
 describe('Language modules', function() {
   describe('i18n', function() {
