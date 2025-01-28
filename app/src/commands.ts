@@ -19,6 +19,14 @@ export const commands : Record<string, () => void> = {
     const drawButton = <Nullable<HTMLButtonElement>>document.querySelector('.draw-button-component');
     drawButton && drawButton.click();
   },
+  cancel: () => {
+    const cancelButton = <Nullable<HTMLButtonElement>>document.querySelector('.daily-confirm-move-buttons .cc-button-secondary')
+    cancelButton && cancelButton.click()
+  },
+  confirm: () => {
+    const confirmButton = <Nullable<HTMLButtonElement>>document.querySelector('.daily-confirm-move-buttons .cc-button-primary')
+    confirmButton && confirmButton.click()
+  }
 };
 
 /**
