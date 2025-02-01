@@ -10,7 +10,8 @@
     "e2e": "cypress run --browser chrome --record --headed",
     "e2e-dev": "cypress open",
     "pack": "rm app.zip; npm run build-prod; cd app && zip -r ../app.zip *",
-    "release": "node ./release.js"
+    "release": "node ./release.js",
+    "compile-grammar": "nearleyc app/move.ne -o app/move-grammar.js"
   },
   "devDependencies": {
     "@types/assert": "^1.5.5",
@@ -32,6 +33,7 @@
   "dependencies": {
     "domify": "^1.4.1",
     "lodash": "^4.17.21",
+    "nearley": "^2.20.1",
     "svg.js": "^2.6.5"
   }
 }
