@@ -1,0 +1,7 @@
+{
+  "extends": "../tsconfig",
+  "include": ["./**/*.ts", "./support/index.d.ts"],
+  "compilerOptions": {
+    "types": ["cypress"],
+  }
+}

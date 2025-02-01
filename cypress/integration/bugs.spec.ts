@@ -1,4 +1,4 @@
-/// <reference types="cypress" />
+/// <reference types="../support" />
 
 /**
  * BUGS
@@ -10,6 +10,11 @@ function testFenToFen({
   initialFen,
   expectedFen,
   move,
+}: {
+  cy: Cypress.Chainable,
+  initialFen: string,
+  expectedFen: string,
+  move: string,
 }) {
   cy.visit('https://www.chess.com/analysis')
   cy.wait(2000)

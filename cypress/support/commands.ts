@@ -1,14 +1,14 @@
-/// <reference types="cypress" />
+/// <reference types="../support" />
 
-const { INPUT_SELECTOR } = require('../constants');
+import { INPUT_SELECTOR } from '../constants';
 
 const DEFAULT_MOVE_OPTIONS = {
   delay: 100,
 }
 
-Cypress.Commands.add('playGame', (moves) => {
-  cy.wrap(moves).each((move) => {
-      cy.makeMove(move)
+Cypress.Commands.add('playGame', (moves: string[]) => {
+  cy.wrap(moves).each((move: string) => {
+      cy.makeMove(move);
   })
 })
 
@@ -25,6 +25,7 @@ Cypress.Commands.add('makeMove', (move, options = {}) => {
 Cypress.Commands.add('fenEquals', (expectedFen) => {
   return cy
     .get('chess-board, wc-chess-board')
+    // @ts-ignore
     .then($chessboard => $chessboard[0].game.getPosition().fen)
     .should('eq', expectedFen)
 })
@@ -51,7 +52,10 @@ Cypress.Commands.add('acceptCookies', () => {
     try {
       const SELECTOR = '.accept-button, .bottom-banner-close, .osano-cm-save';
       const buttons = win.document.querySelectorAll(SELECTOR);
-      buttons.forEach(b => b.click());
+      buttons.forEach(b => {
+        const button = b as HTMLButtonElement;
+        button.click();
+      });
     } catch(e) {}
   })
 })
@@ -59,10 +63,12 @@ Cypress.Commands.add('acceptCookies', () => {
 Cypress.Commands.add('enablePuzzleBoard', () => {
   return cy.window().then((win) => {
     const element = win.document.querySelector('chess-board, wc-chess-board');
+    // @ts-ignore
+    const game = element.game;
 
-    element.game.setOptions({ enabled: true })
+    game.setOptions({ enabled: true })
 
-    const mode = element.game.getMode();
+    const mode = game.getMode();
     mode.isAllowedToMove = () => true;
     const options = mode.getOptions();
 
@@ -70,7 +76,7 @@ Cypress.Commands.add('enablePuzzleBoard', () => {
     options.canInteractWithPieces = true;
     options.canAddMovesToMainLine = true;
 
-    element.game.canMoveForward = () => true;
-    element.game.getTurn = () => element.game.getPlayingAs();
+    game.canMoveForward = () => true;
+    game.getTurn = () => game.getPlayingAs();
   })
 })
