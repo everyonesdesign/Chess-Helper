@@ -11,7 +11,7 @@
     "e2e-dev": "cypress open",
     "pack": "rm app.zip; npm run build-prod; cd app && zip -r ../app.zip *",
     "release": "node ./release.js",
-    "compile-grammar": "nearleyc app/grammar/move.ne -o app/grammar/move-grammar.js"
+    "compile-grammar": "nearleyc app/grammar/move.ne -o app/grammar/move.js"
   },
   "devDependencies": {
     "@types/assert": "^1.5.5",
@@ -31,6 +31,7 @@
     "webpack-cli": "^4.9.0"
   },
   "dependencies": {
+    "@types/nearley": "^2.11.5",
     "domify": "^1.4.1",
     "lodash": "^4.17.21",
     "nearley": "^2.20.1",
