@@ -1,5 +1,6 @@
 {
   "name": "chess-com-helper",
+  "type": "module",
   "private": true,
   "scripts": {
     "build": "webpack",
