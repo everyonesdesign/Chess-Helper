@@ -1,4 +1,4 @@
-/// <reference types="cypress" />
+/// <reference types="../support" />
 
 /**
  * ANALYSIS VIEW
@@ -6,7 +6,7 @@
  * (component-chessboard module)
  */
 
-const { INPUT_SELECTOR } = require('../constants');
+import { INPUT_SELECTOR } from '../constants';
 
 const ARROW_SELECTOR = 'img.chessBoardArrow';
 const E2E4_ARROW_SELECTOR = 'chess-board .arrows [data-arrow="e2e4"], wc-chess-board [id="arrow-e2e4"]';

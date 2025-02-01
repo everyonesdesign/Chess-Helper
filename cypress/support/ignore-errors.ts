@@ -1,4 +1,4 @@
-/// <reference types="cypress" />
+/// <reference types="../support" />
 
 /**
  * Ignore uncaught errors

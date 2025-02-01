@@ -1,4 +1,4 @@
-/// <reference types="cypress" />
+/// <reference types="../support" />
 
 /**
  * GAMES
@@ -31,7 +31,7 @@ context('Chess games', () => {
   it('Opera night - algebraic lower', function() {
     const position = this.positions['opera-night'];
     cy
-      .playGame(position.movesAlgebraic.map(i => i.toLowerCase()))
+      .playGame(position.movesAlgebraic.map((i: string) => i.toLowerCase()))
       .fenEquals(position.fen.end)
   });
 
