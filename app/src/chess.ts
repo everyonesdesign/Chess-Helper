@@ -1,6 +1,7 @@
 import nearley from 'nearley';
 import filter from 'lodash/filter';
 import isEqual from 'lodash/isEqual';
+import uniqWith from 'lodash/uniqWith';
 import {
   postMessage,
   squareToCoords,
@@ -204,7 +205,7 @@ export function parseMoveInput(input: string): IMoveTemplate[] {
   try {
       console.log("Input", input);
       parser.feed(input);
-      const parsed = parser.results as ParsedMove[]; // Cast to expected type
+      const parsed = uniqWith(parser.results, isEqual) as ParsedMove[]; // Cast to expected type
       const results: IMoveTemplate[] = [];
       parsed.forEach(p => {
         const movesTemplates = mapParseResult(p);
