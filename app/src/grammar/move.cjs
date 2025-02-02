@@ -8,7 +8,7 @@ var grammar = {
     {"name": "Move", "symbols": ["UciMove"], "postprocess": (data) =>  ({ type: "uci", uciData:  data[0] })},
     {"name": "Move", "symbols": ["AlgebraicMove"], "postprocess": (data) =>  ({ type: "algebraic", algebraicData:  data[0] })},
     {"name": "Move", "symbols": ["CastlingMove"], "postprocess": (data) =>  ({ type: "castling", castlingData: data[0] })},
-    {"name": "UciMove", "symbols": ["UciCoord", "UciCoord", "UciPromotion"], "postprocess": (data) =>  ({ piece: '.', from: data[0], to: data[1], promotion: data[2] })},
+    {"name": "UciMove", "symbols": ["UciCoord", "UciCoord", "UciPromotion"], "postprocess": (data) =>  ({ piece: '.', from: data[0], to: data[1], promotionPiece: data[2] })},
     {"name": "UciCoord", "symbols": ["File", "Rank"], "postprocess": (data) => data[0] + data[1]},
     {"name": "UciPromotion", "symbols": ["NotKingPiece"], "postprocess": (d) => d[0]},
     {"name": "UciPromotion", "symbols": [], "postprocess": () => undefined},
@@ -17,7 +17,7 @@ var grammar = {
     {"name": "PawnMove", "symbols": ["MaybeFile", "Capture", "File", "Rank", "EnPassant", "Promotion"], "postprocess":  (data) =>  {
           const result = { piece: "p", from: data[0] + '.', to: data[2] + data[3] };
           if (data[5]) {
-            result.promotion = data[5]
+            result.promotionPiece = data[5]
           }
           return result;
         } },
