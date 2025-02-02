@@ -202,7 +202,7 @@ export function parseMoveInput(input: string): IMoveTemplate[] {
   const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
 
   try {
-      // console.log("Input", input);
+      console.log("Input", input);
       parser.feed(input);
       const parsed = parser.results as ParsedMove[]; // Cast to expected type
       const results: IMoveTemplate[] = [];
@@ -210,7 +210,7 @@ export function parseMoveInput(input: string): IMoveTemplate[] {
         const movesTemplates = mapParseResult(p);
         movesTemplates.forEach(mt => results.push(mt));
       });
-      // console.log("Results", JSON.stringify(results));
+      console.log("Results", JSON.stringify(results));
       return results;
   } catch (error) {
     // console.log('Error', (error as Error).toString().replace(/(Unexpected.*\n)/s, '$1'));

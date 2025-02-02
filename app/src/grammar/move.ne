@@ -16,7 +16,7 @@ PawnMove
  ->
     MaybeFile Capture File Rank Promotion
     {% (data) =>  ({ piece: "p", from: data[0] + '.', to: data[2] + data[3], promotion: data[4] }) %}
-PieceMove -> MaybePiece MaybeFile MaybeRank Capture File Rank
+PieceMove -> Piece MaybeFile MaybeRank Capture File Rank
     {% (data) =>  ({
       piece: data[0],
       from: data[1] + data[2],
@@ -34,10 +34,7 @@ EnPassant -> "e" EnPassantDot "p" EnPassantDot
 EnPassantDot -> "." | null
 Promotion
  -> "=" NotKingPiece {% (data) => data[1] %}
-  | null
-MaybePiece
- -> Piece {% (d) => d[0] %}
-  | null {% () =>  '.' %}
+  | null {% () => undefined %}
 Piece
  -> NotKingPiece {% (d) => d[0] %}
   | KingPiece {% (d) => d[0] %}

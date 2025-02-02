@@ -15,7 +15,7 @@ export type PawnMove = {
   promotion?: Promotion;
 };
 export type PieceMove = {
-  piece: Piece | '.';
+  piece: Piece;
   from: string;
   to: string;
 };
