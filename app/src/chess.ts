@@ -238,7 +238,15 @@ function mapParseResult(move: ParsedMove): IMoveTemplate[] {
     return [move.uciData];
   } else if (move.type === 'algebraic') {
     if (move.algebraicData.type === 'pawn') {
-      return [move.algebraicData.pawnData];
+      const fromFile = move.algebraicData.pawnData.from[0];
+      const toFile = move.algebraicData.pawnData.to[0];
+      if (fromFile === toFile) {
+        // Do nothing
+        // This disables moves like `bb4` for pawns to avoid ambiguity with bishops
+        return [];
+      } else {
+        return [move.algebraicData.pawnData];
+      }
     } else if (move.algebraicData.type === 'piece') {
       return [move.algebraicData.pieceData];
     }
