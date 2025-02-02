@@ -18,7 +18,7 @@ PawnMove
     {% (data) =>  {
       const result = { piece: "p", from: data[0] + '.', to: data[2] + data[3] };
       if (data[5]) {
-        data.promotion = data[5]
+        result.promotion = data[5]
       }
       return result;
     } %}
