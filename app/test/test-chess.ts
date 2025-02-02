@@ -317,7 +317,7 @@ describe('parseMoveInput', function() {
     MOVES.forEach(move => {
      it(`Parses ${move} in time`, function () {
        const time = getExecutionTime(() => parseMoveInput(move), ITERATIONS);
-       assert(time < LIMIT, `${move} executed in ${time}ms (${ITERATIONS} iterations)`);
+       assert(time < LIMIT, `${move} executed in ${time}ms (${ITERATIONS} iterations, limit: ${LIMIT}ms)`);
      });
     });
   });
