@@ -14,7 +14,13 @@ var grammar = {
     {"name": "UciPromotion", "symbols": [], "postprocess": () => undefined},
     {"name": "AlgebraicMove", "symbols": ["PieceMove"], "postprocess": (data) =>  ({ type: "piece", pieceData: data[0] })},
     {"name": "AlgebraicMove", "symbols": ["PawnMove"], "postprocess": (data) =>  ({ type: "pawn", pawnData: data[0] })},
-    {"name": "PawnMove", "symbols": ["MaybeFile", "Capture", "File", "Rank", "Promotion"], "postprocess": (data) =>  ({ piece: "p", from: data[0] + '.', to: data[2] + data[3], promotion: data[4] })},
+    {"name": "PawnMove", "symbols": ["MaybeFile", "Capture", "File", "Rank", "Promotion"], "postprocess":  (data) =>  {
+          const result = { piece: "p", from: data[0] + '.', to: data[2] + data[3] };
+          if (data[4]) {
+            data.promotion = data[4]
+          }
+          return result;
+        } },
     {"name": "PieceMove", "symbols": ["Piece", "MaybeFile", "MaybeRank", "Capture", "File", "Rank"], "postprocess":  (data) =>  ({
           piece: data[0],
           from: data[1] + data[2],

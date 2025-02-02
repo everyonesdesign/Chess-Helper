@@ -15,7 +15,13 @@ AlgebraicMove
 PawnMove
  ->
     MaybeFile Capture File Rank Promotion
-    {% (data) =>  ({ piece: "p", from: data[0] + '.', to: data[2] + data[3], promotion: data[4] }) %}
+    {% (data) =>  {
+      const result = { piece: "p", from: data[0] + '.', to: data[2] + data[3] };
+      if (data[4]) {
+        data.promotion = data[4]
+      }
+      return result;
+    } %}
 PieceMove -> Piece MaybeFile MaybeRank Capture File Rank
     {% (data) =>  ({
       piece: data[0],
