@@ -386,4 +386,16 @@ describe('getLegalMoves', function() {
       to: 'd8',
     }]);
   });
+
+  it('resolves ambiguity if the results are the same', function() {
+    const board = getChessBoardWithPieces([
+      {color: 2, type: 'b', area: 'b5'},
+    ]);
+    const result = getLegalMoves(board, parseMoveInput('b5d7'));
+    assert.deepEqual(result, [{
+      from: 'b5',
+      piece: 'b',
+      to: 'd7',
+    }]);
+  });
 });
