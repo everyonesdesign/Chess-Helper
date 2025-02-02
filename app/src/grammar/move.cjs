@@ -12,8 +12,8 @@ var grammar = {
     {"name": "UciCoord", "symbols": ["File", "Rank"], "postprocess": (data) => data[0] + data[1]},
     {"name": "UciPromotion", "symbols": ["NotKingPiece"], "postprocess": (d) => d[0]},
     {"name": "UciPromotion", "symbols": [], "postprocess": () => undefined},
-    {"name": "AlgebraicMove", "symbols": ["PieceMove"], "postprocess": (data) =>  ({ type: "piece", pieceData: data[0] })},
-    {"name": "AlgebraicMove", "symbols": ["PawnMove"], "postprocess": (data) =>  ({ type: "pawn", pawnData: data[0] })},
+    {"name": "AlgebraicMove", "symbols": ["PieceMove", "CheckOrMate"], "postprocess": (data) =>  ({ type: "piece", pieceData: data[0] })},
+    {"name": "AlgebraicMove", "symbols": ["PawnMove", "CheckOrMate"], "postprocess": (data) =>  ({ type: "pawn", pawnData: data[0] })},
     {"name": "PawnMove", "symbols": ["MaybeFile", "Capture", "File", "Rank", "Promotion"], "postprocess":  (data) =>  {
           const result = { piece: "p", from: data[0] + '.', to: data[2] + data[3] };
           if (data[4]) {
@@ -52,6 +52,12 @@ var grammar = {
     {"name": "NotKingPiece", "symbols": [{"literal":"N"}], "postprocess": () => "n"},
     {"name": "NotKingPiece", "symbols": [{"literal":"B"}], "postprocess": () => "b"},
     {"name": "NotKingPiece", "symbols": [{"literal":"Q"}], "postprocess": () => "q"},
+    {"name": "CheckOrMate", "symbols": ["Check"]},
+    {"name": "CheckOrMate", "symbols": ["Mate"]},
+    {"name": "Check", "symbols": [{"literal":"+"}]},
+    {"name": "Check", "symbols": []},
+    {"name": "Mate", "symbols": [{"literal":"#"}]},
+    {"name": "Mate", "symbols": []},
     {"name": "KingPiece", "symbols": [{"literal":"K"}], "postprocess": () => "k"},
     {"name": "KingPiece", "symbols": [{"literal":"k"}], "postprocess": () => "k"},
     {"name": "File", "symbols": [{"literal":"a"}], "postprocess": () => "a"},

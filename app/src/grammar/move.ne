@@ -10,8 +10,8 @@ UciPromotion
   | null {% () => undefined %}
 
 AlgebraicMove
- -> PieceMove {% (data) =>  ({ type: "piece", pieceData: data[0] }) %}
-  | PawnMove {% (data) =>  ({ type: "pawn", pawnData: data[0] }) %}
+ -> PieceMove CheckOrMate {% (data) =>  ({ type: "piece", pieceData: data[0] }) %}
+  | PawnMove CheckOrMate {% (data) =>  ({ type: "pawn", pawnData: data[0] }) %}
 PawnMove
  ->
     MaybeFile Capture File Rank Promotion
@@ -53,6 +53,9 @@ NotKingPiece
   | "N" {% () => "n" %}
   | "B" {% () => "b" %}
   | "Q" {% () => "q" %}
+CheckOrMate -> Check | Mate
+Check -> "+" | null
+Mate -> "#" | null
 
 KingPiece
  -> "K" {% () => "k" %}
