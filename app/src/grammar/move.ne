@@ -14,11 +14,11 @@ AlgebraicMove
   | PawnMove CheckOrMate {% (data) =>  ({ type: "pawn", pawnData: data[0] }) %}
 PawnMove
  ->
-    MaybeFile Capture File Rank Promotion
+    MaybeFile Capture File Rank EnPassant Promotion
     {% (data) =>  {
       const result = { piece: "p", from: data[0] + '.', to: data[2] + data[3] };
-      if (data[4]) {
-        data.promotion = data[4]
+      if (data[5]) {
+        data.promotion = data[5]
       }
       return result;
     } %}
@@ -36,7 +36,7 @@ ShortCastling ->CastlingChar CastlingSeparator CastlingChar
 CastlingSeparator -> "-" | null
 CastlingChar -> "o" | "O" | "0"
 Capture -> "x" | null
-EnPassant -> "e" EnPassantDot "p" EnPassantDot
+EnPassant -> "e" EnPassantDot "p" EnPassantDot | null
 EnPassantDot -> "." | null
 Promotion
  -> "=" NotKingPiece {% (data) => data[1] %}
