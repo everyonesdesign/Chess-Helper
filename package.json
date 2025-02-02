@@ -11,7 +11,7 @@
     "e2e-dev": "cypress open",
     "pack": "rm app.zip; npm run build-prod; cd app && zip -r ../app.zip *",
     "release": "node ./release.js",
-    "compile-grammar": "nearleyc app/grammar/move.ne -o app/grammar/move.js"
+    "compile-grammar": "nearleyc app/src/grammar/move.ne -o app/src/grammar/move.cjs"
   },
   "devDependencies": {
     "@types/assert": "^1.5.5",
