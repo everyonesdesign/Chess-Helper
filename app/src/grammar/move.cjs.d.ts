@@ -3,7 +3,7 @@ export type Move =
   | { type: 'uci'; uciData: UciMove }
   | { type: 'algebraic'; algebraicData: AlgebraicMove }
   | { type: 'castling'; castlingData: CastlingMove };
-export type UciMove = { piece: '.', from: UciCoord; to: UciCoord };
+export type UciMove = { piece: '.', from: UciCoord; to: UciCoord, promotion?: Promotion };
 export type UciCoord = string;
 export type AlgebraicMove =
   | { type: 'piece'; pieceData: PieceMove }

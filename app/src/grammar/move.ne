@@ -1,10 +1,13 @@
 Move
  -> UciMove {% (data) =>  ({ type: "uci", uciData:  data[0] }) %}
-  | AlgebraicMove {% (data) =>  ({ type: "algebraic", uciData:  data[0] }) %}
+  | AlgebraicMove {% (data) =>  ({ type: "algebraic", algebraicData:  data[0] }) %}
   | CastlingMove {% (data) =>  ({ type: "castling", castlingData: data[0] }) %}
 
-UciMove -> UciCoord UciCoord {% (data) =>  ({ piece: '.', from: data[0], to: data[1] }) %}
+UciMove -> UciCoord UciCoord UciPromotion {% (data) =>  ({ piece: '.', from: data[0], to: data[1], promotion: data[2] }) %}
 UciCoord -> File Rank {% (data) => data[0] + data[1] %}
+UciPromotion
+ -> NotKingPiece {% (d) => d[0] %}
+  | null {% () => undefined %}
 
 AlgebraicMove
  -> PieceMove {% (data) =>  ({ type: "piece", pieceData: data[0] }) %}
