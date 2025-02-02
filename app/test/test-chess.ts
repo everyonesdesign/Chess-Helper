@@ -187,13 +187,13 @@ describe('parseMoveInput', function() {
     it('bc4', function () {
       assert.deepEqual(parseMoveInput('bc4'), [
         {
-          piece: 'p',
-          from: 'b.',
+          piece: 'b',
+          from: '..',
           to: 'c4',
         },
         {
-          piece: 'b',
-          from: '..',
+          piece: 'p',
+          from: 'b.',
           to: 'c4',
         },
       ]);
