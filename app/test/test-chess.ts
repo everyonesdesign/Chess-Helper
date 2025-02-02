@@ -12,6 +12,13 @@ import {
   TArea,
 } from '../src/types';
 
+function getExecutionTime(fn: Function, cycles: number = 1000): number {
+  const start = Date.now();
+  for (let i = 0; i < cycles; i++) fn();
+  const end = Date.now();
+  return end - start;
+}
+
 describe('parseMoveInput', function() {
   it('parses short piece moves (Rd2)', function() {
     assert.deepEqual(parseMoveInput('Rd2'), [{
@@ -242,6 +249,48 @@ describe('parseMoveInput', function() {
 
   it('ignores other formats (♞f3)', function() {
     assert.deepEqual(parseMoveInput('♞f3'), []);
+  });
+
+  describe('Parses queries in time', function() {
+    const MOVES = [
+      'd2',
+      'bc4',
+      '0-0-0',
+      '0-0',
+      '00',
+      'b2c3',
+      'b3',
+      'b8=n',
+      'Bb3',
+      'bb7',
+      'bxb3',
+      'd8=Q',
+      'e2e4',
+      'e7e8n',
+      'exd3',
+      'exd3e.p.',
+      'Nd8=Q',
+      'o-o',
+      'ooo',
+      'qb3xc4',
+      'R2xd2',
+      'Rd2',
+      'Rd2#',
+      'Rd2+',
+      'Re2d2',
+      'Re2xd2',
+      'Rexd2',
+      'Rxd2',
+      'Xd2',
+    ];
+    const LIMIT = 5;
+    const ITERATIONS = 1000;
+    MOVES.forEach(move => {
+     it(`Parses ${move} in time`, function () {
+       const time = getExecutionTime(() => parseMoveInput(move), ITERATIONS);
+       assert(time < LIMIT, `${move} executed in ${time}ms (${ITERATIONS} iterations, limit: ${LIMIT}ms)`);
+     });
+    });
   });
 });
 
