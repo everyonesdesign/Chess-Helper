@@ -211,7 +211,18 @@ describe('parseMoveInput', function() {
     });
     it('b2c3', function () {
       // This looks like a UCI move. Let's parse it as UCI
-      assert.deepEqual(parseMoveInput('b2c3'), []);
+      assert.deepEqual(parseMoveInput('b2c3'), [
+        {
+          from: 'b2',
+          piece: '.',
+          to: 'c3',
+        },
+        {
+          from: '.2',
+          piece: 'b',
+          to: 'c3',
+        },
+      ]);
     });
   });
 
