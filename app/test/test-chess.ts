@@ -14,6 +14,15 @@ import {
   TArea,
 } from '../src/types';
 
+function getExecutionTime(fn: Function, cycles: number = 1000): number {
+  const start = Date.now();
+  for (let i = 0; i < cycles; i++) {
+    fn();
+  }
+  const end = Date.now();
+  return end - start;
+}
+
 describe('parseAlgebraic', function() {
   it('parses short algebraic moves', function() {
     assert.deepEqual(parseAlgebraic('Rd2'), [{
@@ -268,6 +277,39 @@ describe('parseMoveInput', function() {
       from: 'e2',
       to: 'e4',
     }]);
+  });
+
+  describe('Parses queries in time', function() {
+    const LIMIT = 5;
+    it('Parses d2 in time', function() { assert(getExecutionTime(() => parseMoveInput('d2')) < LIMIT); });
+    it('Parses bc4 in time', function() { assert(getExecutionTime(() => parseMoveInput('bc4')) < LIMIT); });
+    it('Parses 0-0-0 in time', function() { assert(getExecutionTime(() => parseMoveInput('0-0-0')) < LIMIT); });
+    it('Parses 0-0 in time', function() { assert(getExecutionTime(() => parseMoveInput('0-0')) < LIMIT); });
+    it('Parses 00 in time', function() { assert(getExecutionTime(() => parseMoveInput('00')) < LIMIT); });
+    it('Parses b2c3 in time', function() { assert(getExecutionTime(() => parseMoveInput('b2c3')) < LIMIT); });
+    it('Parses b3 in time', function() { assert(getExecutionTime(() => parseMoveInput('b3')) < LIMIT); });
+    it('Parses b8=n in time', function() { assert(getExecutionTime(() => parseMoveInput('b8=n')) < LIMIT); });
+    it('Parses Bb3 in time', function() { assert(getExecutionTime(() => parseMoveInput('Bb3')) < LIMIT); });
+    it('Parses bb7 in time', function() { assert(getExecutionTime(() => parseMoveInput('bb7')) < LIMIT); });
+    it('Parses bxb3 in time', function() { assert(getExecutionTime(() => parseMoveInput('bxb3')) < LIMIT); });
+    it('Parses d8=Q in time', function() { assert(getExecutionTime(() => parseMoveInput('d8=Q')) < LIMIT); });
+    it('Parses e2e4 in time', function() { assert(getExecutionTime(() => parseMoveInput('e2e4')) < LIMIT); });
+    it('Parses e7e8n in time', function() { assert(getExecutionTime(() => parseMoveInput('e7e8n')) < LIMIT); });
+    it('Parses exd3 in time', function() { assert(getExecutionTime(() => parseMoveInput('exd3')) < LIMIT); });
+    it('Parses exd3e.p. in time', function() { assert(getExecutionTime(() => parseMoveInput('exd3e.p.')) < LIMIT); });
+    it('Parses Nd8=Q in time', function() { assert(getExecutionTime(() => parseMoveInput('Nd8=Q')) < LIMIT); });
+    it('Parses o-o in time', function() { assert(getExecutionTime(() => parseMoveInput('o-o')) < LIMIT); });
+    it('Parses ooo in time', function() { assert(getExecutionTime(() => parseMoveInput('ooo')) < LIMIT); });
+    it('Parses qb3xc4 in time', function() { assert(getExecutionTime(() => parseMoveInput('qb3xc4')) < LIMIT); });
+    it('Parses R2xd2 in time', function() { assert(getExecutionTime(() => parseMoveInput('R2xd2')) < LIMIT); });
+    it('Parses Rd2 in time', function() { assert(getExecutionTime(() => parseMoveInput('Rd2')) < LIMIT); });
+    it('Parses Rd2# in time', function() { assert(getExecutionTime(() => parseMoveInput('Rd2#')) < LIMIT); });
+    it('Parses Rd2+ in time', function() { assert(getExecutionTime(() => parseMoveInput('Rd2+')) < LIMIT); });
+    it('Parses Re2d2 in time', function() { assert(getExecutionTime(() => parseMoveInput('Re2d2')) < LIMIT); });
+    it('Parses Re2xd2 in time', function() { assert(getExecutionTime(() => parseMoveInput('Re2xd2')) < LIMIT); });
+    it('Parses Rexd2 in time', function() { assert(getExecutionTime(() => parseMoveInput('Rexd2')) < LIMIT); });
+    it('Parses Rxd2 in time', function() { assert(getExecutionTime(() => parseMoveInput('Rxd2')) < LIMIT); });
+    it('Parses Xd2 in time', function() { assert(getExecutionTime(() => parseMoveInput('Xd2')) < LIMIT); });
   });
 });
 
