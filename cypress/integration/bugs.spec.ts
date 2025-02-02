@@ -18,7 +18,7 @@ function testFenToFen({
 }) {
   cy.visit('https://www.chess.com/analysis')
   cy.wait(2000)
-  cy.acceptCookies(2000)
+  cy.acceptCookies()
 
   cy
     .setAnalysisFen(initialFen)

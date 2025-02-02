@@ -50,7 +50,7 @@ Cypress.Commands.add('flipBoard', () => {
 Cypress.Commands.add('acceptCookies', () => {
   return cy.window().then((win) => {
     try {
-      const SELECTOR = '.accept-button, .bottom-banner-close, .osano-cm-save';
+      const SELECTOR = '.accept-button, .bottom-banner-close, .osano-cm-save, #onetrust-reject-all-handler';
       const buttons = win.document.querySelectorAll(SELECTOR);
       buttons.forEach(b => {
         const button = b as HTMLButtonElement;

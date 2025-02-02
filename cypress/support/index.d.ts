@@ -7,6 +7,6 @@ declare namespace Cypress {
     flipBoard(): Chainable<void>;
     setAnalysisFen(fen: string): Chainable<void>;
     fenEquals(fen: string): Chainable<void>;
-    acceptCookies(delay: number): Chainable<void>;
+    acceptCookies(): Chainable<void>;
   }
 }
