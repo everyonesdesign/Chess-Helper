@@ -1,6 +1,7 @@
 Move
  -> UciMove {% (data) =>  ({ type: "uci", uciData:  data[0] }) %}
   | AlgebraicMove {% (data) =>  ({ type: "algebraic", uciData:  data[0] }) %}
+  | CastlingMove {% (data) =>  ({ type: "castling", castlingData: data[0] }) %}
 
 UciMove -> UciCoord UciCoord {% (data) =>  ({ from: data[0], to: data[1] }) %}
 UciCoord -> File Rank {% (data) => data[0] + data[1] %}
@@ -8,7 +9,6 @@ UciCoord -> File Rank {% (data) => data[0] + data[1] %}
 AlgebraicMove
  -> PieceMove {% (data) =>  ({ type: "piece", pieceData: data[0] }) %}
   | PawnMove {% (data) =>  ({ type: "pawn", pawnData: data[0] }) %}
-  | CastlingMove {% (data) =>  ({ type: "castling", castlingData: data[0] }) %}
 PawnMove
  ->
     MaybeFile Capture File Rank Promotion
