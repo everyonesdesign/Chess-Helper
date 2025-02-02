@@ -37,15 +37,8 @@ describe('parseMoveInput', function() {
     }]);
   });
 
-  it('parses pawn captures (exd3, exd3e.p.)', function() {
+  it('parses pawn captures (exd3)', function() {
     assert.deepEqual(parseMoveInput('exd3'), [{
-      piece: 'p',
-      from: 'e.',
-      to: 'd3',
-    }]);
-
-    // en passant
-    assert.deepEqual(parseMoveInput('exd3e.p.'), [{
       piece: 'p',
       from: 'e.',
       to: 'd3',
@@ -187,13 +180,13 @@ describe('parseMoveInput', function() {
     it('bc4', function () {
       assert.deepEqual(parseMoveInput('bc4'), [
         {
-          piece: 'b',
-          from: '..',
+          piece: 'p',
+          from: 'b.',
           to: 'c4',
         },
         {
-          piece: 'p',
-          from: 'b.',
+          piece: 'b',
+          from: '..',
           to: 'c4',
         },
       ]);
