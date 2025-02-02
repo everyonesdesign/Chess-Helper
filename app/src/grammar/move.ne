@@ -3,7 +3,7 @@ Move
   | AlgebraicMove {% (data) =>  ({ type: "algebraic", uciData:  data[0] }) %}
   | CastlingMove {% (data) =>  ({ type: "castling", castlingData: data[0] }) %}
 
-UciMove -> UciCoord UciCoord {% (data) =>  ({ from: data[0], to: data[1] }) %}
+UciMove -> UciCoord UciCoord {% (data) =>  ({ piece: '.', from: data[0], to: data[1] }) %}
 UciCoord -> File Rank {% (data) => data[0] + data[1] %}
 
 AlgebraicMove

@@ -1,6 +1,6 @@
+import nearley from 'nearley';
 import filter from 'lodash/filter';
 import isEqual from 'lodash/isEqual';
-import find from 'lodash/find';
 import {
   postMessage,
   squareToCoords,
@@ -16,13 +16,11 @@ import {
   TArea,
   TPiece,
   IMoveTemplate,
-  IPotentialMoves,
   IMove,
   TFromTo,
-  TMoveType,
-  Nullable,
 } from './types';
 import { i18n } from './i18n';
+import grammar, { Move as ParsedMove } from './grammar/move';
 
 /**
  * Check if input is valid square name
@@ -137,7 +135,7 @@ export function makeMove(
 /**
  * Get exact from and to coords from move data
  */
-export function getLegalMoves(board: IChessboard, potentialMoves: IPotentialMoves) : IMove[] {
+export function getLegalMoves(board: IChessboard, potentialMoves: IMoveTemplate[]) : IMove[] {
   if (!board || !potentialMoves.length || !board.isPlayersMove()) {
     return [];
   }
@@ -199,134 +197,47 @@ export function excludeConflictingMoves(moves: IMove[]) : IMove[] {
 /**
  * Parse message input by user
  */
-export function parseMoveInput(input: string): IPotentialMoves {
-  return [
-    ...parseUCI(input),
-    ...parseAlgebraic(input),
-  ];
-}
+export function parseMoveInput(input: string): IMoveTemplate[] {
+  const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
 
-/**
- * Parse simplest move format: 'e2e4'
- */
-export function parseUCI(input: string) : IPotentialMoves {
-  const filteredSymbols = input.replace(/( |-)+/g, '');
-  const fromSquare = <TArea>filteredSymbols.slice(0, 2);
-  const toSquare = <TArea>filteredSymbols.slice(2, 4);
-  const promotion = <TPiece>filteredSymbols.slice(4, 5);
-
-  if (validateSquareName(fromSquare) && validateSquareName(toSquare)) {
-    const result: IMoveTemplate = {
-      piece: '.',
-      from: fromSquare,
-      to: toSquare,
-    };
-
-    if (promotion) {
-      result.promotionPiece = promotion;
-    }
-
-    return [result];
+  try {
+      parser.feed(input);
+      const parsed = parser.results as ParsedMove[]; // Cast to expected type
+      const results: IMoveTemplate[] = [];
+      parsed.forEach(p => {
+        const movesTemplates = mapParseResult(p);
+        movesTemplates.forEach(mt => results.push(mt));
+      });
+      return results;
+  } catch (error) {
+    // Do nothing
   }
 
   return [];
 }
 
-/**
- * Extract all possible information from algebraic notation
- */
-export function parseAlgebraic(input: string): IPotentialMoves {
-  // ignore UCI notation
-  if (/^\s*[a-h][1-8][a-h][1-8][rqknb]?\s*$/.test(input)) {
-    return [];
-  }
-
-  let moveString = input.replace(/[\s\-\(\)]+/g, '');
-  const moves: IPotentialMoves = [];
-
-  if (/[o0][o0][o0]/i.test(moveString)) {
-    return [
-      // white long castling
-      {
-        piece: 'k',
-        from: 'e1',
-        to: 'c1',
-      },
-      // black long castling
-      {
-        piece: 'k',
-        from: 'e8',
-        to: 'c8',
-      }
-    ];
-  } else if (/[o0][o0]/i.test(moveString)) {
-    return [
-      // white short castling
-      {
-        piece: 'k',
-        from: 'e1',
-        to: 'g1',
-      },
-      // black short castling
-      {
-        piece: 'k',
-        from: 'e8',
-        to: 'g8',
-      }
-    ];
-  }
-
-
-  const pawnRegex = /^([a-h])?(x)?([a-h])([1-8])(e\.?p\.?)?(=[qrnbQRNB])?[+#]?$/;
-  const pawnResult = moveString.match(pawnRegex);
-  if (pawnResult) {
-    const [
-      _,
-      fromFile,
-      isCapture,
-      toFile,
-      toRank,
-      enPassant,
-      promotion,
-    ] = pawnResult;
-
-    if (fromFile === toFile) {
-      // Do nothing
-      // This disables moves like `bb4` for pawns to avoid ambiguity with bishops
-    } else {
-      const move: IMoveTemplate = {
-        piece: 'p',
-        from: <TArea>`${fromFile || '.'}.`,
-        to: <TArea>`${toFile || '.'}${toRank || '.'}`,
-      };
-
-      if (promotion) {
-        move.promotionPiece = <TPiece>promotion[1].toLowerCase();
-      }
-
-      moves.push(move);
+function mapParseResult(move: ParsedMove): IMoveTemplate[] {
+  if (move.type === 'castling') {
+    if (move.castlingData.kind === 'long') {
+      return [
+        { piece: 'k', from: 'e1', to: 'c1' }, // white long castling
+        { piece: 'k', from: 'e8', to: 'c8' } // black long castling
+      ];
+    } else if (move.castlingData.kind === 'short') {
+      return [
+        { piece: 'k', from: 'e1', to: 'g1' }, // white short castling
+        { piece: 'k', from: 'e8', to: 'g8' } // black short castling
+      ];
+    }
+  } else if (move.type === 'uci') {
+    return [move.uciData];
+  } else if (move.type === 'algebraic') {
+    if (move.algebraicData.type === 'pawn') {
+      return [move.algebraicData.pawnData];
+    } else if (move.algebraicData.type === 'piece') {
+      return [move.algebraicData.pieceData];
     }
   }
 
-  const pieceRegex = /^([RQKNBrqknb])([a-h])?([1-8])?(x)?([a-h])([1-8])?[+#]?$/;
-  const pieceResult = moveString.match(pieceRegex);
-  if (pieceResult) {
-    const [
-      _,
-      pieceName,
-      fromFile,
-      fromVer,
-      isCapture,
-      toFile,
-      toRank,
-    ] = pieceResult;
-
-    moves.push({
-      piece: <TPiece>(pieceName).toLowerCase(),
-      from: <TArea>`${fromFile || '.'}${fromVer || '.'}`,
-      to: <TArea>`${toFile || '.'}${toRank || '.'}`,
-    });
-  }
-
-  return moves;
+  return [];
 }
