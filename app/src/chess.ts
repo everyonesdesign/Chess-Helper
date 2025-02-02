@@ -20,7 +20,8 @@ import {
   TFromTo,
 } from './types';
 import { i18n } from './i18n';
-import grammar, { Move as ParsedMove } from './grammar/move';
+
+import grammar, { Move as ParsedMove } from './grammar/move.cjs';
 
 /**
  * Check if input is valid square name
