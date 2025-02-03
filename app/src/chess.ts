@@ -196,6 +196,8 @@ export function excludeConflictingMoves(moves: IMove[]) : IMove[] {
     // Bishop and UCI move conflict
     // UCL is preferred in this case (since multiple bishops sharing same diagonal are extremely rare)
     // @see e2e test "Moves like `b2b4` prefer UCI over a bishop in conflicts"
+    const uciMove = moves.find(m => m.piece === '.') as IMove;
+    return [uciMove];
   }
 
   return moves;
