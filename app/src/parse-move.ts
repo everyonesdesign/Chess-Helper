@@ -174,7 +174,7 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
           } else {
             result.piece = 'p';
           }
-        } else if ('bknrqBKNRQ'.includes(currentChar)) {
+        } else if (isPiece(currentChar)) {
           if (result.promotionPiece) {
             // Only pawns can be promoted
             return null;
@@ -248,6 +248,15 @@ const PROMOTION_PIECE_LOOKUP: Record<string, boolean> = {
 };
 function isPromotionPiece(input: string): boolean {
   return PROMOTION_PIECE_LOOKUP[input] || false;
+}
+
+const PIECE_LOOKUP: Record<string, boolean> = {
+  ...PROMOTION_PIECE_LOOKUP,
+  k: true,
+  K: true,
+};
+function isPiece(input: string): boolean {
+  return PIECE_LOOKUP[input] || false;
 }
 
 function sanitizeInput(moveString: string) : string {
