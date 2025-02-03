@@ -19,14 +19,14 @@ import { IMoveTemplate } from './types';
 export function parseMoveInput(input: string): IMoveTemplate[] {
   const moveString = sanitizeInput(input);
 
-  const castlingMoves = parseCastling(moveString);
-  if (castlingMoves) {
-    return castlingMoves;
-  }
-
   const regularMoves = parseRegularMoves(moveString);
   if (regularMoves) {
     return regularMoves;
+  }
+
+  const castlingMoves = parseCastling(moveString);
+  if (castlingMoves) {
+    return castlingMoves;
   }
 
   return [];
