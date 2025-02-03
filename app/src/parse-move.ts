@@ -93,14 +93,14 @@ interface ParsingResult {
   fromRank?: string;
   fromFile?: string;
   piece: string;
-  isPawnAndBishopCollision: boolean;
+  hasBishopConflict: boolean;
 }
 function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
   const result: ParsingResult = {
     piece: '.',
     toFile: '.',
     toRank: '.',
-    isPawnAndBishopCollision: false,
+    hasBishopConflict: false,
   };
 
   let currentStepIndex = 0;
@@ -193,7 +193,7 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
           result.fromFile === 'b' &&
           !result.promotionPiece
         ) {
-          result.isPawnAndBishopCollision = true;
+          result.hasBishopConflict = true;
         }
         break parsingSwitch;
     }
@@ -214,7 +214,7 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
 
   const moves: IMoveTemplate[] = [move];
 
-  if (result.isPawnAndBishopCollision) {
+  if (result.hasBishopConflict) {
     moves.push({
       to: move.to,
       from: '.' + (move.from as string)[1],
