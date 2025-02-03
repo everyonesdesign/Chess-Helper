@@ -173,7 +173,7 @@ export function getLegalMoves(board: IChessboard, potentialMoves: IMoveTemplate[
     ];
   });
 
-  return excludeConflictingMoves(legalMoves);
+  return pickMostSpecificMoves(excludeConflictingMoves(legalMoves));
 }
 
 /**
@@ -201,4 +201,27 @@ export function excludeConflictingMoves(moves: IMove[]) : IMove[] {
   }
 
   return moves;
+}
+
+/**
+ * Sometimes returned moves are essentially the same or similar
+ * This method omits less specific moves
+ * Example1:
+ *   Input: [{ piece: '.', from: 'b4', to: 'b5' }, { piece: 'p', from: 'b4', to: 'b5' }]
+ *   Output: [{ piece: 'p', from: 'b4', to: 'b5' }]
+ */
+function pickMostSpecificMoves(moves: IMove[]) : IMove[] {
+  const result: IMove[] = [];
+  const movesDict: Record<string, IMove> = {};
+  moves.forEach(move => {
+    if (!movesDict[move.from + move.to]) {
+      movesDict[move.from + move.to] = move;
+    } else {
+      // Override with the most specific piece
+      if (movesDict[move.from + move.to].piece === '.' && move.piece !== '.') {
+        movesDict[move.from + move.to] = move;
+      }
+    }
+  });
+  return Object.values(movesDict);
 }
