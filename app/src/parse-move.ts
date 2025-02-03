@@ -98,9 +98,11 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
   let currentStepIndex = 0;
   let currentCharIndex = 0;
   while (PARSE_STEPS[currentStepIndex]) {
-    const currentChar = moveString[moveString.length - currentCharIndex - 1];
+    const currentChar = moveString[moveString.length - currentCharIndex - 1] as string | undefined;
     if (PARSE_STEPS[currentStepIndex] ==='PROMOTION_PIECE') {
-      if (/^[bnrqBNRQ]$/.test(currentChar)) {
+      if (!currentChar) {
+        return null;
+      } else if (/^[bnrqBNRQ]$/.test(currentChar)) {
         result.promotionPiece = currentChar;
         result.piece = 'p';
       } else {
@@ -108,53 +110,57 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
         continue;
       }
     } else if (PARSE_STEPS[currentStepIndex] === 'TO_RANK') {
-      if (isRank(currentChar)) {
+      if (!currentChar) {
+        return null;
+      } else if (isRank(currentChar)) {
         result.toRank = currentChar;
       } else {
         return null;
       }
     } else if (PARSE_STEPS[currentStepIndex] === 'TO_FILE') {
-      if (isFile(currentChar)) {
+      if (!currentChar) {
+        return null;
+      } else if (isFile(currentChar)) {
         result.toFile = currentChar;
       } else {
         return null;
       }
     } else if (PARSE_STEPS[currentStepIndex] === 'FROM_RANK') {
-      if (isRank(currentChar)) {
-        result.fromRank = currentChar;
-      } else if (currentChar === undefined) {
+      if (!currentChar) {
         // Go to FINALIZE step; there's no piece specified hence it's a pawn
         result.piece = 'p';
         currentStepIndex = PARSE_STEPS.length - 1;
+      } else if (isRank(currentChar)) {
+        result.fromRank = currentChar;
       } else {
         currentStepIndex++;
         continue;
       }
     } else if (PARSE_STEPS[currentStepIndex] === 'FROM_FILE') {
-      if (isFile(currentChar)) {
-        result.fromFile = currentChar;
-      } else if (currentChar === undefined) {
+      if (!currentChar) {
         // Go to FINALIZE step; there's no piece specified hence it's a pawn
         result.piece = 'p';
         currentStepIndex = PARSE_STEPS.length - 1;
+      } else if (isFile(currentChar)) {
+        result.fromFile = currentChar;
       } else {
         currentStepIndex++;
         continue;
       }
     } else if (PARSE_STEPS[currentStepIndex] === 'PIECE') {
-      if (/^[bknrqBKNRQ]$/.test(currentChar)) {
-        if (result.promotionPiece) {
-          // Only pawns can be promoted
-          return null;
-        }
-        result.piece = currentChar;
-      } else if (!currentChar) {
+      if (!currentChar) {
         if (result.fromFile && result.fromRank && !result.promotionPiece) {
           // uci move
           result.piece = '.';
         } else {
           result.piece = 'p';
         }
+      } else if (/^[bknrqBKNRQ]$/.test(currentChar)) {
+        if (result.promotionPiece) {
+          // Only pawns can be promoted
+          return null;
+        }
+        result.piece = currentChar;
       } else {
         // Unknown piece
         return null;
@@ -190,7 +196,7 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
 
   if (result.isPawnAndBishopCollision) {
     moves.push({
-      ...move,
+      to: move.to,
       from: '.' + (move.from as string)[1],
       piece: 'b',
     });
@@ -200,11 +206,13 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
 }
 
 function isFile(input: string): boolean {
-  return /^[a-h]$/.test(input);
+  const code = input.charCodeAt(0);
+  return code >= 97 && code <= 104;
 }
 
 function isRank(input: string): boolean {
-  return /^[1-8]$/.test(input);
+  const code = input.charCodeAt(0);
+  return code >= 49 && code <= 56;
 }
 
 function sanitizeInput(moveString: string) : string {
