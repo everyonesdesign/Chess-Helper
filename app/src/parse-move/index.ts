@@ -14,7 +14,7 @@
  * if (has promotion and has piece) - return empty
  * if (starts with b\d) - return 2 moves, one for pawn and one for bishop
  */
-import { IMoveTemplate } from './types';
+import { IMoveTemplate } from '../types';
 
 export function parseMoveInput(input: string): IMoveTemplate[] {
   const moveString = sanitizeInput(input);
