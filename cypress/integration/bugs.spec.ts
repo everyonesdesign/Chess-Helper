@@ -17,7 +17,7 @@ function testFenToFen({
   move: string,
 }) {
   cy.visit('https://www.chess.com/analysis')
-  cy.wait(2000)
+  cy.wait(4000)
   cy.acceptCookies()
 
   cy
