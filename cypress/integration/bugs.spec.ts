@@ -101,12 +101,12 @@ context('Bugs', () => {
       });
     });
 
-    it("Moves like `cc3` are illegal moves", function () {
+    it("Moves like `cc3` are pawn moves", function () {
       testFenToFen({
         cy,
         initialFen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
         move: 'cc3',
-        expectedFen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+        expectedFen: 'rnbqkbnr/pppppppp/8/8/8/2P5/PP1PPPPP/RNBQKBNR b KQkq - 0 1',
       });
     });
 
