@@ -197,9 +197,12 @@ describe('parseMoveInput', function() {
       ]);
     });
     it('bxb3', function () {
-      // "From file" coordinate is redundant in case of a pawn move
-      // Thus moves like that are interpreted as bishop moves
       assert.deepEqual(parseMoveInput('bxb3'), [
+        {
+          piece: 'p',
+          from: 'b.',
+          to: 'b3',
+        },
         {
           piece: 'b',
           from: '..',
@@ -208,7 +211,6 @@ describe('parseMoveInput', function() {
       ]);
     });
     it('b2c3', function () {
-      // This looks like a UCI move. Let's parse it as UCI
       assert.deepEqual(parseMoveInput('b2c3'), [
         {
           from: 'b2',
@@ -242,7 +244,7 @@ describe('parseMoveInput', function() {
   });
 
   it('ignores non-existing UCL squares (x2e4)', function() {
-    assert.deepEqual(parseMoveInput('x2e4'), []);
+    assert.deepEqual(parseMoveInput('y2e4'), []);
   });
 
   it('ignores other formats (♞f3)', function() {

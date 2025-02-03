@@ -192,6 +192,12 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
 }
 
 function sanitizeInput(moveString: string) : string {
-  // Remove spaces, captures, check, mate, and supplemental promotion and castling characters
-  return moveString.replace(/[\sx#\+\-]/g, '');
+  // Remove
+  // - spaces
+  // - captures
+  // - check
+  // - mate
+  // - supplemental promotion and castling characters
+  // - other special characters
+  return moveString.replace(/[\sx#\+\-=\\\/!@#$%^&*()_]/g, '');
 }
