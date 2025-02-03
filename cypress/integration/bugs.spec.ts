@@ -74,7 +74,7 @@ context('Bugs', () => {
   context('Pawn vs bishop algebraic notation', () => {
     // https://www.chess.com/forum/view/general/keyboard-controls-for-chess-com-chess-com-keyboard-browser-extension?newCommentCount=1&page=2#comment-64840439
 
-    it("Moves like `bb3` are condidered bishop-only move", function () {
+    it("Moves like `bb3` prefer bishop if in conflict with pawn", function () {
       testFenToFen({
         cy,
         initialFen: 'rnbqk1nr/pppp1ppp/4p3/2b5/2B5/4P3/PPPP1PPP/RNBQK1NR w KQkq - 2 3',
