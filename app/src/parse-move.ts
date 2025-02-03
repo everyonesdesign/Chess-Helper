@@ -70,8 +70,7 @@ function parseCastling(input: string): IMoveTemplate[] | null {
 
 type ParseSteps
   = 'PROMOTION_PIECE'
-  | 'TO_RANK'
-  | 'TO_FILE'
+  | 'TO_COORDS'
   | 'FROM_RANK'
   | 'FROM_FILE'
   | 'PIECE'
@@ -79,12 +78,11 @@ type ParseSteps
 
 const PARSE_STEPS: Record<number, ParseSteps> = {
   0: 'PROMOTION_PIECE',
-  1: 'TO_RANK',
-  2: 'TO_FILE',
-  3: 'FROM_RANK',
-  4: 'FROM_FILE',
-  5: 'PIECE',
-  6: 'FINALIZE',
+  1: 'TO_COORDS',
+  2: 'FROM_RANK',
+  3: 'FROM_FILE',
+  4: 'PIECE',
+  5: 'FINALIZE',
 };
 const parseStepsLength = Object.keys(PARSE_STEPS).length;
 
@@ -108,87 +106,97 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
 
   let currentStepIndex = 0;
   let currentCharIndex = 0;
-  while (PARSE_STEPS[currentStepIndex]) {
+  parsingLoop: while (PARSE_STEPS[currentStepIndex]) {
     const currentChar = moveString[moveString.length - currentCharIndex - 1] as string | undefined;
-    if (PARSE_STEPS[currentStepIndex] === 'PROMOTION_PIECE') {
-      if (!currentChar) {
-        return null;
-      } else if ('bnrqBNRQ'.includes(currentChar)) {
-        result.promotionPiece = currentChar;
-        result.piece = 'p';
-      } else {
-        currentStepIndex++;
-        continue;
-      }
-    } else if (PARSE_STEPS[currentStepIndex] === 'TO_RANK') {
-      if (!currentChar) {
-        return null;
-      } else if (isRank(currentChar)) {
-        result.toRank = currentChar;
-      } else {
-        return null;
-      }
-    } else if (PARSE_STEPS[currentStepIndex] === 'TO_FILE') {
-      if (!currentChar) {
-        return null;
-      } else if (isFile(currentChar)) {
-        result.toFile = currentChar;
-      } else {
-        return null;
-      }
-    } else if (PARSE_STEPS[currentStepIndex] === 'FROM_RANK') {
-      if (!currentChar) {
-        // Go to FINALIZE step; there's no piece specified hence it's a pawn
-        result.piece = 'p';
-        currentStepIndex = parseStepsLength - 1;
-        continue;
-      } else if (isRank(currentChar)) {
-        result.fromRank = currentChar;
-      } else {
-        currentStepIndex++;
-        continue;
-      }
-    } else if (PARSE_STEPS[currentStepIndex] === 'FROM_FILE') {
-      if (!currentChar) {
-        // Go to FINALIZE step; there's no piece specified hence it's a pawn
-        result.piece = 'p';
-        currentStepIndex = parseStepsLength - 1;
-        continue;
-      } else if (isFile(currentChar)) {
-        result.fromFile = currentChar;
-      } else {
-        currentStepIndex++;
-        continue;
-      }
-    } else if (PARSE_STEPS[currentStepIndex] === 'PIECE') {
-      if (!currentChar) {
-        if (result.fromFile && result.fromRank && !result.promotionPiece) {
-          // uci move
-          result.piece = '.';
-        } else {
+
+    parsingSwitch: switch (PARSE_STEPS[currentStepIndex]) {
+      case 'PROMOTION_PIECE':
+        if (!currentChar) {
+          return null;
+        } else if (isPromotionPiece(currentChar)) {
+          result.promotionPiece = currentChar;
           result.piece = 'p';
+        } else {
+          currentStepIndex++;
+          continue parsingLoop;
         }
-      } else if ('bknrqBKNRQ'.includes(currentChar)) {
-        if (result.promotionPiece) {
-          // Only pawns can be promoted
+        break parsingSwitch;
+      case 'TO_COORDS':
+        if (!currentChar) {
+          return null;
+        } else if (isRank(currentChar)) {
+          result.toRank = currentChar;
+          const nextChar = moveString[moveString.length - currentCharIndex - 2] as string | undefined;
+          if (!nextChar) {
+            return null;
+          } else if (isFile(nextChar)) {
+            result.toFile = nextChar;
+            currentStepIndex++;
+            currentCharIndex += 2; // since we tackled 2 characters at once
+            continue parsingLoop;
+          } else {
+            return null;
+          }
+        } else {
           return null;
         }
-        result.piece = currentChar;
-      } else {
-        // Unknown piece
-        return null;
-      }
-    } else if (PARSE_STEPS[currentStepIndex] === 'FINALIZE') {
-      if (currentChar !== undefined) {
-        // Not a valid expression
-        return null;
-      } else if (
-        (result.piece === 'p' || result.piece === '.') &&
-        result.fromFile === 'b' &&
-        !result.promotionPiece
-      ) {
-        result.isPawnAndBishopCollision = true;
-      }
+      case 'FROM_RANK':
+        if (!currentChar) {
+          // Go to FINALIZE step; there's no piece specified hence it's a pawn
+          result.piece = 'p';
+          currentStepIndex = parseStepsLength - 1;
+          continue parsingLoop;
+        } else if (isRank(currentChar)) {
+          result.fromRank = currentChar;
+        } else {
+          currentStepIndex++;
+          continue parsingLoop;
+        }
+        break parsingSwitch;
+      case 'FROM_FILE':
+        if (!currentChar) {
+          // Go to FINALIZE step; there's no piece specified hence it's a pawn
+          result.piece = 'p';
+          currentStepIndex = parseStepsLength - 1;
+          continue parsingLoop;
+        } else if (isFile(currentChar)) {
+          result.fromFile = currentChar;
+        } else {
+          currentStepIndex++;
+          continue parsingLoop;
+        }
+        break parsingSwitch;
+      case 'PIECE':
+        if (!currentChar) {
+          if (result.fromFile && result.fromRank && !result.promotionPiece) {
+            // uci move
+            result.piece = '.';
+          } else {
+            result.piece = 'p';
+          }
+        } else if ('bknrqBKNRQ'.includes(currentChar)) {
+          if (result.promotionPiece) {
+            // Only pawns can be promoted
+            return null;
+          }
+          result.piece = currentChar;
+        } else {
+          // Unknown piece
+          return null;
+        }
+        break parsingSwitch;
+      case 'FINALIZE':
+        if (currentChar !== undefined) {
+          // Not a valid expression
+          return null;
+        } else if (
+          (result.piece === 'p' || result.piece === '.') &&
+          result.fromFile === 'b' &&
+          !result.promotionPiece
+        ) {
+          result.isPawnAndBishopCollision = true;
+        }
+        break parsingSwitch;
     }
 
     currentStepIndex++;
@@ -226,6 +234,20 @@ function isFile(input: string): boolean {
 function isRank(input: string): boolean {
   const code = input.charCodeAt(0);
   return code >= 49 && code <= 56;
+}
+
+const PROMOTION_PIECE_LOOKUP: Record<string, boolean> = {
+  b: true,
+  n: true,
+  r: true,
+  q: true,
+  B: true,
+  N: true,
+  R: true,
+  Q: true,
+};
+function isPromotionPiece(input: string): boolean {
+  return PROMOTION_PIECE_LOOKUP[input] || false;
 }
 
 function sanitizeInput(moveString: string) : string {
