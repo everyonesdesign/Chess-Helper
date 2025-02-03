@@ -130,6 +130,7 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
         // Go to FINALIZE step; there's no piece specified hence it's a pawn
         result.piece = 'p';
         currentStepIndex = PARSE_STEPS.length - 1;
+        continue;
       } else if (isRank(currentChar)) {
         result.fromRank = currentChar;
       } else {
@@ -141,6 +142,7 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
         // Go to FINALIZE step; there's no piece specified hence it's a pawn
         result.piece = 'p';
         currentStepIndex = PARSE_STEPS.length - 1;
+        continue;
       } else if (isFile(currentChar)) {
         result.fromFile = currentChar;
       } else {
