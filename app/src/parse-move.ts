@@ -96,7 +96,6 @@ interface ParsingResult {
   isPawnAndBishopCollision: boolean;
 }
 function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
-  debugger;
   const result: ParsingResult = {
     piece: '.',
     toFile: '.',
