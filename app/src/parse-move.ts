@@ -140,11 +140,16 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
           return null;
         }
         result.piece = currentChar;
-      } else if (result.fromFile && result.fromRank && !result.promotionPiece) {
-        // uci move
-        result.piece = '.';
+      } else if (!currentChar) {
+        if (result.fromFile && result.fromRank && !result.promotionPiece) {
+          // uci move
+          result.piece = '.';
+        } else {
+          result.piece = 'p';
+        }
       } else {
-        result.piece = 'p';
+        // Unknown piece
+        return null;
       }
     } else if (PARSE_STEPS[currentStepIndex] === 'FINALIZE') {
       if (currentChar !== undefined) {
