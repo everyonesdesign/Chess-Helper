@@ -267,5 +267,5 @@ function sanitizeInput(moveString: string) : string {
   // - mate
   // - supplemental promotion and castling characters
   // - other special characters
-  return moveString.replace(/[\sx#\+\-=\\\/!@#$%^&*()_]/g, '');
+  return moveString.replace(/[\sx#\+\-=\\\/!@#$%^&*()_]+/g, '');
 }
