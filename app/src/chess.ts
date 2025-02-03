@@ -173,7 +173,7 @@ export function getLegalMoves(board: IChessboard, potentialMoves: IMoveTemplate[
     ];
   });
 
-  return pickMostSpecificMoves(excludeConflictingMoves(legalMoves));
+  return excludeConflictingMoves(pickMostSpecificMoves(legalMoves));
 }
 
 /**
