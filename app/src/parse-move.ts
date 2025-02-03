@@ -81,8 +81,8 @@ interface ParsingResult {
   promotionPiece?: string;
   toRank: string;
   toFile: string;
-  fromRank: string;
-  fromFile: string;
+  fromRank?: string;
+  fromFile?: string;
   piece: string;
   isPawnAndBishopCollision: boolean;
 }
@@ -92,8 +92,6 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
     piece: '.',
     toFile: '.',
     toRank: '.',
-    fromFile: '.',
-    fromRank: '.',
     isPawnAndBishopCollision: false,
   };
 
@@ -168,7 +166,7 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
   const move: IMoveTemplate = {
     piece: result.piece.toLowerCase(),
     to: result.toFile + result.toRank,
-    from: result.fromFile + result.fromRank,
+    from: (result.fromFile || '.') + (result.fromRank || '.'),
   }
 
   if (result.promotionPiece) {
