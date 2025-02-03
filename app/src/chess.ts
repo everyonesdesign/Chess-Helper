@@ -187,7 +187,7 @@ export function excludeConflictingMoves(moves: IMove[]) : IMove[] {
     // Pawn is preferred in this case unless it's a "b" pawn
     // @see https://github.com/everyonesdesign/Chess-Helper/issues/51
     const pawnMove = moves.find(m => m.piece === 'p') as IMove;
-    const bishopMove = moves.find(m => m.piece === 'p') as IMove;
+    const bishopMove = moves.find(m => m.piece === 'b') as IMove;
     if (pawnMove.from[0] === 'b') {
       return [bishopMove];
     }
