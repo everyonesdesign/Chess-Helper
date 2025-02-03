@@ -186,7 +186,7 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
         }
         break parsingSwitch;
       case 'FINALIZE':
-        if (currentChar !== undefined) {
+        if (currentChar) {
           // Not a valid expression
           return null;
         } else if (
