@@ -68,15 +68,26 @@ function parseCastling(input: string): IMoveTemplate[] | null {
   return null;
 }
 
-const PARSE_STEPS = [
-  'PROMOTION_PIECE',
-  'TO_RANK',
-  'TO_FILE',
-  'FROM_RANK',
-  'FROM_FILE',
-  'PIECE',
-  'FINALIZE',
-] as const;
+type ParseSteps
+  = 'PROMOTION_PIECE'
+  | 'TO_RANK'
+  | 'TO_FILE'
+  | 'FROM_RANK'
+  | 'FROM_FILE'
+  | 'PIECE'
+  | 'FINALIZE';
+
+const PARSE_STEPS: Record<number, ParseSteps> = {
+  0: 'PROMOTION_PIECE',
+  1: 'TO_RANK',
+  2: 'TO_FILE',
+  3: 'FROM_RANK',
+  4: 'FROM_FILE',
+  5: 'PIECE',
+  6: 'FINALIZE',
+};
+const parseStepsLength = Object.keys(PARSE_STEPS).length;
+
 interface ParsingResult {
   promotionPiece?: string;
   toRank: string;
@@ -129,7 +140,7 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
       if (!currentChar) {
         // Go to FINALIZE step; there's no piece specified hence it's a pawn
         result.piece = 'p';
-        currentStepIndex = PARSE_STEPS.length - 1;
+        currentStepIndex = parseStepsLength - 1;
         continue;
       } else if (isRank(currentChar)) {
         result.fromRank = currentChar;
@@ -141,7 +152,7 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
       if (!currentChar) {
         // Go to FINALIZE step; there's no piece specified hence it's a pawn
         result.piece = 'p';
-        currentStepIndex = PARSE_STEPS.length - 1;
+        currentStepIndex = parseStepsLength - 1;
         continue;
       } else if (isFile(currentChar)) {
         result.fromFile = currentChar;
