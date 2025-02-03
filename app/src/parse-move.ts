@@ -108,27 +108,35 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
         continue;
       }
     } else if (PARSE_STEPS[currentStepIndex] === 'TO_RANK') {
-      if (/^[1-8]$/.test(currentChar)) {
+      if (isRank(currentChar)) {
         result.toRank = currentChar;
       } else {
         return null;
       }
     } else if (PARSE_STEPS[currentStepIndex] === 'TO_FILE') {
-      if (/^[a-h]$/.test(currentChar)) {
+      if (isFile(currentChar)) {
         result.toFile = currentChar;
       } else {
         return null;
       }
     } else if (PARSE_STEPS[currentStepIndex] === 'FROM_RANK') {
-      if (/^[1-8]$/.test(currentChar)) {
+      if (isRank(currentChar)) {
         result.fromRank = currentChar;
+      } else if (currentChar === undefined) {
+        // Go to FINALIZE step; there's no piece specified hence it's a pawn
+        result.piece = 'p';
+        currentStepIndex = PARSE_STEPS.length - 1;
       } else {
         currentStepIndex++;
         continue;
       }
     } else if (PARSE_STEPS[currentStepIndex] === 'FROM_FILE') {
-      if (/^[a-h]$/.test(currentChar)) {
+      if (isFile(currentChar)) {
         result.fromFile = currentChar;
+      } else if (currentChar === undefined) {
+        // Go to FINALIZE step; there's no piece specified hence it's a pawn
+        result.piece = 'p';
+        currentStepIndex = PARSE_STEPS.length - 1;
       } else {
         currentStepIndex++;
         continue;
@@ -189,6 +197,14 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
   }
 
   return moves;
+}
+
+function isFile(input: string): boolean {
+  return /^[a-h]$/.test(input);
+}
+
+function isRank(input: string): boolean {
+  return /^[1-8]$/.test(input);
 }
 
 function sanitizeInput(moveString: string) : string {
