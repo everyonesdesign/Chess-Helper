@@ -99,7 +99,7 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
   let currentCharIndex = 0;
   while (PARSE_STEPS[currentStepIndex]) {
     const currentChar = moveString[moveString.length - currentCharIndex - 1] as string | undefined;
-    if (PARSE_STEPS[currentStepIndex] ==='PROMOTION_PIECE') {
+    if (PARSE_STEPS[currentStepIndex] === 'PROMOTION_PIECE') {
       if (!currentChar) {
         return null;
       } else if (/^[bnrqBNRQ]$/.test(currentChar)) {
