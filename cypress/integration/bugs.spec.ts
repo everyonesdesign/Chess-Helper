@@ -83,6 +83,15 @@ context('Bugs', () => {
       });
     });
 
+    it("Moves like `b2b4` prefer UCI over a bishop in conflicts", function () {
+      testFenToFen({
+        cy,
+        initialFen: 'rnbqk1nr/ppp3pp/3p4/2b1pp2/8/3PP3/PPPBBPPP/RN1QK1NR w KQkq - 0 7',
+        move: 'bb3',
+        expectedFen: 'rnbqk1nr/ppp3pp/3p4/2b1pp2/1P6/3PP3/P1PBBPPP/RN1QK1NR b KQkq b3 0 7',
+      });
+    });
+
     it("Moves like `b3` should be used for non-capture pawn moves", function () {
       testFenToFen({
         cy,
