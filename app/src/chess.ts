@@ -173,7 +173,7 @@ export function getLegalMoves(board: IChessboard, potentialMoves: IMoveTemplate[
     ];
   });
 
-  return excludeConflictingMoves(pickMostSpecificMoves(legalMoves));
+  return pickMostSpecificMoves(excludeConflictingMoves(legalMoves));
 }
 
 /**
@@ -184,9 +184,13 @@ export function excludeConflictingMoves(moves: IMove[]) : IMove[] {
   const piecesString = moves.map(m => m.piece).sort().join('');
   if (piecesString === 'bp') {
     // Bishop and pawn conflict
-    // Pawn is preferred in this case
+    // Pawn is preferred in this case unless it's a "b" pawn
     // @see https://github.com/everyonesdesign/Chess-Helper/issues/51
     const pawnMove = moves.find(m => m.piece === 'p') as IMove;
+    const bishopMove = moves.find(m => m.piece === 'p') as IMove;
+    if (pawnMove.from[0] === 'b') {
+      return [bishopMove];
+    }
     return [pawnMove];
   }
 
