@@ -234,7 +234,7 @@ describe('parseMoveInput', function() {
 
   it('parses promotion UCL (e7e8n)', function() {
     assert.deepEqual(parseMoveInput('e7e8n'), [{
-      piece: '.',
+      piece: 'p',
       from: 'e7',
       promotionPiece: 'n',
       to: 'e8',
