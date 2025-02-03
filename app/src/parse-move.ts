@@ -113,7 +113,7 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
     if (PARSE_STEPS[currentStepIndex] === 'PROMOTION_PIECE') {
       if (!currentChar) {
         return null;
-      } else if (/^[bnrqBNRQ]$/.test(currentChar)) {
+      } else if ('bnrqBNRQ'.includes(currentChar)) {
         result.promotionPiece = currentChar;
         result.piece = 'p';
       } else {
@@ -168,7 +168,7 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
         } else {
           result.piece = 'p';
         }
-      } else if (/^[bknrqBKNRQ]$/.test(currentChar)) {
+      } else if ('bknrqBKNRQ'.includes(currentChar)) {
         if (result.promotionPiece) {
           // Only pawns can be promoted
           return null;
