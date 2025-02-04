@@ -16,10 +16,6 @@
  */
 import { IMoveTemplate } from '../types';
 import {
-  isFile,
-  isPiece,
-  isPromotionPiece,
-  isRank,
   match,
   MatchData,
   sanitizeInput,
