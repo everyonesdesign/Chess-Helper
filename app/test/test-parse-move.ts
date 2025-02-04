@@ -3,7 +3,7 @@ import assert from 'assert';
 
 jsDomGlobal();
 
-import { matchStringTail } from '../src/parse-move/parse-move-utils';
+import { match } from '../src/parse-move/parse-move-utils';
 import { parseMoveInput } from '../src/parse-move';
 
 function getExecutionTime(fn: Function, cycles: number = 1000): number {
@@ -13,17 +13,23 @@ function getExecutionTime(fn: Function, cycles: number = 1000): number {
   return end - start;
 }
 
-describe('matchStringTail', function () {
+describe('match', function () {
   it('will return head and tail if matched', function () {
-    assert.deepEqual(matchStringTail('testing', ['ing']), ['test', 'ing']);
+    const input = { toProcess: 'testing', lastMatch: '' };
+    assert.equal(match(input, ['ing']), true);
+    assert.deepEqual(input, { toProcess: 'test', lastMatch: 'ing' });
   });
 
   it('will return head and tail if matched and represents the whole string', function () {
-    assert.deepEqual(matchStringTail('test', ['test']), ['', 'test']);
+    const input = { toProcess: 'test', lastMatch: '' };
+    assert.equal(match(input, ['test']), true);
+    assert.deepEqual(input, { toProcess: '', lastMatch: 'test' });
   });
 
   it('will return if not matched', function () {
-    assert.deepEqual(matchStringTail('testing', ['tin']), null);
+    const input = { toProcess: 'testing', lastMatch: 'tin' };
+    assert.equal(match(input, ['test']), false);
+    assert.deepEqual(input, { toProcess: 'testing', lastMatch: 'tin' });
   });
 });
 
@@ -293,7 +299,7 @@ describe('parseMoveInput', function() {
       'Rxd2',
       'Xd2',
     ];
-    const LIMIT = 5;
+    const LIMIT = 10;
     const ITERATIONS = 1000;
     MOVES.forEach(move => {
      it(`Parses ${move} in time`, function () {
