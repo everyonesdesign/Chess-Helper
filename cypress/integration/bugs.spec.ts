@@ -17,7 +17,7 @@ function testFenToFen({
   move: string,
 }) {
   cy.visit('https://www.chess.com/analysis')
-  cy.wait(2000)
+  cy.wait(4000)
   cy.acceptCookies()
 
   cy
@@ -74,12 +74,21 @@ context('Bugs', () => {
   context('Pawn vs bishop algebraic notation', () => {
     // https://www.chess.com/forum/view/general/keyboard-controls-for-chess-com-chess-com-keyboard-browser-extension?newCommentCount=1&page=2#comment-64840439
 
-    it("Moves like `bb3` are condidered bishop-only move", function () {
+    it("Moves like `bb3` prefer bishop if in conflict with pawn", function () {
       testFenToFen({
         cy,
         initialFen: 'rnbqk1nr/pppp1ppp/4p3/2b5/2B5/4P3/PPPP1PPP/RNBQK1NR w KQkq - 2 3',
         move: 'bb3',
         expectedFen: 'rnbqk1nr/pppp1ppp/4p3/2b5/8/1B2P3/PPPP1PPP/RNBQK1NR b KQkq - 3 3',
+      });
+    });
+
+    it("Moves like `b2b4` prefer UCI over a bishop in conflicts", function () {
+      testFenToFen({
+        cy,
+        initialFen: 'rnbqk1nr/ppp3pp/3p4/2b1pp2/8/3PP3/PPPBBPPP/RN1QK1NR w KQkq - 0 7',
+        move: 'b2b4',
+        expectedFen: 'rnbqk1nr/ppp3pp/3p4/2b1pp2/1P6/3PP3/P1PBBPPP/RN1QK1NR b KQkq b3 0 7',
       });
     });
 
@@ -101,12 +110,12 @@ context('Bugs', () => {
       });
     });
 
-    it("Moves like `cc3` are illegal moves", function () {
+    it("Moves like `cc3` are pawn moves", function () {
       testFenToFen({
         cy,
         initialFen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
         move: 'cc3',
-        expectedFen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+        expectedFen: 'rnbqkbnr/pppppppp/8/8/8/2P5/PP1PPPPP/RNBQKBNR b KQkq - 0 1',
       });
     });
 
