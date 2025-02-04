@@ -1,19 +1,3 @@
-/**
- * MOVE characters parsed by this module, parsing goes from last character backwards
- * First, check if it's a castling move, handle separately
- *
- * Reverse input, and go character by character:
- * [1] if (is [bnrqBNRQ]) - write promotionPiece, next
- * [2] if (is [1-8]) - write toRank, next; otherwise return empty
- * [3] if (is [a-h]) - write toFile, next; otherwise return empty
- * [4] if (is [1-8]) - write fromRank, next
- * [5] if (is [a-h]) - write fromFile, next
- * [6] if (is [bknrqBKNRQ]) - write piece, done
- * [7] if (no character) - mark as successful move recognition
- *
- * if (has promotion and has piece) - return empty
- * if (starts with b\d) - return 2 moves, one for pawn and one for bishop
- */
 import { IMoveTemplate } from '../types';
 import {
   match,
@@ -106,6 +90,10 @@ interface ParsingResult {
   piece: string;
   hasBishopConflict: boolean;
 }
+
+/**
+ * Parsing chess moves input going from the tail
+ */
 function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
   const data: MatchData = {
     toProcess: moveString,
