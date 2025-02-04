@@ -1,6 +1,6 @@
 import { IMoveTemplate } from '../types';
 import {
-  match,
+  matchTail,
   MatchData,
   sanitizeInput,
 } from './parse-move-utils';
@@ -103,6 +103,9 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
     hasBishopConflict: false,
   };
 
+  // Handy for local usage
+  const match = matchTail.bind(null, data);
+
   let currentStepIndex = 0;
   parsingLoop: while (PARSE_STEPS[currentStepIndex]) {
     parsingSwitch: switch (PARSE_STEPS[currentStepIndex]) {
@@ -110,7 +113,7 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
         if (!data.toProcess.length) {
           return null;
         } else {
-          if (match(data, PROMOTION_PIECES)) {
+          if (match(PROMOTION_PIECES)) {
             result.promotionPiece = data.lastMatch;
             result.piece = 'p';
           } else {
@@ -122,7 +125,7 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
       case 'TO_COORDS':
         if (!data.toProcess.length) {
           return null;
-        } else if (match(data, FIELDS)) {
+        } else if (match(FIELDS)) {
           result.to = data.lastMatch;
         } else {
           return null;
@@ -134,7 +137,7 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
           result.piece = 'p';
           currentStepIndex = parseStepsLength - 1;
           break parsingLoop;
-        } else if (match(data, RANKS)) {
+        } else if (match(RANKS)) {
           result.fromRank = data.lastMatch;
         }
         break parsingSwitch;
@@ -144,7 +147,7 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
           result.piece = 'p';
           currentStepIndex = parseStepsLength - 1;
           break parsingLoop;
-        } else if (match(data, FILES)) {
+        } else if (match(FILES)) {
           result.fromFile = data.lastMatch;
         }
         break parsingSwitch;
@@ -156,7 +159,7 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
           } else {
             result.piece = 'p';
           }
-        } else if (match(data, PIECES)) {
+        } else if (match(PIECES)) {
           if (result.promotionPiece) {
             // Only pawns can be promoted
             return null;
