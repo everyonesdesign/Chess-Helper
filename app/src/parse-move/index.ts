@@ -15,6 +15,14 @@
  * if (starts with b\d) - return 2 moves, one for pawn and one for bishop
  */
 import { IMoveTemplate } from '../types';
+import {
+  isFile,
+  isPiece,
+  isPromotionPiece,
+  isRank,
+  matchStringTail,
+  sanitizeInput,
+} from './parse-move-utils';
 
 export function parseMoveInput(input: string): IMoveTemplate[] {
   const moveString = sanitizeInput(input);
@@ -223,48 +231,4 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
   }
 
   return moves;
-}
-
-function isFile(input: string): boolean {
-  const code = input.charCodeAt(0);
-  return code >= 97 && code <= 104;
-}
-
-function isRank(input: string): boolean {
-  const code = input.charCodeAt(0);
-  return code >= 49 && code <= 56;
-}
-
-const PROMOTION_PIECE_LOOKUP: Record<string, boolean> = {
-  b: true,
-  n: true,
-  r: true,
-  q: true,
-  B: true,
-  N: true,
-  R: true,
-  Q: true,
-};
-function isPromotionPiece(input: string): boolean {
-  return PROMOTION_PIECE_LOOKUP[input] || false;
-}
-
-const PIECE_LOOKUP: Record<string, boolean> = {
-  ...PROMOTION_PIECE_LOOKUP,
-  k: true,
-  K: true,
-};
-function isPiece(input: string): boolean {
-  return PIECE_LOOKUP[input] || false;
-}
-
-function sanitizeInput(moveString: string) : string {
-  // Remove
-  // - spaces
-  // - captures
-  // - check
-  // - mate
-  // - supplemental promotion and castling characters
-  // - other special characters
-  return moveString.replace(/[\sx#\+\-=\\\/!@#$%^&*()_]+/g, '');
 }
