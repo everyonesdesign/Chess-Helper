@@ -2,7 +2,7 @@ export interface MatchData {
   toProcess: string;
   lastMatch: string;
 }
-export function match(input: MatchData, options: string[]): boolean {
+export function matchTail(input: MatchData, options: string[]): boolean {
   for (let i = 0; i < options.length; i++) {
     const option = options[i];
     const isMatch = input.toProcess.endsWith(option);

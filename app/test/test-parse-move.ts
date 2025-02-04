@@ -3,7 +3,7 @@ import assert from 'assert';
 
 jsDomGlobal();
 
-import { match } from '../src/parse-move/parse-move-utils';
+import { matchTail } from '../src/parse-move/parse-move-utils';
 import { parseMoveInput } from '../src/parse-move';
 
 function getExecutionTime(fn: Function, cycles: number = 1000): number {
@@ -16,19 +16,19 @@ function getExecutionTime(fn: Function, cycles: number = 1000): number {
 describe('match', function () {
   it('will return head and tail if matched', function () {
     const input = { toProcess: 'testing', lastMatch: '' };
-    assert.equal(match(input, ['ing']), true);
+    assert.equal(matchTail(input, ['ing']), true);
     assert.deepEqual(input, { toProcess: 'test', lastMatch: 'ing' });
   });
 
   it('will return head and tail if matched and represents the whole string', function () {
     const input = { toProcess: 'test', lastMatch: '' };
-    assert.equal(match(input, ['test']), true);
+    assert.equal(matchTail(input, ['test']), true);
     assert.deepEqual(input, { toProcess: '', lastMatch: 'test' });
   });
 
   it('will return if not matched', function () {
     const input = { toProcess: 'testing', lastMatch: 'tin' };
-    assert.equal(match(input, ['test']), false);
+    assert.equal(matchTail(input, ['test']), false);
     assert.deepEqual(input, { toProcess: 'testing', lastMatch: 'tin' });
   });
 });
