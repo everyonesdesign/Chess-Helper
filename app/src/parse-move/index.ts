@@ -69,8 +69,7 @@ type ParseSteps
   | 'TO_COORDS'
   | 'FROM_RANK'
   | 'FROM_FILE'
-  | 'PIECE'
-  | 'FINALIZE';
+  | 'PIECE';
 
 const PARSE_STEPS: Record<number, ParseSteps> = {
   0: 'PROMOTION_PIECE',
@@ -78,7 +77,6 @@ const PARSE_STEPS: Record<number, ParseSteps> = {
   2: 'FROM_RANK',
   3: 'FROM_FILE',
   4: 'PIECE',
-  5: 'FINALIZE',
 };
 const parseStepsLength = Object.keys(PARSE_STEPS).length;
 
@@ -132,20 +130,20 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
         break parsingSwitch;
       case 'FROM_RANK':
         if (!data.toProcess.length) {
-          // Go to FINALIZE step; there's no piece specified hence it's a pawn
+          // End processing; there's no piece specified hence it's a pawn
           result.piece = 'p';
           currentStepIndex = parseStepsLength - 1;
-          continue parsingLoop;
+          break parsingLoop;
         } else if (match(data, RANKS)) {
           result.fromRank = data.lastMatch;
         }
         break parsingSwitch;
       case 'FROM_FILE':
         if (!data.toProcess.length) {
-          // Go to FINALIZE step; there's no piece specified hence it's a pawn
+          // End processing; there's no piece specified hence it's a pawn
           result.piece = 'p';
           currentStepIndex = parseStepsLength - 1;
-          continue parsingLoop;
+          break parsingLoop;
         } else if (match(data, FILES)) {
           result.fromFile = data.lastMatch;
         }
@@ -169,21 +167,20 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
           return null;
         }
         break parsingSwitch;
-      case 'FINALIZE':
-        if (data.toProcess.length) {
-          // Not a valid expression
-          return null;
-        } else if (
-          (result.piece === 'p' || result.piece === '.') &&
-          result.fromFile === 'b' &&
-          !result.promotionPiece
-        ) {
-          result.hasBishopConflict = true;
-        }
-        break parsingSwitch;
     }
 
     currentStepIndex++;
+  }
+
+  if (data.toProcess.length) {
+    // Not a valid expression
+    return null;
+  } else if (
+    (result.piece === 'p' || result.piece === '.') &&
+    result.fromFile === 'b' &&
+    !result.promotionPiece
+  ) {
+    result.hasBishopConflict = true;
   }
 
   const move: IMoveTemplate = {
