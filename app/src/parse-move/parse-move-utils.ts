@@ -1,12 +1,18 @@
-export function matchStringTail(input: string, options: string[]): [string, string] | null {
+export interface MatchData {
+  toProcess: string;
+  lastMatch: string;
+}
+export function match(input: MatchData, options: string[]): boolean {
   for (let i = 0; i < options.length; i++) {
     const option = options[i];
-    const isMatch = input.endsWith(option);
+    const isMatch = input.toProcess.endsWith(option);
     if (isMatch) {
-      return [input.slice(0, -option.length), option];
+      input.toProcess = input.toProcess.slice(0, -option.length);
+      input.lastMatch = option;
+      return true;
     }
   }
-  return null;
+  return false;
 }
 
 export function isFile(input: string): boolean {

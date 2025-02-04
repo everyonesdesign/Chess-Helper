@@ -20,9 +20,17 @@ import {
   isPiece,
   isPromotionPiece,
   isRank,
-  matchStringTail,
+  match,
+  MatchData,
   sanitizeInput,
 } from './parse-move-utils';
+import {
+  FIELDS,
+  FILES,
+  PIECES,
+  PROMOTION_PIECES,
+  RANKS,
+} from './parse-move-constants';
 
 export function parseMoveInput(input: string): IMoveTemplate[] {
   const moveString = sanitizeInput(input);
@@ -96,104 +104,89 @@ const parseStepsLength = Object.keys(PARSE_STEPS).length;
 
 interface ParsingResult {
   promotionPiece?: string;
-  toRank: string;
-  toFile: string;
+  to: string;
   fromRank?: string;
   fromFile?: string;
   piece: string;
   hasBishopConflict: boolean;
 }
 function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
+  const data: MatchData = {
+    toProcess: moveString,
+    lastMatch: '',
+  }
   const result: ParsingResult = {
     piece: '.',
-    toFile: '.',
-    toRank: '.',
+    to: '..',
     hasBishopConflict: false,
   };
 
   let currentStepIndex = 0;
-  let currentCharIndex = 0;
   parsingLoop: while (PARSE_STEPS[currentStepIndex]) {
-    const currentChar = moveString[moveString.length - currentCharIndex - 1] as string | undefined;
-
     parsingSwitch: switch (PARSE_STEPS[currentStepIndex]) {
       case 'PROMOTION_PIECE':
-        if (!currentChar) {
+        if (!data.toProcess.length) {
           return null;
-        } else if (isPromotionPiece(currentChar)) {
-          result.promotionPiece = currentChar;
-          result.piece = 'p';
         } else {
-          currentStepIndex++;
-          continue parsingLoop;
+          if (match(data, PROMOTION_PIECES)) {
+            result.promotionPiece = data.lastMatch;
+            result.piece = 'p';
+          } else {
+            currentStepIndex++;
+            continue parsingLoop;
+          }
         }
         break parsingSwitch;
       case 'TO_COORDS':
-        if (!currentChar) {
+        if (!data.toProcess.length) {
           return null;
-        } else if (isRank(currentChar)) {
-          result.toRank = currentChar;
-          const nextChar = moveString[moveString.length - currentCharIndex - 2] as string | undefined;
-          if (!nextChar) {
-            return null;
-          } else if (isFile(nextChar)) {
-            result.toFile = nextChar;
-            currentStepIndex++;
-            currentCharIndex += 2; // since we tackled 2 characters at once
-            continue parsingLoop;
-          } else {
-            return null;
-          }
+        } else if (match(data, FIELDS)) {
+          result.to = data.lastMatch;
         } else {
           return null;
         }
+        break parsingSwitch;
       case 'FROM_RANK':
-        if (!currentChar) {
+        if (!data.toProcess.length) {
           // Go to FINALIZE step; there's no piece specified hence it's a pawn
           result.piece = 'p';
           currentStepIndex = parseStepsLength - 1;
           continue parsingLoop;
-        } else if (isRank(currentChar)) {
-          result.fromRank = currentChar;
-        } else {
-          currentStepIndex++;
-          continue parsingLoop;
+        } else if (match(data, RANKS)) {
+          result.fromRank = data.lastMatch;
         }
         break parsingSwitch;
       case 'FROM_FILE':
-        if (!currentChar) {
+        if (!data.toProcess.length) {
           // Go to FINALIZE step; there's no piece specified hence it's a pawn
           result.piece = 'p';
           currentStepIndex = parseStepsLength - 1;
           continue parsingLoop;
-        } else if (isFile(currentChar)) {
-          result.fromFile = currentChar;
-        } else {
-          currentStepIndex++;
-          continue parsingLoop;
+        } else if (match(data, FILES)) {
+          result.fromFile = data.lastMatch;
         }
         break parsingSwitch;
       case 'PIECE':
-        if (!currentChar) {
+        if (!data.toProcess.length) {
           if (result.fromFile && result.fromRank && !result.promotionPiece) {
             // uci move
             result.piece = '.';
           } else {
             result.piece = 'p';
           }
-        } else if (isPiece(currentChar)) {
+        } else if (match(data, PIECES)) {
           if (result.promotionPiece) {
             // Only pawns can be promoted
             return null;
           }
-          result.piece = currentChar;
+          result.piece = data.lastMatch;
         } else {
           // Unknown piece
           return null;
         }
         break parsingSwitch;
       case 'FINALIZE':
-        if (currentChar) {
+        if (data.toProcess.length) {
           // Not a valid expression
           return null;
         } else if (
@@ -207,12 +200,11 @@ function parseRegularMoves(moveString: string): IMoveTemplate[] | null {
     }
 
     currentStepIndex++;
-    currentCharIndex++;
   }
 
   const move: IMoveTemplate = {
     piece: result.piece.toLowerCase(),
-    to: result.toFile + result.toRank,
+    to: result.to,
     from: (result.fromFile || '.') + (result.fromRank || '.'),
   }
 
