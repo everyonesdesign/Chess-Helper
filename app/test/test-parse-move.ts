@@ -302,7 +302,7 @@ describe('parseMoveInput', function() {
     const LIMIT = 10;
     const ITERATIONS = 1000;
     MOVES.forEach(move => {
-     it(`Parses ${move} in time`, function () {
+     it(`Parses ${move} in ${LIMIT}ms`, function () {
        const time = getExecutionTime(() => parseMoveInput(move), ITERATIONS);
        assert(time < LIMIT, `${move} executed in ${time}ms (${ITERATIONS} iterations, limit: ${LIMIT}ms)`);
      });
