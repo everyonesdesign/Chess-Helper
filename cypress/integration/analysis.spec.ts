@@ -127,4 +127,18 @@ context('Analysis page', () => {
       .get('body')
       .should('not.have.class', BLINDFOLD_BODY_CLASS)
   });
+
+  it("doesn't have access to 'confirm' command (it's only for daily)", function() {
+    cy.makeMove('/confirm')
+    cy
+      .get("#ccHelper-messages > *")
+      .should("have.length.at.least", 1);
+  });
+
+  it("doesn't have access to 'cancel' command (it's only for daily)", function() {
+    cy.makeMove('/cancel')
+    cy
+      .get("#ccHelper-messages > *")
+      .should("have.length.at.least", 1);
+  });
 });
