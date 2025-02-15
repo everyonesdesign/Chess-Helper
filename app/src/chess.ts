@@ -9,7 +9,7 @@ import {
   drawCache,
 } from './globals';
 import {
-  parseCommand,
+  getCommandAction,
 } from './commands';
 import {
   IChessboard,
@@ -89,9 +89,9 @@ export function drawMovesOnBoard(board: IChessboard, inputText: string) : void {
  * The function uses active board on the screen if there's any
  */
 export function go(board: IChessboard, input: string) : boolean {
-  const command = parseCommand(input);
-  if (command) {
-    command();
+  const command = getCommandAction(input);
+  if (command && command.isAvailable()) {
+    command.act();
     return true;
   }
 

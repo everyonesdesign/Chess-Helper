@@ -74,3 +74,9 @@ export type TTranslationId =
   '_test_2_placeholders';
 
 export type TLocaleSet = Record<TTranslationId, string>;
+
+export interface Command {
+  name: string;
+  isAvailable: () => boolean;
+  act: () => void;
+}
