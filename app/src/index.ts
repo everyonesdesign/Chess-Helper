@@ -59,7 +59,9 @@ function init() {
       minChars: 1,
       source: (term, suggest) => {
         term = term.toLowerCase();
-        const choices = map(commands, (v, k) => `/${k}`);
+        const choices = commands
+          .filter(c => c.isAvailable())
+          .map((v, k) => `/${k}`);
         suggest(choices.filter((choice) => !choice.toLowerCase().indexOf(term)));
       },
     });
