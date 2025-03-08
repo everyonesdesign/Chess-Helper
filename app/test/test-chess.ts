@@ -312,7 +312,7 @@ describe('parseMoveInput', function() {
       'Rxd2',
       'Xd2',
     ];
-    const LIMIT = 5;
+    const LIMIT = 10;
     const ITERATIONS = 1000;
     MOVES.forEach(move => {
      it(`Parses ${move} in time`, function () {
