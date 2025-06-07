@@ -25,6 +25,10 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - uses: browser-actions/setup-chrome@v1
+      with:
+        chrome-version: 120
+        install-chromedriver: true
     - run: npm ci
     - run: npm run build
     - run: npm test
