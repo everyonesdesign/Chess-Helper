@@ -13,7 +13,10 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    container:
+      image: cypress/browsers:node-20.14.0-chrome-125.0.6422.141-1-ff-126.0.1-edge-125.0.2535.85-1
+      options: --user 1001
 
     strategy:
       matrix:
@@ -25,10 +28,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - uses: browser-actions/setup-chrome@v1
-      with:
-        chrome-version: 120
-        install-chromedriver: true
     - run: npm ci
     - run: npm run build
     - run: npm test
