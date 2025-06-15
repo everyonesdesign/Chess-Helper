@@ -33,9 +33,6 @@ Cypress.Commands.add('fenEquals', (expectedFen) => {
 Cypress.Commands.add('setAnalysisFen', (fen) => {
   const SHORT_DELAY = 50;
   return cy
-    .contains('Load From FEN/PGN(s)')
-    .click()
-    .wait(SHORT_DELAY)
     .get('[aria-label^="Paste one or more PGNs"]')
     .type(`${fen}{enter}`)
     .get('[data-cy="add-games-btn"], .load-from-pgn-component .cc-button-primary')
